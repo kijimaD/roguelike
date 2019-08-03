@@ -39,8 +39,6 @@ class Sentence():
 
 
 def main():
-    (w, h) = (400, 400)
-    (x, y) = (int(w / 2), int(h / 2))
     pygame.init()
     screen = pygame.display.set_mode((SCREEN.size))
     pygame.display.set_caption("Roguelike")
@@ -60,8 +58,6 @@ def main():
         title.draw(screen, "クローンディッガー")
         start1.draw(screen, "冒険をはじめる[1]")
         start2.draw(screen, "続きから[2]")
-        # 円描画
-        pygame.draw.circle(screen, (0, 200, 0), (x, y), 5)
 
     # キーイベント（終了）
         for event in pygame.event.get():
@@ -72,19 +68,13 @@ def main():
                 if event.key == K_ESCAPE:
                     pygame.quit()
                     sys.exit()
-                # if event.key == K_LEFT:
-                #     x -= 10
-                # if event.key == K_RIGHT:
-                #     x += 10
-                # if event.key == K_UP:
-                #     y -= 10
-                # if event.key == K_DOWN:
-                #     y += 10
                 if event.key == K_1:  # ニューゲーム
+                    # ここから全面文字画面にしたいが、forを抜け出す方法がわからない。
+                    # 抜け出すのではなく、これを押すとモード変数を切り替えるようにする。
                     break
-                    sentence.draw(screen)
+                    # sentence.draw(screen)
                 if event.key == K_2:  # コンティニュー
-                    y += 10
+                    break
     end_message = "終了しました"
     print(end_message)
 
