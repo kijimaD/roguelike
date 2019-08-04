@@ -32,6 +32,7 @@ class PyRPG:
         self.msg_engine = MessageEngine()
         # タイトル画面
         self.title = Title(self.msg_engine)
+        self.fulltext = Fulltext(self.msg_engine)
         # メインループを起動
         self.game_state = TITLE
         self.mainloop()
@@ -55,11 +56,15 @@ class PyRPG:
         # ゲーム状態の更新
         if self.game_state == TITLE:
             self.title.update()
+        elif self.game_state == FULLTEXT:
+            self.fulltext.update()
 
     def render(self):
         # ゲームオブジェクトのレンダリング
         if self.game_state == TITLE:
             self.title.draw(self.screen)
+        elif self.game_state == FULLTEXT:
+            self.fulltext.draw(self.screen)
 
     def check_event(self):
         # キーイベント（終了）
@@ -110,6 +115,19 @@ class Title:
         self.msg_engine.draw_string(screen, 10, 10, "クローンディッガー")
         self.msg_engine.draw_string(screen, 10, 100, "はじめから[1]")
         self.msg_engine.draw_string(screen, 10, 120, "つづきから[2]")
+
+
+class Fulltext:
+
+    def __init__(self, msg_engine):
+        self.msg_engine = msg_engine
+
+    def update(self):
+        pass
+
+    def draw(self, screen):
+        screen.fill((0, 0, 0))
+        self.msg_engine.draw_string(screen, 10, 10, "「遺跡」が発見されてすべてが変わった。")
 
 
 class MessageEngine:
