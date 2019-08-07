@@ -127,7 +127,8 @@ class Fulltext:
 
     def draw(self, screen):
         screen.fill((0, 0, 0))
-        self.msg_engine.draw_string(screen, 10, 10, "「遺跡」が発見されてすべてが変わった。")
+        self.msg_engine.draw_string(
+            screen, 10, 10, "「遺跡」にはさまざまなお宝が隠されている。最深部にある３つの珠はどんな願いさえ叶えるという。")
 
 
 class MessageEngine:
