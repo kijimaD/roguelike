@@ -10,7 +10,8 @@ import pygame.mixer
 # バトルディッガーのクローンを作成する。
 
 SCREEN = Rect(0, 0, 640, 480)
-
+SCR_W = 640
+SCR_H = 320
 TITLE, FIELD, FULLTEXT = range(3)
 
 
@@ -41,15 +42,13 @@ class PyRPG:
     def mainloop(self):
         # メインループ
         clock = pygame.time.Clock()
+
         while True:
             # 画面更新
             clock.tick(60)
             self.update()
             self.render()
-            # タイトルを描画
-            # title.draw(screen, "クローンディッガー")
-            # start1.draw(screen, "冒険をはじめる[1]")
-            # start2.draw(screen, "続きから[2]")
+
             pygame.display.update()
             self.check_event()
 
@@ -88,7 +87,7 @@ class PyRPG:
             # モノローグへ
             print("タイトルモードで1を押しました")
             self.game_state = FULLTEXT
-            time.sleep(1)
+            time.sleep(0.1)
         if event.type == KEYUP and event.key == K_2:
             # 途中から
             self.game_state = FIELD
@@ -131,6 +130,7 @@ class Fulltext:
         Window.__init__(self,rect)
         self.msg_engine = msg_engine
 
+        self.font = pygame.font.SysFont("RictyDiminishedDiscord", 20)
     def update(self):
         pass
 
@@ -138,14 +138,35 @@ class Fulltext:
         self.msg_engine.draw(screen,10,10,text)
 
     def draw(self, screen):
-        # TODO: 文章を解析して改行や改ページを行いたい。どうやってやればいいのか？折り返しとかもわからない。
+        # TODO: 文章を解析して改行や改ページを行いたい。
 
         screen.fill((40, 40, 40)) # 前の画面をリセット
         Window.show(self)
         Window.draw(self,screen)
 
-        content = "人類は古代の昔から「遺跡」に挑み続けてきた。遺跡には地上にはいない怪物が溢れていたが、それを地上で戦利品をもたらすこともあったし、行方知れずになることも多かったという。最深部にあるという３つの珠はどんな願いさえ叶えるという。"
-        self.message(screen, content)
+        jstr = "人類は古代の昔から「遺跡」に惹かれ挑み続けてきた。/古代人たちは粗末な武器で遺跡に挑んだ。/そしてわずかな戦利品が残しほとんどが行方不明となった。//何が彼らを惹きつけたのか？/「最深部にある3つの珠を集めるとどんな願いも叶う」という言い伝えである。/言い伝えというと胡散臭いものに感じるが、遺跡の構造は現代でもほとんど解明されていない。/彼らには魔法に見えたかもしれない。/言い伝えを信じ、語り継いできたのも不思議ではない。"
+
+        blitx = 10
+        blity = 10
+        for c in jstr:
+            # テキスト表示用Surfaceを作る
+            jtext = self.font.render(c, True, (255,255,255))
+            # /の場合は改行する
+            if c == "/":
+                blitx = 10
+                blity += jtext.get_rect().h
+                continue
+            # blitの前にはみ出さないかチェック
+            if blitx + jtext.get_rect().w >= SCR_W:
+               blitx = 10
+               blity += jtext.get_rect().h
+
+            screen.blit(jtext,(blitx,blity))
+
+            # pygame.display.flip() # 無限ループに入ってチカチカする。一度だけにしたいのだが…
+            blitx += jtext.get_rect().w
+
+        # self.message(screen, content)
 
 
 class MessageWindow:
