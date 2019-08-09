@@ -32,7 +32,8 @@ class PyRPG:
         self.msg_engine = MessageEngine()
         # タイトル画面
         self.title = Title(self.msg_engine)
-        self.fulltext = Fulltext(Rect(140,334,360,140), self.msg_engine)
+        # フルテキスト画面
+        self.fulltext = Fulltext(Rect(0,0,640,480), self.msg_engine)
         # メインループを起動
         self.game_state = TITLE
         self.mainloop()
@@ -143,6 +144,12 @@ class Fulltext:
         content = "人類は古代の昔から「遺跡」に挑み続けてきた。遺跡には地上にはいない怪物が溢れていたが、それを地上で戦利品をもたらすこともあったし、行方知れずになることも多かったという。最深部にあるという３つの珠はどんな願いさえ叶えるという。"
         self.msg_engine.draw(screen, 10, 10, content)
 
+
+class MessageWindow:
+
+    def __init__(self,rect, msg_engine):
+        Window.__init__(self,rect)
+        self.msg_engine = msg_engine
 
 class Window:
     # ウィンドウの基本クラス
