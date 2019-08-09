@@ -134,18 +134,22 @@ class Fulltext:
     def update(self):
         pass
 
+    def message(self,screen,text):
+        self.msg_engine.draw(screen,10,10,text)
+
     def draw(self, screen):
-        # TODO: 文章を解析して改行や改ページを行う。
+        # TODO: 文章を解析して改行や改ページを行いたい。どうやってやればいいのか？折り返しとかもわからない。
 
         screen.fill((40, 40, 40)) # 前の画面をリセット
         Window.show(self)
         Window.draw(self,screen)
 
         content = "人類は古代の昔から「遺跡」に挑み続けてきた。遺跡には地上にはいない怪物が溢れていたが、それを地上で戦利品をもたらすこともあったし、行方知れずになることも多かったという。最深部にあるという３つの珠はどんな願いさえ叶えるという。"
-        self.msg_engine.draw(screen, 10, 10, content)
+        self.message(screen, content)
 
 
 class MessageWindow:
+    # 通常のウィンドウメッセージ
 
     def __init__(self,rect, msg_engine):
         Window.__init__(self,rect)
