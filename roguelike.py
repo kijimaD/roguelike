@@ -9,7 +9,7 @@ import pygame.mixer
 
 # バトルディッガーのクローンを作成する。
 
-SCREEN = Rect(0, 0, 400, 400)
+SCREEN = Rect(0, 0, 640, 480)
 
 TITLE, FIELD, FULLTEXT = range(3)
 
@@ -32,7 +32,7 @@ class PyRPG:
         self.msg_engine = MessageEngine()
         # タイトル画面
         self.title = Title(self.msg_engine)
-        self.fulltext = Fulltext(self.msg_engine)
+        self.fulltext = Fulltext(Rect(140,334,360,140), self.msg_engine)
         # メインループを起動
         self.game_state = TITLE
         self.mainloop()
@@ -112,33 +112,69 @@ class Title:
 
     def draw(self, screen):
         screen.fill((0, 0, 0))
-        self.msg_engine.draw_string(screen, 10, 10, "クローンディッガー")
-        self.msg_engine.draw_string(screen, 10, 100, "はじめから[1]")
-        self.msg_engine.draw_string(screen, 10, 120, "つづきから[2]")
+        self.msg_engine.draw(screen, 10, 10, "クローンディッガー")
+        self.msg_engine.draw(screen, 10, 100, "はじめから[1]")
+        self.msg_engine.draw(screen, 10, 120, "つづきから[2]")
 
 
 class Fulltext:
+    # 全画面文字モード
+    MAX_CHARS_PER_LINE = 20     # １行の最大文字数
+    MAX_LINES_PER_PAGE = 3      # １ページの最大行数
+    MAX_CHARS_PER_PAGE = 20 * 3 # １ページの最大文字数
+    MAX_LINES = 30              # 行間の大きさ
+    LINE_HEIGHT = 8
+    EDGE_WIDTH = 4
 
-    def __init__(self, msg_engine):
+    def __init__(self, rect, msg_engine):
+        Window.__init__(self,rect)
         self.msg_engine = msg_engine
 
     def update(self):
         pass
 
     def draw(self, screen):
-        screen.fill((0, 0, 0))
-        self.msg_engine.draw_string(
-            screen, 10, 10, "「遺跡」にはさまざまなお宝が隠されている。最深部にある３つの珠はどんな願いさえ叶えるという。")
+        # TODO: 文章を解析して改行や改ページを行う。
 
+        screen.fill((40, 40, 40)) # 前の画面をリセット
+        Window.show(self)
+        Window.draw(self,screen)
+
+        content = "人類は古代の昔から「遺跡」に挑み続けてきた。遺跡には地上にはいない怪物が溢れていたが、それを地上で戦利品をもたらすこともあったし、行方知れずになることも多かったという。最深部にあるという３つの珠はどんな願いさえ叶えるという。"
+        self.msg_engine.draw(screen, 10, 10, content)
+
+
+class Window:
+    # ウィンドウの基本クラス
+    EDGE_WIDTH = 4
+    # クラス内の大文字変数の取扱方法がわからない。
+
+    def __init__(self, rect):
+        self.rect = rect
+        self.inner_rect = self.rect.inflate(-self.EDGE_WIDTH * 2, -             self.EDGE_WIDTH * 2) # 疑問:よくわからない
+        self.is_visible = False # ウィンドウを表示中か？
+
+    def draw(self, screen):
+        # ウィンドウを描画
+        if self.is_visible == False:
+            return
+        pygame.draw.rect(screen, (255,255,255), self.rect, 0)
+        pygame.draw.rect(screen, (0, 0, 0), self.inner_rect, 0)
+
+    def show(self):
+        # ウィンドウを描画
+        self.is_visible = True
+
+    def hide(self):
+        self.in_visible = False
 
 class MessageEngine:
 
     def __init__(self):
         self.font = pygame.font.SysFont("RictyDiminishedDiscord", 20)
 
-    def draw_string(self, screen, x, y, text):
+    def draw(self, screen, x, y, text):
         screen.blit(self.font.render(text, True, (255, 255, 255)), [x, y])
-
 
 if __name__ == "__main__":
     PyRPG()
