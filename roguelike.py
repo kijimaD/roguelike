@@ -42,13 +42,10 @@ class PyRPG:
     def mainloop(self):
         # メインループ
         clock = pygame.time.Clock()
-
         while True:
-            # 画面更新
             clock.tick(60)
             self.update()
             self.render()
-
             pygame.display.update()
             self.check_event()
 
@@ -87,17 +84,18 @@ class PyRPG:
             # モノローグへ
             print("タイトルモードで1を押しました")
             self.game_state = FULLTEXT
-            time.sleep(0.1)
+            time.sleep(0.2)
         if event.type == KEYUP and event.key == K_2:
             # 途中から
             self.game_state = FIELD
 
     def fulltext_handler(self, event):
         if event.type == KEYUP and event.key == K_1:
-            # モノローグへ
+            # モノローグ
             print("フルテキストモードで1を押しました")
-        pass
-
+        if event.type == KEYUP and event.key == K_RETURN:
+            # ページ送り
+            print("フルテキストモードでENTERを押しました")
 
 class Title:
     # タイトル画面
@@ -144,18 +142,23 @@ class Fulltext:
         Window.show(self)
         Window.draw(self,screen)
 
-        jstr = "人類は古代の昔から「遺跡」に惹かれ挑み続けてきた。/古代人たちは粗末な武器で遺跡に挑んだ。/そしてわずかな戦利品が残しほとんどが行方不明となった。//何が彼らを惹きつけたのか？/「最深部にある3つの珠を集めるとどんな願いも叶う」という言い伝えである。/言い伝えというと胡散臭いものに感じるが、遺跡の構造は現代でもほとんど解明されていない。/彼らには魔法に見えたかもしれない。/言い伝えを信じ、語り継いできたのも不思議ではない。"
+        jstr = "人類は古代の昔から「遺跡」に惹かれ挑み続けてきた。/古代人たちは粗末な武器で遺跡に挑んだ。/そしてわずかな戦利品が残しほとんどが行方不明となった。//何が彼らを惹きつけたのか？/「最深部にある3つの珠を集めるとどんな願いも叶う」という言い伝えである。/言い伝えというと胡散臭いものに感じるが、遺跡の構造は現代でもほとんど解明されていない。/彼らには魔法に見えたかもしれない。/言い伝えを信じ、語り継いできたのも不思議ではない。&ときは変わって、現代。/新動力や機械技術の発展、科学の解明により生活は一変した。//そして戦車、戦闘機、戦艦…戦争の舞台や形が様変わりした。/遺跡の探索方法も一変した。/戦車に乗り、より下層まで潜ることが可能になったのだ。/しかし国家の関心事はもはや遺跡になく、今では謎の解明やお宝を追い求めてハンターや無法者が挑むのみである。//これから始まるのは、ハンターたちの物語。"
 
         blitx = 10
         blity = 10
         for c in jstr:
             # テキスト表示用Surfaceを作る
             jtext = self.font.render(c, True, (255,255,255))
-            # /の場合は改行する
-            if c == "/":
+
+            if c == "/": # /の場合は改行する
                 blitx = 10
                 blity += jtext.get_rect().h
                 continue
+            elif c == "&": # &だと改ページ
+                screen.fill((40,40,40))
+                blitx = 10
+                blity = 10
+                continue # 自動で改行しまう、キーボード押下で次に行くようにしたい。
             # blitの前にはみ出さないかチェック
             if blitx + jtext.get_rect().w >= SCR_W:
                blitx = 10
