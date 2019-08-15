@@ -6,6 +6,7 @@ import os
 import sys
 import time
 import pygame.mixer
+import numpy as np
 
 # バトルディッガーのクローンを作成する。
 
@@ -40,7 +41,7 @@ class PyRPG:
         self.mainloop()
 
     def mainloop(self):
-        # メインループ
+        """メインループ"""
         clock = pygame.time.Clock()
         while True:
             clock.tick(60)
@@ -96,6 +97,7 @@ class PyRPG:
         if event.type == KEYUP and event.key == K_RETURN:
             # ページ送り
             print("フルテキストモードでENTERを押しました")
+            self.fulltext.next()
 
 class Title:
     # タイトル画面
@@ -129,24 +131,67 @@ class Fulltext:
         self.msg_engine = msg_engine
 
         self.font = pygame.font.SysFont("RictyDiminishedDiscord", 20)
+        self.text = []
+        self.cur_pos = 0
+        self.cur_page = 0
+        self.next_flag = False
+        self.hide_flag = False
+        self.frame = 0
+
     def update(self):
         pass
 
     def message(self,screen,text):
         self.msg_engine.draw(screen,10,10,text)
 
+    def set(self,message):
+        """全体からの文字の位置を求めて、配列に入れる"""
+
+        self.cur_pos = 0
+        self.cur_page = 0
+        self.next_flag = False
+        self.hide_flag = False
+        self.text = np.empty([0,3])
+        count_page = 0
+        count_pos = 0
+
+        p = 0
+        for i in range(len(message)):
+            # print("ループ回数は" + str(p) + "回")
+            ch = message[i] # chとmessage[i]は文字。
+            if ch == "/":
+                pass
+            elif ch == "&":
+                count_page += 1
+                count_pos += 1
+                continue
+            else:
+                self.text = np.append(self.text, np.array([[count_pos,count_page,ch]]), axis=0)
+                # print(self.text)
+                p += 1
+                count_pos += 1
+
     def draw(self, screen):
+        """ウィンドウと文章を表示する"""
         # TODO: 文章を解析して改行や改ページを行いたい。
 
         screen.fill((40, 40, 40)) # 前の画面をリセット
         Window.show(self)
         Window.draw(self,screen)
 
-        jstr = "人類は古代の昔から「遺跡」に惹かれ挑み続けてきた。/古代人たちは粗末な武器で遺跡に挑んだ。/そしてわずかな戦利品が残しほとんどが行方不明となった。//何が彼らを惹きつけたのか？/「最深部にある3つの珠を集めるとどんな願いも叶う」という言い伝えである。/言い伝えというと胡散臭いものに感じるが、遺跡の構造は現代でもほとんど解明されていない。/彼らには魔法に見えたかもしれない。/言い伝えを信じ、語り継いできたのも不思議ではない。&ときは変わって、現代。/新動力や機械技術の発展、科学の解明により生活は一変した。//そして戦車、戦闘機、戦艦…戦争の舞台や形が様変わりした。/遺跡の探索方法も一変した。/戦車に乗り、より下層まで潜ることが可能になったのだ。/しかし国家の関心事はもはや遺跡になく、今では謎の解明やお宝を追い求めてハンターや無法者が挑むのみである。//これから始まるのは、ハンターたちの物語。"
+        jstr = "人類は古代の昔から「遺跡」に惹かれ挑み続けてきた。/古代人たちは粗末な武器で遺跡に挑んだ。/そしてわずかな戦利品を残しほとんどが行方不明となった。//何が彼らを惹きつけたのか？/「最深部にある3つの珠を集めるとどんな願いも叶う」という言い伝えである。/言い伝えというと胡散臭いものに感じるが、遺跡の構造は現代でもほとんど解明されていない。/彼らには魔法に見えたかもしれない。/言い伝えを信じ、語り継いできたのも不思議ではない。&ときは変わって、現代。/新動力や機械技術の発展、科学の解明により生活は一変した。//そして戦車、戦闘機、戦艦…戦争の舞台や形が様変わりした。/遺跡の探索方法も一変した。/戦車に乗り、より下層まで潜ることが可能になったのだ。/しかし国家の関心事はもはや遺跡になく、今では謎の解明やお宝を追い求めてハンターや無法者が挑むのみである。//これから始まるのは、ハンターたちの物語。"
+
+        self.set(jstr)
 
         blitx = 10
         blity = 10
-        for c in jstr:
+
+        show_text = [x[2] for x in self.text if x[1] == str(self.cur_page)] # 配列の3番目の要素を抜き出す
+        # cur_pageで検索する
+        print("ここはdraw")
+        # print(show_text)
+        print("cur_page:" + str(self.cur_page))
+        for c in show_text:
             # テキスト表示用Surfaceを作る
             jtext = self.font.render(c, True, (255,255,255))
 
@@ -156,9 +201,14 @@ class Fulltext:
                 continue
             elif c == "&": # &だと改ページ
                 screen.fill((40,40,40))
+                Window.show(self)
+                Window.draw(self,screen)
                 blitx = 10
                 blity = 10
-                continue # 自動で改行しまう、キーボード押下で次に行くようにしたい。
+                continue # Problem:自動で改ページしてしまう、キーボード押下で次に行くようにしたい。
+                # 解決法:格納しておいて、改ページ位置まで描画すればよい
+                # 改行は描画と分析が不可分だが、改ページは別にできる？改ページごとに配列に入れる、など。
+
             # blitの前にはみ出さないかチェック
             if blitx + jtext.get_rect().w >= SCR_W:
                blitx = 10
@@ -169,8 +219,11 @@ class Fulltext:
             # pygame.display.flip() # 無限ループに入ってチカチカする。一度だけにしたいのだが…
             blitx += jtext.get_rect().w
 
-        # self.message(screen, content)
+    def next(self):
+        """メッセージを先に進める"""
 
+        self.cur_page += 1
+        self.cur_pos = 0
 
 class MessageWindow:
     # 通常のウィンドウメッセージ
