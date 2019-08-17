@@ -162,7 +162,6 @@ class Fulltext:
 
         p = 0
         for i in range(len(message)):
-            # print("ループ回数は" + str(p) + "回")
             ch = message[i]  # chとmessage[i]は文字。
             if ch == "/":
                 pass
@@ -173,7 +172,6 @@ class Fulltext:
             else:
                 self.text = np.append(self.text, np.array(
                     [[count_pos, count_page, ch]]), axis=0)
-                # print(self.text)
                 p += 1
                 count_pos += 1
 
@@ -191,8 +189,6 @@ class Fulltext:
         show_text = [x[2] for x in self.text if x[1]
                      == str(self.cur_page)]  # 配列の3番目の要素を抜き出す
         # cur_pageで検索する
-        print("ここはdraw")
-        # print(show_text)
         print("cur_page:" + str(self.cur_page))
         for c in show_text:
             # テキスト表示用Surfaceを作る
