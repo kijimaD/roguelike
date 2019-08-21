@@ -28,6 +28,7 @@ class PyRPG:
         self.title = Title(self.msg_engine)
         # フルテキスト画面
         self.fulltext = Fulltext(Rect(0, 0, 640, 480), self.msg_engine)
+        # テキストを読み込み
         # メインループを起動
         self.game_state = TITLE
         self.mainloop()
@@ -195,9 +196,9 @@ class Fulltext:
                 screen.fill((40, 40, 40))
                 Window.show(self)
                 Window.draw(self, screen)
+                blitx = 10
+                blity = 10
                 continue  # Problem:自動で改ページしてしまう、キーボード押下で次に行くようにしたい。
-                # 解決法:格納しておいて、改ページ位置まで描画すればよい
-                # 改行は描画と分析が不可分だが、改ページは別にできる？改ページごとに配列に入れる、など。
 
             # blitの前にはみ出さないかチェック
             if blitx + jtext.get_rect().w >= SCR_W:
@@ -227,7 +228,7 @@ class MessageWindow:
 class Window:
     """ウィンドウの基本クラス"""
     EDGE_WIDTH = 4
-    # クラス内の大文字変数の取扱方法がわからない。
+    # 大文字変数ってナニ
 
     def __init__(self, rect):
         self.rect = rect
