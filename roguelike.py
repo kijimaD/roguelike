@@ -2,9 +2,9 @@
 
 import pygame
 from pygame.locals import *
-import codecs
-import math
-import os
+# import codecs
+# import math
+# import os
 import sys
 import time
 import pygame.mixer
@@ -17,16 +17,6 @@ SCR_W = 640
 SCR_H = 320
 TITLE, FIELD, FULLTEXT = range(3)
 
-
-# class Title():
-#     def __init__(self, x, y):
-#         self.sysfont = pygame.font.SysFont("RictyDiminishedDiscord", 20)
-#         (self.x, self.y) = (x, y)
-#
-#     def draw(self, screen, letter):
-#         img = self.sysfont.render(
-#             letter, True, (255, 255, 255))
-#         screen.blit(img, (self.x, self.y))
 
 class PyRPG:
     def __init__(self):
@@ -53,21 +43,21 @@ class PyRPG:
             self.check_event()
 
     def update(self):
-        # ゲーム状態の更新
+        """ ゲーム状態の更新 """
         if self.game_state == TITLE:
             self.title.update()
         elif self.game_state == FULLTEXT:
             self.fulltext.update()
 
     def render(self):
-        # ゲームオブジェクトのレンダリング
+        """ゲームオブジェクトのレンダリング"""
         if self.game_state == TITLE:
             self.title.draw(self.screen)
         elif self.game_state == FULLTEXT:
             self.fulltext.draw(self.screen)
 
     def check_event(self):
-        # キーイベント（終了）
+        """キーイベント（終了）"""
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -82,7 +72,7 @@ class PyRPG:
                 self.fulltext_handler(event)
 
     def title_handler(self, event):
-        # タイトル画面のイベントハンドラ
+        """タイトル画面のイベントハンドラ"""
         if event.type == KEYUP and event.key == K_1:
             # モノローグへ
             print("タイトルモードで1を押しました")
@@ -95,6 +85,7 @@ class PyRPG:
             self.game_state = FIELD
 
     def fulltext_handler(self, event):
+        """フルテキストモードのイベントハンドラ"""
         if event.type == KEYUP and event.key == K_1:
             # モノローグ
             print("フルテキストモードで1を押しました")
@@ -105,7 +96,7 @@ class PyRPG:
 
 
 class Title:
-    # タイトル画面
+    """タイトル画面クラス"""
     START, CONTINUE, EXIT = 0, 1, 2
 
     def __init__(self, msg_engine):
@@ -113,9 +104,11 @@ class Title:
         self.menu = self.START
 
     def update(self):
+        """画面の更新（未実装）"""
         pass
 
     def draw(self, screen):
+        """タイトルの描画"""
         screen.fill((0, 0, 0))
         self.msg_engine.draw(screen, 10, 10, "クローンディッガー")
         self.msg_engine.draw(screen, 10, 100, "はじめから[1]")
@@ -123,6 +116,7 @@ class Title:
 
 
 class Fulltext:
+    """全画面モードクラス"""
     # 全画面文字モード
     MAX_CHARS_PER_LINE = 20     # １行の最大文字数
     MAX_LINES_PER_PAGE = 3      # １ページの最大行数
@@ -144,14 +138,15 @@ class Fulltext:
         self.frame = 0
 
     def update(self):
+        """画面の更新（未実装）"""
         pass
 
     def message(self, screen, text):
+        """メッセージ描画"""
         self.msg_engine.draw(screen, 10, 10, text)
 
     def set(self, message):
-        """全体からの文字の位置を求めて、配列に入れる"""
-
+        """全体からの文字の位置を求めて、リストを作成する"""
         self.cur_pos = 0
         self.cur_page = 0
         self.next_flag = False
@@ -188,8 +183,6 @@ class Fulltext:
 
         show_text = [x[2] for x in self.text if x[1]
                      == str(self.cur_page)]  # 配列の3番目の要素を抜き出す
-        # cur_pageで検索する
-        print("cur_page:" + str(self.cur_page))
         for c in show_text:
             # テキスト表示用Surfaceを作る
             jtext = self.font.render(c, True, (255, 255, 255))
@@ -202,8 +195,6 @@ class Fulltext:
                 screen.fill((40, 40, 40))
                 Window.show(self)
                 Window.draw(self, screen)
-                blitx = 10
-                blity = 10
                 continue  # Problem:自動で改ページしてしまう、キーボード押下で次に行くようにしたい。
                 # 解決法:格納しておいて、改ページ位置まで描画すればよい
                 # 改行は描画と分析が不可分だが、改ページは別にできる？改ページごとに配列に入れる、など。
@@ -226,7 +217,7 @@ class Fulltext:
 
 
 class MessageWindow:
-    # 通常のウィンドウメッセージ
+    """通常のウィンドウメッセージ"""
 
     def __init__(self, rect, msg_engine):
         Window.__init__(self, rect)
@@ -234,7 +225,7 @@ class MessageWindow:
 
 
 class Window:
-    # ウィンドウの基本クラス
+    """ウィンドウの基本クラス"""
     EDGE_WIDTH = 4
     # クラス内の大文字変数の取扱方法がわからない。
 
@@ -246,14 +237,14 @@ class Window:
         self.is_visible = False  # ウィンドウを表示中か？
 
     def draw(self, screen):
-        # ウィンドウを描画
-        if self.is_visible == False:
+        """ウィンドウを描画"""
+        if self.is_visible is False:
             return
         pygame.draw.rect(screen, (255, 255, 255), self.rect, 0)
         pygame.draw.rect(screen, (0, 0, 0), self.inner_rect, 0)
 
     def show(self):
-        # ウィンドウを描画
+        """ウィンドウを描画"""
         self.is_visible = True
 
     def hide(self):
@@ -261,11 +252,13 @@ class Window:
 
 
 class MessageEngine:
+    """メッセージエンジンクラス"""
 
     def __init__(self):
         self.font = pygame.font.SysFont("RictyDiminishedDiscord", 20)
 
     def draw(self, screen, x, y, text):
+        """メッセージの描画"""
         screen.blit(self.font.render(text, True, (255, 255, 255)), [x, y])
 
 
