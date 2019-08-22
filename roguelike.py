@@ -16,7 +16,7 @@ import json
 SCREEN = Rect(0, 0, 640, 480)
 SCR_W = 640
 SCR_H = 320
-TITLE, FIELD, FULLTEXT = range(3)
+TITLE, FIELD, FULLTEXT, COMMAND = range(4)
 
 
 class PyRPG:
