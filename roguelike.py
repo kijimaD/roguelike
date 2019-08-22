@@ -29,6 +29,7 @@ class PyRPG:
         # フルテキスト画面
         self.fulltext = Fulltext(Rect(0, 0, 640, 480), self.msg_engine)
         # テキストを読み込み
+
         # メインループを起動
         self.game_state = TITLE
         self.mainloop()
@@ -139,11 +140,11 @@ class Fulltext:
         self.frame = 0
 
     def update(self):
-        """画面の更新（未実装）"""
+        """画面を更新する（未実装）"""
         pass
 
     def message(self, screen, text):
-        """メッセージ描画"""
+        """メッセージを描画する"""
         self.msg_engine.draw(screen, 10, 10, text)
 
     def set(self, message):
