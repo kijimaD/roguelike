@@ -9,6 +9,7 @@ import sys
 import time
 import pygame.mixer
 import numpy as np
+import json
 
 # バトルディッガーのクローンを作成する。
 
@@ -29,7 +30,8 @@ class PyRPG:
         # フルテキスト画面
         self.fulltext = Fulltext(Rect(0, 0, 640, 480), self.msg_engine)
         # テキストを読み込み
-
+        file = open('scenario_data.json', 'r', encoding="utf-8")
+        self.text_data = json.load(file)
         # メインループを起動
         self.game_state = TITLE
         self.mainloop()
@@ -79,8 +81,7 @@ class PyRPG:
             # モノローグへ
             print("タイトルモードで1を押しました")
             self.game_state = FULLTEXT
-            jstr = "人類は古代の昔から「遺跡」に惹かれ挑み続けてきた。/古代人たちは粗末な武器で遺跡に挑んだ。/そしてわずかな戦利品を残しほとんどが行方不明となった。//何が彼らを惹きつけたのか？/「最深部にある3つの珠を集めるとどんな願いも叶う」という言い伝えである。/言い伝えというと胡散臭いものに感じるが、遺跡の構造は現代でもほとんど解明されていない。/彼らには魔法に見えたかもしれない。/言い伝えを信じ、語り継いできたのも不思議ではない。&ときは変わって、現代。/新動力や機械技術の発展、科学の解明により生活は一変した。//そして戦車、戦闘機、戦艦…戦争の舞台や形が様変わりした。/遺跡の探索方法も一変した。/戦車に乗り、より下層まで潜ることが可能になったのだ。/しかし国家の関心事はもはや遺跡になく、今では謎の解明やお宝を追い求めてハンターや無法者が挑むのみである。//これから始まるのは、ハンターたちの物語。"
-            self.fulltext.set(jstr)
+            self.fulltext.set(self.text_data["monologue0"]["text"])
             time.sleep(0.2)
         if event.type == KEYUP and event.key == K_2:
             # 途中から
