@@ -17,7 +17,7 @@ SCREEN = Rect(0, 0, 640, 480)
 SCR_W = 640
 SCR_H = 320
 TITLE, FIELD, FULLTEXT, COMMAND = range(4)
-
+DEFAULT_FONT =  "RictyDiminishedDiscord"
 
 class PyRPG:
     def __init__(self):
@@ -34,6 +34,7 @@ class PyRPG:
         self.text_data = json.load(file)
         # メインループを起動
         self.game_state = TITLE
+        self.cursor_y = 0
         self.mainloop()
 
     def mainloop(self):
@@ -56,7 +57,7 @@ class PyRPG:
     def render(self):
         """ゲームオブジェクトのレンダリング"""
         if self.game_state == TITLE:
-            self.title.draw(self.screen)
+            self.title.draw(self.screen, self.cursor_y)
         elif self.game_state == FULLTEXT:
             self.fulltext.draw(self.screen)
 
@@ -86,13 +87,30 @@ class PyRPG:
         if event.type == KEYUP and event.key == K_2:
             # 途中から
             self.game_state = FIELD
+        if event.type == KEYUP and event.key == K_UP:
+            if self.cursor_y > 0:
+                print(self.cursor_y)
+                self.cursor_y += -1
+        if event.type == KEYUP and event.key == K_DOWN:
+            if self.cursor_y < 1:
+                print(self.cursor_y)
+                self.cursor_y += 1
+        if event.type == KEYDOWN and event.key == K_RETURN:
+            if self.cursor_y == 0:
+                # フルテキストモードのenterも1回押してしまう。デバッガーでみると2回ループしてるから？遅延させても不可。
+                # タイトルと、フルテキストのenterが競合してどちらも押されてることになってるぽい？
+                self.game_state = FULLTEXT
+                self.fulltext.set(self.text_data["monologue0"]["text"])
+                time.sleep(1)
+            if self.cursor_y == 1:
+                pass
 
     def fulltext_handler(self, event):
         """フルテキストモードのイベントハンドラ"""
-        if event.type == KEYUP and event.key == K_1:
+        if event.type == KEYDOWN and event.key == K_1:
             # モノローグ
             print("フルテキストモードで1を押しました")
-        if event.type == KEYUP and event.key == K_RETURN:
+        if event.type == KEYDOWN and event.key == K_RETURN:
             # ページ送り
             print("フルテキストモードでENTERを押しました")
             self.fulltext.next()
@@ -110,9 +128,10 @@ class Title:
         """画面の更新（未実装）"""
         pass
 
-    def draw(self, screen):
+    def draw(self, screen, cursor_y):
         """タイトルの描画"""
         screen.fill((0, 0, 0))
+        pygame.draw.rect(screen, (255, 255, 255), (10, 100 + cursor_y * 20, 100, 18), 1)
         self.msg_engine.draw(screen, 10, 10, "クローンディッガー")
         self.msg_engine.draw(screen, 10, 100, "はじめから[1]")
         self.msg_engine.draw(screen, 10, 120, "つづきから[2]")
@@ -121,10 +140,10 @@ class Title:
 class Fulltext:
     """全画面モードクラス"""
     # 全画面文字モード
-    MAX_CHARS_PER_LINE = 20     # １行の最大文字数
-    MAX_LINES_PER_PAGE = 3      # １ページの最大行数
+    MAX_CHARS_PER_LINE = 20  # １行の最大文字数
+    MAX_LINES_PER_PAGE = 3  # １ページの最大行数
     MAX_CHARS_PER_PAGE = 20 * 3  # １ページの最大文字数
-    MAX_LINES = 30              # 行間の大きさ
+    MAX_LINES = 30  # 行間の大きさ
     LINE_HEIGHT = 8
     EDGE_WIDTH = 4
 
@@ -132,13 +151,14 @@ class Fulltext:
         Window.__init__(self, rect)
         self.msg_engine = msg_engine
 
-        self.font = pygame.font.SysFont("RictyDiminishedDiscord", 20)
+        self.font = pygame.font.SysFont(DEFAULT_FONT, 20)
         self.text = []
         self.cur_pos = 0
         self.cur_page = 0
         self.next_flag = False
         self.hide_flag = False
         self.frame = 0
+        self.first_flip = 0
 
     def update(self):
         """画面を更新する（未実装）"""
@@ -149,7 +169,7 @@ class Fulltext:
         self.msg_engine.draw(screen, 10, 10, text)
 
     def set(self, message):
-        """全体からの文字の位置を求めて、リストを作成する"""
+        """全体の文字の位置を求めて、リストを作成する"""
         self.cur_pos = 0
         self.cur_page = 0
         self.next_flag = False
@@ -175,7 +195,6 @@ class Fulltext:
 
     def draw(self, screen):
         """ウィンドウと文章を表示する"""
-        # TODO: 文章を解析して改行や改ページを行いたい。
 
         screen.fill((40, 40, 40))  # 前の画面をリセット
         Window.show(self)
@@ -200,7 +219,7 @@ class Fulltext:
                 Window.draw(self, screen)
                 blitx = 10
                 blity = 10
-                continue  # Problem:自動で改ページしてしまう、キーボード押下で次に行くようにしたい。
+                continue
 
             # blitの前にはみ出さないかチェック
             if blitx + jtext.get_rect().w >= SCR_W:
@@ -209,7 +228,10 @@ class Fulltext:
 
             screen.blit(jtext, (blitx, blity))
 
-            # pygame.display.flip()  # 無限ループに入ってチカチカする。一度だけにしたいのだが…
+            # ループの最初だけflipさせる。flipの意味がよくわからない。
+            if self.first_flip == 0:
+                pygame.display.flip()
+                self.first_flip += 1
             blitx += jtext.get_rect().w
 
     def next(self):
@@ -217,7 +239,7 @@ class Fulltext:
 
         self.cur_page += 1
         self.cur_pos = 0
-
+        self.first_flip = 0
 
 class MessageWindow:
     """通常のウィンドウメッセージ"""
@@ -230,11 +252,9 @@ class MessageWindow:
 class Window:
     """ウィンドウの基本クラス"""
     EDGE_WIDTH = 4
-    # 大文字変数ってナニ
 
     def __init__(self, rect):
         self.rect = rect
-        # 疑問:よくわからない
         self.inner_rect = self.rect.inflate(-self.EDGE_WIDTH *
                                             2, -             self.EDGE_WIDTH * 2)
         self.is_visible = False  # ウィンドウを表示中か？
@@ -258,11 +278,43 @@ class MessageEngine:
     """メッセージエンジンクラス"""
 
     def __init__(self):
-        self.font = pygame.font.SysFont("RictyDiminishedDiscord", 20)
+        self.font = pygame.font.SysFont(DEFAULT_FONT, 20)
 
     def draw(self, screen, x, y, text):
         """メッセージの描画"""
         screen.blit(self.font.render(text, True, (255, 255, 255)), [x, y])
+
+
+class Map:
+    pass
+
+
+class Buttle:
+    pass
+
+
+class FieldView:
+    pass
+
+
+class Command:
+    pass
+
+
+class Item:
+    pass
+
+
+class Character:
+    pass
+
+
+class Enemy:
+    pass
+
+
+class Hero:
+    pass
 
 
 if __name__ == "__main__":
