@@ -16,8 +16,9 @@ import json
 SCREEN = Rect(0, 0, 640, 480)
 SCR_W = 640
 SCR_H = 320
-TITLE, WINDOWTEXT ,FIELD, FULLTEXT, COMMAND = range(5)
-DEFAULT_FONT =  "RictyDiminishedDiscord"
+TITLE, WINDOWTEXT, FIELD, FULLTEXT, COMMAND = range(5)
+DEFAULT_FONT = "RictyDiminishedDiscord"
+
 
 class PyRPG:
     def __init__(self):
@@ -25,10 +26,9 @@ class PyRPG:
         self.screen = pygame.display.set_mode((SCREEN.size))
         pygame.display.set_caption("Roguelike")
         self.msg_engine = MessageEngine()
-        # タイトル画面
         self.title = Title(self.msg_engine)
-        # フルテキスト画面
         self.fulltext = Fulltext(Rect(0, 0, 640, 480), self.msg_engine)
+        self.windowtext = WindowText(Rect(0, 0, 640, 480),self.msg_engine)
         # テキストを読み込み
         file = open('scenario_data.json', 'r', encoding="utf-8")
         self.text_data = json.load(file)
@@ -53,6 +53,8 @@ class PyRPG:
             self.title.update()
         elif self.game_state == FULLTEXT:
             self.fulltext.update()
+        elif self.game_state == WINDOWTEXT:
+            self.windowtext.draw(self.screen)
 
     def render(self):
         """ゲームオブジェクトのレンダリング"""
@@ -60,6 +62,8 @@ class PyRPG:
             self.title.draw(self.screen, self.cursor_y)
         elif self.game_state == FULLTEXT:
             self.fulltext.draw(self.screen)
+        elif self.game_state == WINDOWTEXT:
+            self.windowtext.draw(self.screen)
 
     def check_event(self):
         """キーイベント（終了）"""
@@ -119,12 +123,13 @@ class PyRPG:
             if len(self.fulltext.show_text) == 0:
                 self.game_state = WINDOWTEXT
 
-
     def windowtext_handler(selfself, event):
         """ウィンドウテキストのイベントハンドラ"""
+        # TODO: 一回textを出力せず何もない空間ができてしまうので修正する。
         if event.type == KEYDOWN and event.key == K_RETURN:
             # ページ送り
             print('ウィンドウテキストモードでENTERを押しました')
+
 
 class Title:
     """タイトル画面クラス"""
@@ -211,7 +216,7 @@ class Fulltext:
         blity = 10
 
         self.show_text = [x[2] for x in self.text if x[1]
-                     == str(self.cur_page)]  # 配列の3番目の要素を抜き出す
+                          == str(self.cur_page)]  # 配列の3番目の要素を抜き出す
         for c in self.show_text:
             # テキスト表示用Surfaceを作る
             jtext = self.font.render(c, True, (255, 255, 255))
@@ -243,18 +248,25 @@ class Fulltext:
 
     def next(self):
         """メッセージを先に進める"""
-        # TODO: 文章がなくなったら、ウィンドウメッセージモードにする。
-
         self.cur_page += 1
         self.cur_pos = 0
         self.first_flip = 0
 
-class MessageWindow:
+
+class WindowText:
     """通常のウィンドウメッセージ"""
+    # TODO: まず文章を表示させる
+    # TODO: どうやって文章を取得し、遷移するか考える
+    EDGE_WIDTH = 4
 
     def __init__(self, rect, msg_engine):
         Window.__init__(self, rect)
         self.msg_engine = msg_engine
+
+    def draw(self, screen):
+        """ウィンドウと文章を表示する"""
+        screen.fill((40, 40, 40))
+        self.msg_engine.draw(screen, 10, 10, "クローンディッガー")
 
 
 class Window:
@@ -264,7 +276,7 @@ class Window:
     def __init__(self, rect):
         self.rect = rect
         self.inner_rect = self.rect.inflate(-self.EDGE_WIDTH *
-                                            2, -             self.EDGE_WIDTH * 2)
+                                            2, -self.EDGE_WIDTH * 2)
         self.is_visible = False  # ウィンドウを表示中か？
 
     def draw(self, screen):
