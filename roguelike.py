@@ -197,11 +197,11 @@ class Fulltext:
             # テキスト表示用Surfaceを作る
             jtext = self.font.render(c, True, (255, 255, 255))
 
-            if c == "/":  # /の場合は改行する
+            if c == "^":  # 改行
                 blitx = 10
                 blity += jtext.get_rect().h
                 continue
-            elif c == "&":  # &だと改ページ
+            elif c == "&":  # 改ページ
                 screen.fill((40, 40, 40))
                 Window.show(self)
                 Window.draw(self, screen)
