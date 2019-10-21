@@ -85,7 +85,7 @@ class PyRPG:
     def title_handler(self, event):
         """タイトル画面のイベントハンドラ"""
         if event.type == KEYUP and event.key == K_1:
-            # モノローグへ
+            # 最初から（モノローグへ）
             print("タイトルモードで1を押しました")
             self.game_state = FULLTEXT
             self.set_data = self.msg_engine.set(self.text_data["monologue0"]["text"])
@@ -103,7 +103,7 @@ class PyRPG:
                 self.cursor_y += 1
         if event.type == KEYDOWN and event.key == K_RETURN:
             if self.cursor_y == 0:
-                # フルテキストモードのenterも1回押してしまう。デバッガーでみると2回ループしてるから？遅延させても不可。
+                # TODO: フルテキストモードのenterも1回押してしまう。デバッガーでみると2回ループしてるから？遅延させても不可。
                 # タイトルと、フルテキストのenterが競合してどちらも押されてることになってるぽい？
                 self.game_state = FULLTEXT
                 self.set_data = self.msg_engine.set(self.text_data["monologue0"]["text"])
@@ -114,7 +114,7 @@ class PyRPG:
     def fulltext_handler(self, event):
         """フルテキストモードのイベントハンドラ"""
         if event.type == KEYDOWN and event.key == K_1:
-            # モノローグ
+            # テスト用
             print("フルテキストモードで1を押しました")
         if event.type == KEYDOWN and event.key == K_RETURN:
             # ページ送り
@@ -231,7 +231,6 @@ class Fulltext:
 
 class WindowText:
     """通常のウィンドウメッセージ"""
-    # TODO: まず文章を表示させる
     # TODO: どうやって文章を取得し、遷移するか考える
     EDGE_WIDTH = 4
 
