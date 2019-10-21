@@ -120,7 +120,7 @@ class PyRPG:
             # ページ送り
             print("フルテキストモードでENTERを押しました")
             self.fulltext.next()
-            if len(self.fulltext.show_text) == 0:
+            if len(self.fulltext.next_show_text) == 0:
                 self.game_state = WINDOWTEXT
 
     def windowtext_handler(selfself, event):
@@ -174,7 +174,7 @@ class Fulltext:
         self.hide_flag = False
         self.frame = 0
         self.first_flip = 0
-        self.show_text = []
+        self.next_show_text = []
 
     def update(self):
         """画面を更新する（未実装）"""
@@ -215,9 +215,11 @@ class Fulltext:
         blitx = 10
         blity = 10
 
-        self.show_text = [x[2] for x in self.text if x[1]
+        show_text = [x[2] for x in self.text if x[1]
                           == str(self.cur_page)]  # 配列の3番目の要素を抜き出す
-        for c in self.show_text:
+        self.next_show_text =[x[2] for x in self.text if x[1]
+                          == str(self.cur_page+1)]  # 次の文章が空か判定する
+        for c in show_text:
             # テキスト表示用Surfaceを作る
             jtext = self.font.render(c, True, (255, 255, 255))
 
@@ -241,9 +243,9 @@ class Fulltext:
             screen.blit(jtext, (blitx, blity))
 
             # ループの最初だけflipさせる。flipの意味がよくわからない。
-            if self.first_flip == 0:
-                pygame.display.flip()
-                self.first_flip += 1
+            # if self.first_flip == 0:
+            #     pygame.display.flip()
+            #     self.first_flip += 1
             blitx += jtext.get_rect().w
 
     def next(self):
@@ -266,7 +268,12 @@ class WindowText:
     def draw(self, screen):
         """ウィンドウと文章を表示する"""
         screen.fill((40, 40, 40))
-        self.msg_engine.draw(screen, 10, 10, "クローンディッガー")
+        Window.show(self)
+        Window.draw_msgwindow(self,screen)
+        pygame.draw.rect(screen, (0, 0, 0), Rect(10, 260, 620, 200))
+
+    def window_message(self, message):
+        self.msg_engine.draw(screen, 10, 260, "クローンディッガー")
 
 
 class Window:
@@ -286,8 +293,12 @@ class Window:
         pygame.draw.rect(screen, (255, 255, 255), self.rect, 0)
         pygame.draw.rect(screen, (0, 0, 0), self.inner_rect, 0)
 
+    def draw_msgwindow(self,screen):
+        """メッセージウィンドウを描画"""
+        pass
+
     def show(self):
-        """ウィンドウを描画"""
+        """ウィンドウ表示"""
         self.is_visible = True
 
     def hide(self):
