@@ -28,7 +28,7 @@ class PyRPG:
         self.msg_engine = MessageEngine()
         self.title = Title(self.msg_engine)
         self.fulltext = Fulltext(Rect(0, 0, 640, 480), self.msg_engine)
-        self.windowtext = WindowText(Rect(0, 0, 640, 480),self.msg_engine)
+        self.windowtext = WindowText(Rect(0, 0, 640, 480), self.msg_engine)
         # テキストを読み込み
         file = open('scenario_data.json', 'r', encoding="utf-8")
         self.text_data = json.load(file)
@@ -54,14 +54,14 @@ class PyRPG:
         elif self.game_state == FULLTEXT:
             self.fulltext.update()
         elif self.game_state == WINDOWTEXT:
-            self.windowtext.draw(self.screen)
+            self.windowtext.update()
 
     def render(self):
         """ゲームオブジェクトのレンダリング"""
         if self.game_state == TITLE:
             self.title.draw(self.screen, self.cursor_y)
         elif self.game_state == FULLTEXT:
-            self.fulltext.draw(self.screen)
+            self.fulltext.draw(self.screen, self.set_data)
         elif self.game_state == WINDOWTEXT:
             self.windowtext.draw(self.screen)
 
@@ -88,7 +88,7 @@ class PyRPG:
             # モノローグへ
             print("タイトルモードで1を押しました")
             self.game_state = FULLTEXT
-            self.fulltext.set(self.text_data["monologue0"]["text"])
+            self.set_data = self.msg_engine.set(self.text_data["monologue0"]["text"])
             time.sleep(0.2)
         if event.type == KEYUP and event.key == K_2:
             # 途中から
@@ -106,7 +106,7 @@ class PyRPG:
                 # フルテキストモードのenterも1回押してしまう。デバッガーでみると2回ループしてるから？遅延させても不可。
                 # タイトルと、フルテキストのenterが競合してどちらも押されてることになってるぽい？
                 self.game_state = FULLTEXT
-                self.fulltext.set(self.text_data["monologue0"]["text"])
+                self.set_data = self.msg_engine.set(self.text_data["monologue0"]["text"])
                 time.sleep(1)
             if self.cursor_y == 1:
                 pass
@@ -125,7 +125,6 @@ class PyRPG:
 
     def windowtext_handler(selfself, event):
         """ウィンドウテキストのイベントハンドラ"""
-        # TODO: 一回textを出力せず何もない空間ができてしまうので修正する。
         if event.type == KEYDOWN and event.key == K_RETURN:
             # ページ送り
             print('ウィンドウテキストモードでENTERを押しました')
@@ -180,32 +179,7 @@ class Fulltext:
         """画面を更新する（未実装）"""
         pass
 
-    def set(self, message):
-        """全体の文字の位置を求めて、リストを作成する"""
-        self.cur_pos = 0
-        self.cur_page = 0
-        self.next_flag = False
-        self.hide_flag = False
-        self.text = np.empty([0, 3])
-        count_page = 0
-        count_pos = 0
-
-        p = 0
-        for i in range(len(message)):
-            ch = message[i]  # chとmessage[i]は文字。
-            if ch == "/":
-                pass
-            elif ch == "&":
-                count_page += 1
-                count_pos += 1
-                continue
-            else:
-                self.text = np.append(self.text, np.array(
-                    [[count_pos, count_page, ch]]), axis=0)
-                p += 1
-                count_pos += 1
-
-    def draw(self, screen):
+    def draw(self, screen, set_data):
         """ウィンドウと文章を表示する"""
 
         screen.fill((40, 40, 40))  # 前の画面をリセット
@@ -215,10 +189,10 @@ class Fulltext:
         blitx = 10
         blity = 10
 
-        show_text = [x[2] for x in self.text if x[1]
-                          == str(self.cur_page)]  # 配列の3番目の要素を抜き出す
-        self.next_show_text =[x[2] for x in self.text if x[1]
-                          == str(self.cur_page+1)]  # 次の文章が空か判定する
+        show_text = [x[2] for x in set_data if x[1]
+                     == str(self.cur_page)]  # 配列の3番目の要素を抜き出す
+        self.next_show_text = [x[2] for x in set_data if x[1]
+                               == str(self.cur_page + 1)]  # 次の文章が空か判定する
         for c in show_text:
             # テキスト表示用Surfaceを作る
             jtext = self.font.render(c, True, (255, 255, 255))
@@ -269,11 +243,15 @@ class WindowText:
         """ウィンドウと文章を表示する"""
         screen.fill((40, 40, 40))
         Window.show(self)
-        Window.draw_msgwindow(self,screen)
+        Window.draw_msgwindow(self, screen)
         pygame.draw.rect(screen, (0, 0, 0), Rect(10, 260, 620, 200))
         self.msg_engine.draw(screen, 10, 260, "クローンディッガー")
+
     def window_message(self, message):
         self.msg_engine.draw(screen, 10, 260, "クローンディッガー")
+
+    def update(self):
+        pass
 
 
 class Window:
@@ -293,7 +271,7 @@ class Window:
         pygame.draw.rect(screen, (255, 255, 255), self.rect, 0)
         pygame.draw.rect(screen, (0, 0, 0), self.inner_rect, 0)
 
-    def draw_msgwindow(self,screen):
+    def draw_msgwindow(self, screen):
         """メッセージウィンドウを描画"""
         pass
 
@@ -314,6 +292,33 @@ class MessageEngine:
     def draw(self, screen, x, y, text):
         """メッセージの描画"""
         screen.blit(self.font.render(text, True, (255, 255, 255)), [x, y])
+
+    def set(self, message):
+        """全体の文字の位置を求めて、リストを作成する"""
+        self.cur_pos = 0
+        self.cur_page = 0
+        self.next_flag = False
+        self.hide_flag = False
+        self.text = np.empty([0, 3])
+        count_page = 0
+        count_pos = 0
+
+        p = 0
+        for i in range(len(message)):
+            ch = message[i]  # chとmessage[i]は文字。
+            if ch == "/":
+                pass
+            elif ch == "&":
+                count_page += 1
+                count_pos += 1
+                continue
+            else:
+                self.text = np.append(self.text, np.array(
+                    [[count_pos, count_page, ch]]), axis=0)
+                p += 1
+                count_pos += 1
+
+        return self.text
 
 
 class Map:
