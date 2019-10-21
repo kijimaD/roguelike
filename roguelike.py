@@ -271,7 +271,7 @@ class WindowText:
         Window.show(self)
         Window.draw_msgwindow(self,screen)
         pygame.draw.rect(screen, (0, 0, 0), Rect(10, 260, 620, 200))
-
+        self.msg_engine.draw(screen, 10, 260, "クローンディッガー")
     def window_message(self, message):
         self.msg_engine.draw(screen, 10, 260, "クローンディッガー")
 
