@@ -145,7 +145,7 @@ class Fulltext:
     # MAX_CHARS_PER_PAGE = 20 * 3  # １ページの最大文字数
     # MAX_LINES = 30  # 行間の大きさ
     # LINE_HEIGHT = 8
-    # EDGE_WIDTH = 4
+    EDGE_WIDTH = 4
 
     def __init__(self, rect, msg_engine):
         Window.__init__(self, rect)
