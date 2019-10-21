@@ -138,14 +138,14 @@ class Title:
 
 
 class Fulltext:
-    """全画面モードクラス"""
-    # 全画面文字モード
-    MAX_CHARS_PER_LINE = 20  # １行の最大文字数
-    MAX_LINES_PER_PAGE = 3  # １ページの最大行数
-    MAX_CHARS_PER_PAGE = 20 * 3  # １ページの最大文字数
-    MAX_LINES = 30  # 行間の大きさ
-    LINE_HEIGHT = 8
-    EDGE_WIDTH = 4
+    """全画面の文字表示クラス"""
+
+    # MAX_CHARS_PER_LINE = 20  # １行の最大文字数
+    # MAX_LINES_PER_PAGE = 3  # １ページの最大行数
+    # MAX_CHARS_PER_PAGE = 20 * 3  # １ページの最大文字数
+    # MAX_LINES = 30  # 行間の大きさ
+    # LINE_HEIGHT = 8
+    # EDGE_WIDTH = 4
 
     def __init__(self, rect, msg_engine):
         Window.__init__(self, rect)
@@ -163,10 +163,6 @@ class Fulltext:
     def update(self):
         """画面を更新する（未実装）"""
         pass
-
-    def message(self, screen, text):
-        """メッセージを描画する"""
-        self.msg_engine.draw(screen, 10, 10, text)
 
     def set(self, message):
         """全体の文字の位置を求めて、リストを作成する"""
