@@ -16,7 +16,7 @@ import json
 SCREEN = Rect(0, 0, 640, 480)
 SCR_W = 640
 SCR_H = 320
-TITLE, FIELD, FULLTEXT, COMMAND = range(4)
+TITLE, WINDOWTEXT ,FIELD, FULLTEXT, COMMAND = range(5)
 DEFAULT_FONT =  "RictyDiminishedDiscord"
 
 class PyRPG:
@@ -75,6 +75,8 @@ class PyRPG:
                 self.title_handler(event)
             if self.game_state == FULLTEXT:
                 self.fulltext_handler(event)
+            if self.game_state == WINDOWTEXT:
+                self.windowtext_handler(event)
 
     def title_handler(self, event):
         """タイトル画面のイベントハンドラ"""
@@ -114,7 +116,15 @@ class PyRPG:
             # ページ送り
             print("フルテキストモードでENTERを押しました")
             self.fulltext.next()
+            if len(self.fulltext.show_text) == 0:
+                self.game_state = WINDOWTEXT
 
+
+    def windowtext_handler(selfself, event):
+        """ウィンドウテキストのイベントハンドラ"""
+        if event.type == KEYDOWN and event.key == K_RETURN:
+            # ページ送り
+            print('ウィンドウテキストモードでENTERを押しました')
 
 class Title:
     """タイトル画面クラス"""
@@ -159,6 +169,7 @@ class Fulltext:
         self.hide_flag = False
         self.frame = 0
         self.first_flip = 0
+        self.show_text = []
 
     def update(self):
         """画面を更新する（未実装）"""
@@ -199,9 +210,9 @@ class Fulltext:
         blitx = 10
         blity = 10
 
-        show_text = [x[2] for x in self.text if x[1]
+        self.show_text = [x[2] for x in self.text if x[1]
                      == str(self.cur_page)]  # 配列の3番目の要素を抜き出す
-        for c in show_text:
+        for c in self.show_text:
             # テキスト表示用Surfaceを作る
             jtext = self.font.render(c, True, (255, 255, 255))
 
@@ -232,6 +243,7 @@ class Fulltext:
 
     def next(self):
         """メッセージを先に進める"""
+        # TODO: 文章がなくなったら、ウィンドウメッセージモードにする。
 
         self.cur_page += 1
         self.cur_pos = 0
