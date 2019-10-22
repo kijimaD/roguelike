@@ -66,7 +66,7 @@ class PyRPG:
             self.windowtext.draw(self.screen, self.set_data)
 
     def check_event(self):
-        """キーイベント（終了）"""
+        """イベントハンドラ"""
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -77,59 +77,60 @@ class PyRPG:
                 # 表示されているウィンドウに応じてイベントハンドラを変更
             if self.game_state == TITLE:
                 self.title_handler(event)
-            if self.game_state == FULLTEXT:
+            elif self.game_state == FULLTEXT:
                 self.fulltext_handler(event)
-            if self.game_state == WINDOWTEXT:
+            elif self.game_state == WINDOWTEXT:
                 self.windowtext_handler(event)
 
     def title_handler(self, event):
         """タイトル画面のイベントハンドラ"""
-        if event.type == KEYUP and event.key == K_1:
-            # 最初から（モノローグへ）
-            print("タイトルモードで1を押しました")
-            self.game_state = FULLTEXT
-            self.set_data = self.msg_engine.set(self.text_data["monologue0"]["text"])
-            time.sleep(0.2)
-        if event.type == KEYUP and event.key == K_2:
-            # 途中から
-            self.game_state = FIELD
-        if event.type == KEYUP and event.key == K_UP:
-            if self.cursor_y > 0:
-                print(self.cursor_y)
-                self.cursor_y += -1
-        if event.type == KEYUP and event.key == K_DOWN:
-            if self.cursor_y < 1:
-                print(self.cursor_y)
-                self.cursor_y += 1
-        if event.type == KEYDOWN and event.key == K_RETURN:
-            if self.cursor_y == 0:
-                # TODO: フルテキストモードのenterも1回押してしまう。デバッガーでみると2回ループしてる？遅延させても不可。
-                # タイトルと、フルテキストのenterが競合してどちらも押されてることになってるぽい？
+        if event.type == KEYDOWN:
+            if event.key == K_1:
+                # 最初から（モノローグへ）
+                print("タイトルモードで1を押しました")
                 self.game_state = FULLTEXT
                 self.set_data = self.msg_engine.set(self.text_data["monologue0"]["text"])
-                time.sleep(1)
-            if self.cursor_y == 1:
-                pass
+                time.sleep(0.2)
+            if event.key == K_2:
+                # 途中から
+                self.game_state = FIELD
+            if event.key == K_UP:
+                if self.cursor_y > 0:
+                    print(self.cursor_y)
+                    self.cursor_y += -1
+            if event.key == K_DOWN:
+                if self.cursor_y < 1:
+                    print(self.cursor_y)
+                    self.cursor_y += 1
+            if event.key == K_RETURN:
+                if self.cursor_y == 0:
+                    self.game_state = FULLTEXT
+                    self.set_data = self.msg_engine.set(self.text_data["monologue0"]["text"])
+                    time.sleep(1)
+                if self.cursor_y == 1:
+                    pass
 
     def fulltext_handler(self, event):
         """フルテキストモードのイベントハンドラ"""
-        if event.type == KEYDOWN and event.key == K_1:
-            # テスト用
-            print("フルテキストモードで1を押しました")
-        if event.type == KEYDOWN and event.key == K_RETURN:
-            # ページ送り
-            print("フルテキストモードでENTERを押しました")
-            self.fulltext.next()
-            if len(self.fulltext.next_show_text) == 0:
-                self.game_state = WINDOWTEXT
-                self.set_data = self.msg_engine.set(self.text_data["intro0"]["text"])
+        if event.type == KEYDOWN:
+            if event.key == K_1:
+                # テスト用
+                print("フルテキストモードで1を押しました")
+            if event.key == K_RETURN:
+                # ページ送り
+                print("フルテキストモードでENTERを押しました")
+                self.fulltext.next()
+                if len(self.fulltext.next_show_text) == 0:
+                    self.game_state = WINDOWTEXT
+                    self.set_data = self.msg_engine.set(self.text_data["intro0"]["text"])
 
     def windowtext_handler(self, event):
         """ウィンドウテキストのイベントハンドラ"""
-        if event.type == KEYDOWN and event.key == K_RETURN:
-            # ページ送り
-            print('ウィンドウテキストモードでENTERを押しました')
-            self.windowtext.next()
+        if event.type == KEYDOWN:
+            if event.key == K_RETURN:
+                # ページ送り
+                print('ウィンドウテキストモードでENTERを押しました')
+                self.windowtext.next()
 
 
 class Title:
@@ -183,6 +184,7 @@ class Fulltext:
 
     def draw(self, screen, set_data):
         """ウィンドウと文章を表示する"""
+        # TODO: 最後のページでない場合に▼を表示する
         screen.fill((40, 40, 40))  # 前の画面をリセット
         Window.show(self)
         Window.draw(self, screen)
