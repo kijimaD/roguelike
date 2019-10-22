@@ -220,6 +220,7 @@ class Fulltext:
             # if self.first_flip == 0:
             #     pygame.display.flip()
             #     self.first_flip += 1
+
             blitx += jtext.get_rect().w
 
     def next(self):
@@ -321,7 +322,17 @@ class MessageEngine:
 
 
 class Map:
-    pass
+    def __init__(self):
+        pass
+
+    def is_movable(self):
+        pass
+
+    def get_message(self):
+        pass
+
+    def draw(self):
+        pass
 
 
 class Buttle:
@@ -340,8 +351,25 @@ class Item:
     pass
 
 
-class Character:
+class PlayerCharacter:
+    """マップ上での操作キャラクター"""
     pass
+
+
+class Character:
+    """登場人物"""
+    # TODO: シーンセットのプロトタイプを作る
+
+    def __init__(self, LR, icon, message):
+        self.icon = icon
+        self.LR = LR
+        self.message = message
+
+    def talk(self):
+        pass
+
+    def draw(self):
+        pass
 
 
 class Enemy:
