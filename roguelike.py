@@ -90,7 +90,6 @@ class PyRPG:
                 print("タイトルモードで1を押しました")
                 self.game_state = FULLTEXT
                 self.set_data = self.msg_engine.set(self.text_data["monologue0"]["text"])
-                time.sleep(0.2)
             if event.key == K_2:
                 # 途中から
                 self.game_state = FIELD
@@ -106,7 +105,7 @@ class PyRPG:
                 if self.cursor_y == 0:
                     self.game_state = FULLTEXT
                     self.set_data = self.msg_engine.set(self.text_data["monologue0"]["text"])
-                    time.sleep(1)
+                    time.sleep(0.1)
                 if self.cursor_y == 1:
                     pass
 
@@ -235,7 +234,7 @@ class Fulltext:
 
 class WindowText:
     """通常のウィンドウメッセージ"""
-    # TODO: どうやって文章を取得し、遷移するか考える
+    # TODO: シナリオ＋演出データをどう構築し読み取るか？
     EDGE_WIDTH = 4
 
     def __init__(self, rect, msg_engine):
