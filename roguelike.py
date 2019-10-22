@@ -181,7 +181,6 @@ class Fulltext:
 
     def draw(self, screen, set_data):
         """ウィンドウと文章を表示する"""
-
         screen.fill((40, 40, 40))  # 前の画面をリセット
         Window.show(self)
         Window.draw(self, screen)
@@ -192,7 +191,7 @@ class Fulltext:
         show_text = [x[2] for x in set_data if x[1]
                      == str(self.cur_page)]  # 配列の3番目の要素を抜き出す
         self.next_show_text = [x[2] for x in set_data if x[1]
-                               == str(self.cur_page + 1)]  # 次の文章が空か判定する
+                               == str(self.cur_page + 1)]  # 次の文字が空か判定する
         for c in show_text:
             # テキスト表示用Surfaceを作る
             jtext = self.font.render(c, True, (255, 255, 255))
@@ -240,29 +239,29 @@ class WindowText:
         self.msg_engine = msg_engine
 
     def draw(self, screen):
-        """ウィンドウを表示する"""
+        """ウィンドウと文章を表示する"""
         screen.fill((40, 40, 40))
         Window.show(self)
         Window.draw_msgwindow(self, screen)
-        pygame.draw.rect(screen, (0, 0, 0), Rect(10, 260, 620, 200),3)
+        pygame.draw.rect(screen, (0, 0, 0), Rect(10, 260, 620, 200), 3)
 
         self.msg_engine.draw(screen, 10, 260, "やっと着いたか！")
         self.draw_left_character(screen)
 
-    def draw_left_character(self,screen):
+    def draw_left_character(self, screen):
         """人物モデル（左）"""
         pygame.draw.circle(screen, (255, 0, 0), (120, 140), 40)
 
-    def draw_right_character(self,screen):
+    def draw_right_character(self, screen):
         """人物モデル（右）"""
         pygame.draw.circle(screen, (0, 0, 255), (520, 140), 40)
 
-    def draw_left_bubble(self,screen):
+    def draw_left_bubble(self, screen):
         """吹き出し（左）"""
         pygame.draw.line(screen, (0, 0, 0), (260, 260), (220, 220), 3)
         pygame.draw.line(screen, (0, 0, 0), (220, 220), (180, 220), 3)
 
-    def draw_right_bubble(self,screen):
+    def draw_right_bubble(self, screen):
         """吹き出し（右）"""
         pygame.draw.line(screen, (0, 0, 0), (380, 260), (420, 220), 3)
         pygame.draw.line(screen, (0, 0, 0), (420, 220), (460, 220), 3)
@@ -324,7 +323,8 @@ class MessageEngine:
         for i in range(len(message)):
             ch = message[i]  # chとmessage[i]は文字。
             if ch == "/":
-                pass
+                # 注:fulltext.draw()と対応しているわけではない
+                continue
             elif ch == "&":
                 count_page += 1
                 count_pos += 1
@@ -375,6 +375,7 @@ class PlayerCharacter:
 
 class Character:
     """登場人物"""
+
     # TODO: シーンセットのプロトタイプを作る
 
     def __init__(self, icon, message):
