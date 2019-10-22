@@ -63,7 +63,7 @@ class PyRPG:
         elif self.game_state == FULLTEXT:
             self.fulltext.draw(self.screen, self.set_data)
         elif self.game_state == WINDOWTEXT:
-            self.windowtext.draw(self.screen)
+            self.windowtext.draw(self.screen, self.set_data)
 
     def check_event(self):
         """キーイベント（終了）"""
@@ -103,7 +103,7 @@ class PyRPG:
                 self.cursor_y += 1
         if event.type == KEYDOWN and event.key == K_RETURN:
             if self.cursor_y == 0:
-                # TODO: フルテキストモードのenterも1回押してしまう。デバッガーでみると2回ループしてるから？遅延させても不可。
+                # TODO: フルテキストモードのenterも1回押してしまう。デバッガーでみると2回ループしてる？遅延させても不可。
                 # タイトルと、フルテキストのenterが競合してどちらも押されてることになってるぽい？
                 self.game_state = FULLTEXT
                 self.set_data = self.msg_engine.set(self.text_data["monologue0"]["text"])
@@ -122,12 +122,14 @@ class PyRPG:
             self.fulltext.next()
             if len(self.fulltext.next_show_text) == 0:
                 self.game_state = WINDOWTEXT
+                self.set_data = self.msg_engine.set(self.text_data["intro0"]["text"])
 
-    def windowtext_handler(selfself, event):
+    def windowtext_handler(self, event):
         """ウィンドウテキストのイベントハンドラ"""
         if event.type == KEYDOWN and event.key == K_RETURN:
             # ページ送り
             print('ウィンドウテキストモードでENTERを押しました')
+            self.windowtext.next()
 
 
 class Title:
@@ -189,7 +191,7 @@ class Fulltext:
         blity = 10
 
         show_text = [x[2] for x in set_data if x[1]
-                     == str(self.cur_page)]  # 配列の3番目の要素を抜き出す
+                     == str(self.cur_page)]  # cur_pageが同じリストを抜き出す
         self.next_show_text = [x[2] for x in set_data if x[1]
                                == str(self.cur_page + 1)]  # 次の文字が空か判定する
         for c in show_text:
@@ -236,17 +238,57 @@ class WindowText:
 
     def __init__(self, rect, msg_engine):
         Window.__init__(self, rect)
+        self.font = pygame.font.SysFont(DEFAULT_FONT, 20)
         self.msg_engine = msg_engine
+        self.cur_pos = 0
+        self.cur_page = 0
 
-    def draw(self, screen):
+    def draw(self, screen, set_data):
         """ウィンドウと文章を表示する"""
         screen.fill((40, 40, 40))
         Window.show(self)
         Window.draw_msgwindow(self, screen)
-        pygame.draw.rect(screen, (0, 0, 0), Rect(10, 260, 620, 200), 3)
 
-        self.msg_engine.draw(screen, 10, 260, "やっと着いたか！")
+        pygame.draw.rect(screen, (0, 0, 0), Rect(10, 260, 620, 200), 3)
         self.draw_left_character(screen)
+        self.draw_left_bubble(screen)
+
+        blitx = 10
+        blity = 260
+
+        show_text = [x[2] for x in set_data if x[1]
+                     == str(self.cur_page)]  # cur_pageが同じリストを抜き出す
+        self.next_show_text = [x[2] for x in set_data if x[1]
+                               == str(self.cur_page + 1)]  # 次の文字が空か判定する
+        for c in show_text:
+            # テキスト表示用Surfaceを作る
+            jtext = self.font.render(c, True, (255, 255, 255))
+
+            if c == "^":  # 改行
+                blitx = 10
+                blity += jtext.get_rect().h
+                continue
+            elif c == "&":  # 改ページ
+                screen.fill((40, 40, 40))
+                Window.show(self)
+                Window.draw(self, screen)
+                blitx = 10
+                blity = 260
+                continue
+
+            # blitの前にはみ出さないかチェック
+            if blitx + jtext.get_rect().w >= SCR_W:
+                blitx = 10
+                blity += jtext.get_rect().h
+
+            screen.blit(jtext, (blitx, blity))
+            blitx += jtext.get_rect().w
+
+    def next(self):
+        """メッセージを先に進める"""
+        self.cur_page += 1
+        self.cur_pos = 0
+        self.first_flip = 0
 
     def draw_left_character(self, screen):
         """人物モデル（左）"""
@@ -323,7 +365,7 @@ class MessageEngine:
         for i in range(len(message)):
             ch = message[i]  # chとmessage[i]は文字。
             if ch == "/":
-                # 注:fulltext.draw()と対応しているわけではない
+                # 注:fulltext.draw()に完全対応していない
                 continue
             elif ch == "&":
                 count_page += 1
