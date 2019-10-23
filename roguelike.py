@@ -111,6 +111,7 @@ class PyRPG:
 
     def fulltext_handler(self, event):
         """フルテキストモードのイベントハンドラ"""
+        # TODO: 特定イベントと分離させて汎用する
         if event.type == KEYDOWN:
             if event.key == K_1:
                 # テスト用
@@ -234,7 +235,7 @@ class Fulltext:
 
 class WindowText:
     """通常のウィンドウメッセージ"""
-    # TODO: シナリオ＋演出データをどう構築し読み取るか？
+    # TODO: シナリオ＋演出データをどう構築し読み取るか？タグ形式にして演出データを追加していく。
     EDGE_WIDTH = 4
 
     def __init__(self, rect, msg_engine):
