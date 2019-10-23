@@ -10,6 +10,7 @@ import time
 import pygame.mixer
 import numpy as np
 import json
+import xml.etree.ElementTree as ET
 
 # バトルディッガーのクローンを作成する。
 
@@ -30,8 +31,7 @@ class PyRPG:
         self.fulltext = Fulltext(Rect(0, 0, 640, 480), self.msg_engine)
         self.windowtext = WindowText(Rect(0, 0, 640, 480), self.msg_engine)
         # テキストを読み込み
-        file = open('scenario_data.json', 'r', encoding="utf-8")
-        self.text_data = json.load(file)
+        self.root = ET.parse('scenario_data.xml').getroot()
         # メインループを起動
         self.game_state = TITLE
         self.cursor_y = 0
@@ -89,7 +89,7 @@ class PyRPG:
                 # 最初から（モノローグへ）
                 print("タイトルモードで1を押しました")
                 self.game_state = FULLTEXT
-                self.set_data = self.msg_engine.set(self.text_data["monologue0"]["text"])
+                self.set_data = self.msg_engine.set(self.load_xml(self.root, 'monologue0'))
             if event.key == K_2:
                 # 途中から
                 self.game_state = FIELD
@@ -104,14 +104,14 @@ class PyRPG:
             if event.key == K_RETURN:
                 if self.cursor_y == 0:
                     self.game_state = FULLTEXT
-                    self.set_data = self.msg_engine.set(self.text_data["monologue0"]["text"])
+                    self.set_data = self.msg_engine.set(self.load_xml(self.root, 'monologue0'))
                     time.sleep(0.1)
                 if self.cursor_y == 1:
                     pass
 
     def fulltext_handler(self, event):
         """フルテキストモードのイベントハンドラ"""
-        # TODO: 特定イベントと分離させて汎用する
+        # TODO: 個別のイベントと分離させて汎用したい
         if event.type == KEYDOWN:
             if event.key == K_1:
                 # テスト用
@@ -122,7 +122,7 @@ class PyRPG:
                 self.fulltext.next()
                 if len(self.fulltext.next_show_text) == 0:
                     self.game_state = WINDOWTEXT
-                    self.set_data = self.msg_engine.set(self.text_data["intro0"]["text"])
+                    self.set_data = self.msg_engine.set(self.load_xml(self.root, 'intro0'))
 
     def windowtext_handler(self, event):
         """ウィンドウテキストのイベントハンドラ"""
@@ -131,6 +131,16 @@ class PyRPG:
                 # ページ送り
                 print('ウィンドウテキストモードでENTERを押しました')
                 self.windowtext.next()
+
+    def load_xml(self,root,search):
+        """xmlの中から検索し、1行にして返す"""
+        reg = ".//evt[@id='{}']"
+        set_reg = reg.format(search)
+        for e in root.findall(set_reg):
+            # print("これは検索した結果です:", e.text)
+            pass
+        goal_text = e.text.strip().replace('\n','').replace(' ','') # タブ文字と改行文字の削除
+        return goal_text
 
 
 class Title:
@@ -204,7 +214,7 @@ class Fulltext:
                 blitx = 10
                 blity += jtext.get_rect().h
                 continue
-            elif c == "&":  # 改ページ
+            elif c == "|":  # 改ページ
                 screen.fill((40, 40, 40))
                 Window.show(self)
                 Window.draw(self, screen)
@@ -270,7 +280,7 @@ class WindowText:
                 blitx = 10
                 blity += jtext.get_rect().h
                 continue
-            elif c == "&":  # 改ページ
+            elif c == "|":  # 改ページ
                 screen.fill((40, 40, 40))
                 Window.show(self)
                 Window.draw(self, screen)
@@ -369,7 +379,7 @@ class MessageEngine:
             if ch == "/":
                 # 注:fulltext.draw()に完全対応していない
                 continue
-            elif ch == "&":
+            elif ch == "|":
                 count_page += 1
                 count_pos += 1
                 continue
