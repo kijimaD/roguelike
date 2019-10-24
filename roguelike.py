@@ -2,9 +2,6 @@
 
 import pygame
 from pygame.locals import *
-# import codecs
-# import math
-# import os
 import sys
 import time
 import pygame.mixer
@@ -18,8 +15,7 @@ SCREEN = Rect(0, 0, 640, 480)
 SCR_W = 640
 SCR_H = 320
 TITLE, WINDOWTEXT, FIELD, FULLTEXT, COMMAND = range(5)
-DEFAULT_FONT = "RictyDiminishedDiscord"
-
+DEFAULT_FONT = "Noto Sans CJK JP"
 
 class PyRPG:
     def __init__(self):
@@ -61,9 +57,9 @@ class PyRPG:
         if self.game_state == TITLE:
             self.title.draw(self.screen, self.cursor_y)
         elif self.game_state == FULLTEXT:
-            self.fulltext.draw(self.screen, self.set_data)
+            self.fulltext.draw(self.screen, self.set_data, self.set_script_data)
         elif self.game_state == WINDOWTEXT:
-            self.windowtext.draw(self.screen, self.set_data)
+            self.windowtext.draw(self.screen, self.set_data, self.set_script_data)
 
     def check_event(self):
         """イベントハンドラ"""
@@ -90,6 +86,7 @@ class PyRPG:
                 print("タイトルモードで1を押しました")
                 self.game_state = FULLTEXT
                 self.set_data = self.msg_engine.set(self.load_xml(self.root, 'monologue0'))
+                self.set_script_data = self.msg_engine.set_script(self.set_data)
             if event.key == K_2:
                 # 途中から
                 self.game_state = FIELD
@@ -192,7 +189,7 @@ class Fulltext:
         """画面を更新する（未実装）"""
         pass
 
-    def draw(self, screen, set_data):
+    def draw(self, screen, set_data, set_script_data):
         """ウィンドウと文章を表示する"""
         # TODO: 最後のページでない場合に▼を表示する
         screen.fill((40, 40, 40))  # 前の画面をリセット
@@ -238,6 +235,10 @@ class Fulltext:
 
             blitx += jtext.get_rect().w
 
+        # 各スクリプトの描画
+        cur_script = [x[1] for x in set_script_data if x[0] == str(self.cur_page)]
+        print(cur_script)
+
     def next(self):
         """メッセージを先に進める"""
         self.cur_page += 1
@@ -257,7 +258,7 @@ class WindowText:
         self.cur_pos = 0
         self.cur_page = 0
 
-    def draw(self, screen, set_data):
+    def draw(self, screen, set_data, set_script_data):
         """ウィンドウと文章を表示する"""
         screen.fill((40, 40, 40))
         Window.show(self)
@@ -297,6 +298,10 @@ class WindowText:
 
             screen.blit(jtext, (blitx, blity))
             blitx += jtext.get_rect().w
+
+        # 各スクリプトの描画
+        cur_script = [x[1] for x in set_script_data if x[0] == str(self.cur_page)]
+        print(cur_script)
 
     def next(self):
         """メッセージを先に進める"""
@@ -366,7 +371,7 @@ class MessageEngine:
         screen.blit(self.font.render(text, True, (255, 255, 255)), [x, y])
 
     def set(self, message):
-        """全体の文字の位置を求めて、リストを作成する"""
+        """全体の文字の位置を求めて、リストを作成する。※改ページの処理に過ぎない"""
         self.cur_pos = 0
         self.cur_page = 0
         self.next_flag = False
@@ -378,10 +383,10 @@ class MessageEngine:
         p = 0
         for i in range(len(message)):
             ch = message[i]  # chとmessage[i]は文字。
-            if ch == "/":
+            # if ch == "/":
                 # 注:fulltext.draw()に完全対応していない
-                continue
-            elif ch == "|":
+                # continue
+            if ch == "|":
                 count_page += 1
                 count_pos += 1
                 continue
@@ -392,6 +397,14 @@ class MessageEngine:
                 count_pos += 1
 
         return self.text
+
+    def set_script(self, set_data):
+        set_script = []
+        set_text = []
+
+        # if match a='{}':
+
+        return set_script
 
 
 class Map:
