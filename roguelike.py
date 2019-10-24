@@ -210,6 +210,8 @@ class Fulltext:
             # テキスト表示用Surfaceを作る
             jtext = self.font.render(c, True, (255, 255, 255))
 
+            # TODO: シナリオ内のコマンドシーケンスを解釈するには？引数もとる。
+            # 描画用の1文字ループと、解釈用のループを分けたほうがいい？
             if c == "^":  # 改行
                 blitx = 10
                 blity += jtext.get_rect().h
@@ -245,7 +247,7 @@ class Fulltext:
 
 class WindowText:
     """通常のウィンドウメッセージ"""
-    # TODO: シナリオ＋演出データをどう構築し読み取るか？タグ形式にして演出データを追加していく。
+    # TODO: シナリオ＋演出データをタグ形式にして演出データを追加していく。
     EDGE_WIDTH = 4
 
     def __init__(self, rect, msg_engine):
