@@ -413,15 +413,17 @@ class MessageEngine:
 
     def set_script(self, text):
         """scriptとcur_pageのリストを作成する"""
-        script_index = []
+        self.page_index = []
+        self.script_index = np.empty([0, 2]) # [script, cur_page]
+        count_page = 0
+
         # 改ページ文字の位置を検索
         for m in re.finditer("\|", text, re.MULTILINE):
-            print(m.start())
-            script_index.append
+            self.page_index.append(m.start())
 
-        print(script_index)
+        print("これはpage_index:",self.page_index[1])
         # スクリプト部分を検索し、リストをくっつけて配列にする
-        # TODO ループを使いすぎなので、一度にやるようにする..or|でできない
+        # TODO 表現ごとにループを使っている、一度にやるようにしたい。（or|でできない？）
         pattern = []
         pattern.append("([ab]='.*')")
         pattern.append("(bgm='.*')")
@@ -429,13 +431,17 @@ class MessageEngine:
         pattern.append("(\@[AB])")
         for pat in pattern:
             for s in re.finditer(pat, text, re.MULTILINE):
-                print(s)
-                print(s.group())
-                print(s.start())
+                print(s.group()) # script
+                print(s.start()) # 位置
+                # 位置を比較してcur_pageを導出
+                for p in range(len(self.page_index)):
+                    print(p)
+                    if s.start() < self.page_index[p]:
+                        self.script_index = np.append(self.script_index, np.array(
+                        [[s.group(), p]]), axis=0)
+                        break
 
-        # 位置を比較してcur_pageを求め、リストを作成
-
-
+        print(self.script_index)
         # 元のmessageからスクリプト部分を削除する
 
         # 最後に配列を返す
