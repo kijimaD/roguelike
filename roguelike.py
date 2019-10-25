@@ -8,6 +8,7 @@ import pygame.mixer
 import numpy as np
 import json
 import xml.etree.ElementTree as ET
+import re # 正規表現
 
 # バトルディッガーのクローンを作成する。
 
@@ -85,8 +86,11 @@ class PyRPG:
                 # 最初から（モノローグへ）
                 print("タイトルモードで1を押しました")
                 self.game_state = FULLTEXT
-                self.set_data = self.msg_engine.set(self.load_xml(self.root, 'monologue0'))
-                self.set_script_data = self.msg_engine.set_script(self.set_data)
+                self.set_data = self.msg_engine.set(self.create_text_data(self.root, 'monologue0'))
+                print(self.set_data) # これが原因
+                # TODO: 文字列raw_textを入れる
+                self.set_script_data = self.msg_engine.set_script(set_data)
+
             if event.key == K_2:
                 # 途中から
                 self.game_state = FIELD
@@ -130,15 +134,25 @@ class PyRPG:
                 self.windowtext.next()
 
     def load_xml(self,root,search):
-        """xmlの中から検索し、1行にして返す"""
+        """xmlの中から検索する"""
+        # TODO: 検索とsplitを分離させる
         reg = ".//evt[@id='{}']"
         set_reg = reg.format(search)
         for e in root.findall(set_reg):
             # print("これは検索した結果です:", e.text)
             pass
-        goal_text = e.text.strip().replace('\n','').replace(' ','') # タブ文字と改行文字の削除
+        goal_text = e.text
         return goal_text
 
+    def split_text(self, input):
+        """タブ文字改行文字を削除する"""
+        # 削除しないと、setできない？
+        goal_text = input.strip().replace(' ', '')  # タブ文字と改行文字の削除
+        return goal_text
+
+    def create_text_data(self, raw_xml, search):
+        goal_text = self.split_text(self.load_xml(self.root, search))
+        return goal_text
 
 class Title:
     """タイトル画面クラス"""
@@ -155,7 +169,7 @@ class Title:
     def draw(self, screen, cursor_y):
         """タイトルの描画"""
         screen.fill((0, 0, 0))
-        pygame.draw.rect(screen, (255, 255, 255), (10, 100 + cursor_y * 20, 100, 18), 1)
+        pygame.draw.rect(screen, (255, 255, 255), (10, 110 + cursor_y * 20, 100, 18), 1)
         self.msg_engine.draw(screen, 10, 10, "クローンディッガー")
         self.msg_engine.draw(screen, 10, 100, "はじめから[1]")
         self.msg_engine.draw(screen, 10, 120, "つづきから[2]")
@@ -236,8 +250,8 @@ class Fulltext:
             blitx += jtext.get_rect().w
 
         # 各スクリプトの描画
-        cur_script = [x[1] for x in set_script_data if x[0] == str(self.cur_page)]
-        print(cur_script)
+        # cur_script = [x[1] for x in set_script_data if x[0] == str(self.cur_page)]
+        # print(cur_script)
 
     def next(self):
         """メッセージを先に進める"""
@@ -372,6 +386,7 @@ class MessageEngine:
 
     def set(self, message):
         """全体の文字の位置を求めて、リストを作成する。※改ページの処理に過ぎない"""
+        # （文字列群）最初にパターンマッチで|を探し、それぞれでスクリプトを探す。結果をリストに格納する。['command','cur_page']な具合に。
         self.cur_pos = 0
         self.cur_page = 0
         self.next_flag = False
@@ -398,13 +413,27 @@ class MessageEngine:
 
         return self.text
 
-    def set_script(self, set_data):
-        set_script = []
-        set_text = []
+    def set_script(self, text):
+        """scriptとcur_pageのリストを作成する"""
+        # 改ページ文字の位置を検索
+        for m in re.finditer("\|", text, re.MULTILINE):
+            print(m.start())
+            pass
 
-        # if match a='{}':
+        # スクリプト部分を検索し、リストをくっつけて配列にする
+        # for s in re.findall(r"(a='.*')", text):
+        #     print(s)
 
-        return set_script
+        # 位置を比較してcur_pageを求め、リストを作成
+
+
+        # 元のmessageからスクリプト部分を削除する
+
+        # return set_script
+
+    def search_script(self, text):
+        """スクリプト部分を検索する"""
+        pass
 
 
 class Map:
