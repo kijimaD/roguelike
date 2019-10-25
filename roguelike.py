@@ -87,10 +87,9 @@ class PyRPG:
                 print("タイトルモードで1を押しました")
                 self.game_state = FULLTEXT
                 self.set_data = self.msg_engine.set(self.create_text_data(self.root, 'monologue0'))
-                print(self.set_data) # これが原因
                 # TODO: 文字列raw_textを入れる
-                self.set_script_data = self.msg_engine.set_script(set_data)
-
+                self.set_script_data = self.msg_engine.set_script(self.load_xml(self.root, 'monologue0'))
+                print(type(self.set_script_data))
             if event.key == K_2:
                 # 途中から
                 self.game_state = FIELD
@@ -105,7 +104,7 @@ class PyRPG:
             if event.key == K_RETURN:
                 if self.cursor_y == 0:
                     self.game_state = FULLTEXT
-                    self.set_data = self.msg_engine.set(self.load_xml(self.root, 'monologue0'))
+                    self.set_data = self.msg_engine.set(self.create_text_data(self.root, 'monologue0'))
                     time.sleep(0.1)
                 if self.cursor_y == 1:
                     pass
@@ -123,7 +122,6 @@ class PyRPG:
                 self.fulltext.next()
                 if len(self.fulltext.next_show_text) == 0:
                     self.game_state = WINDOWTEXT
-                    self.set_data = self.msg_engine.set(self.load_xml(self.root, 'intro0'))
 
     def windowtext_handler(self, event):
         """ウィンドウテキストのイベントハンドラ"""
@@ -415,20 +413,32 @@ class MessageEngine:
 
     def set_script(self, text):
         """scriptとcur_pageのリストを作成する"""
+        script_index = []
         # 改ページ文字の位置を検索
         for m in re.finditer("\|", text, re.MULTILINE):
             print(m.start())
-            pass
+            script_index.append
 
+        print(script_index)
         # スクリプト部分を検索し、リストをくっつけて配列にする
-        # for s in re.findall(r"(a='.*')", text):
-        #     print(s)
+        # TODO ループを使いすぎなので、一度にやるようにする..or|でできない
+        pattern = []
+        pattern.append("([ab]='.*')")
+        pattern.append("(bgm='.*')")
+        pattern.append("(bg='.*')")
+        pattern.append("(\@[AB])")
+        for pat in pattern:
+            for s in re.finditer(pat, text, re.MULTILINE):
+                print(s)
+                print(s.group())
+                print(s.start())
 
         # 位置を比較してcur_pageを求め、リストを作成
 
 
         # 元のmessageからスクリプト部分を削除する
 
+        # 最後に配列を返す
         # return set_script
 
     def search_script(self, text):

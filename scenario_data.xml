@@ -24,10 +24,10 @@
     <evt id="monologue0">
         a='Player'
         b='Sirase'
-        bgm="10.mp3"
-        bg="073.jpg"
-        bgm="kanashimi.mp3"
-        bg="home.jpg"
+        bgm='10.mp3'
+        bg='073.jpg'
+        bgm='kanashimi.mp3'
+        bg='home.jpg'
         「遺跡」は古代の昔から各地に存在し、いつ建築されたのかは全く明らかになっていない。^
         人類は「遺跡」に挑み続けてきた。
         古代人たちは粗末な武器で遺跡に挑み、わずかな戦利品を残した。|
