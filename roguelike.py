@@ -86,10 +86,8 @@ class PyRPG:
                 # 最初から（モノローグへ）
                 print("タイトルモードで1を押しました")
                 self.game_state = FULLTEXT
-                self.set_data = self.msg_engine.set(self.create_text_data(self.root, 'monologue0'))
-                # TODO: 文字列raw_textを入れる
                 self.set_script_data = self.msg_engine.set_script(self.load_xml(self.root, 'monologue0'))
-                print(type(self.set_script_data))
+                self.set_data = self.msg_engine.set(self.create_text_data(self.root, 'monologue0'))
             if event.key == K_2:
                 # 途中から
                 self.game_state = FIELD
@@ -105,6 +103,7 @@ class PyRPG:
                 if self.cursor_y == 0:
                     self.game_state = FULLTEXT
                     self.set_data = self.msg_engine.set(self.create_text_data(self.root, 'monologue0'))
+                    print(self.set_data)
                     time.sleep(0.1)
                 if self.cursor_y == 1:
                     pass
@@ -122,6 +121,7 @@ class PyRPG:
                 self.fulltext.next()
                 if len(self.fulltext.next_show_text) == 0:
                     self.game_state = WINDOWTEXT
+                    self.set_data = self.msg_engine.set(self.create_text_data(self.root, 'intro0'))
 
     def windowtext_handler(self, event):
         """ウィンドウテキストのイベントハンドラ"""
@@ -205,8 +205,18 @@ class Fulltext:
         """ウィンドウと文章を表示する"""
         # TODO: 最後のページでない場合に▼を表示する
         screen.fill((40, 40, 40))  # 前の画面をリセット
+
         Window.show(self)
         Window.draw(self, screen)
+
+        # 分離-----------------------------------
+        # 各スクリプトの実行
+        curpage_script = [x[0] for x in set_script_data if x[1] == str(self.cur_page)]
+        for x in curpage_script:
+            print(x)
+            IMAGE = pygame.image.load("./img/cave.jpg")
+            screen.blit(IMAGE, (10, 10))
+        # 分離-----------------------------------
 
         blitx = 10
         blity = 10
@@ -247,16 +257,11 @@ class Fulltext:
 
             blitx += jtext.get_rect().w
 
-        # 各スクリプトの描画
-        # cur_script = [x[1] for x in set_script_data if x[0] == str(self.cur_page)]
-        # print(cur_script)
-
     def next(self):
         """メッセージを先に進める"""
         self.cur_page += 1
         self.cur_pos = 0
         self.first_flip = 0
-
 
 class WindowText:
     """通常のウィンドウメッセージ"""
@@ -312,8 +317,7 @@ class WindowText:
             blitx += jtext.get_rect().w
 
         # 各スクリプトの描画
-        cur_script = [x[1] for x in set_script_data if x[0] == str(self.cur_page)]
-        print(cur_script)
+        cur_script = [x for x in set_script_data if x[0] == str(self.cur_page)]
 
     def next(self):
         """メッセージを先に進める"""
@@ -445,7 +449,7 @@ class MessageEngine:
         # 元のmessageからスクリプト部分を削除する
 
         # 最後に配列を返す
-        # return set_script
+        return self.script_index
 
     def search_script(self, text):
         """スクリプト部分を検索する"""
