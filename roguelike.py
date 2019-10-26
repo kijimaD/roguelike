@@ -209,16 +209,7 @@ class Fulltext:
         Window.show(self)
         Window.draw(self, screen)
 
-        # 分離-----------------------------------
-        # 各スクリプトの実行
-        curpage_script = [x[0] for x in set_script_data if x[1] == str(self.cur_page)]
-        for x in curpage_script:
-            print(x)
-            s = re.search(r"bg='(.*)'" ,x)
-            if s:
-                self.msg_engine.script_bg(s.group(1), screen)
-
-        # 分離-----------------------------------
+        self.draw_effect(screen, set_script_data)
 
         blitx = 10
         blity = 10
@@ -258,6 +249,14 @@ class Fulltext:
             #     self.first_flip += 1
 
             blitx += jtext.get_rect().w
+
+    def draw_effect(self, screen, set_script_data):
+        """スクリプトを読み込んで特殊効果を描画する"""
+        curpage_script = [x[0] for x in set_script_data if x[1] == str(self.cur_page)]
+        for x in curpage_script:
+            s = re.search(r"bg='(.*)'", x)
+            if s:
+                self.msg_engine.script_bg(s.group(1), screen)
 
     def next(self):
         """メッセージを先に進める"""
@@ -429,12 +428,8 @@ class MessageEngine:
 
         print("これはpage_index:",self.page_index[1])
         # スクリプト部分を検索し、リストをくっつけて配列にする
-        # TODO 表現ごとにループを使っている、一度にやるようにしたい。（or|でできない？）
-        pattern = []
-        pattern.append("([ab]='.*')")
-        pattern.append("(bgm='.*')")
-        pattern.append("(bg='.*')")
-        pattern.append("(\@[AB])")
+        # TODO 表現ごとにループを使って非効率、一度にやるようにしたい。（or|でできない？）
+        pattern = self.get_script_list()
         for pat in pattern:
             for s in re.finditer(pat, text, re.MULTILINE):
                 print(s.group()) # script
@@ -453,16 +448,22 @@ class MessageEngine:
         # 最後に配列を返す
         return self.script_index
 
-    def search_script(self, text):
-        """スクリプト部分を検索する"""
+    def get_script_list(self):
+        """スクリプトのリストを生成する（検索用）"""
         # TODO: set_scriptと共通のpatternを使用する
-        pass
+        pattern = []
+        pattern += [
+            "([ab]='.*')",
+            "(bgm='.*')",
+            "(bg='.*')",
+            "(\@[AB])",
+        ]
+        return pattern
 
     def script_bg(self, bg, screen):
         """背景の変更"""
         # TODO: imgディレクトリをグローバル変数化する
         dir = ("./img/" + bg)
-        print(dir)
         bg_image = pygame.image.load(dir)
         screen.blit(bg_image, (10, 10))
 
