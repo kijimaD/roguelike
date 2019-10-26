@@ -214,8 +214,10 @@ class Fulltext:
         curpage_script = [x[0] for x in set_script_data if x[1] == str(self.cur_page)]
         for x in curpage_script:
             print(x)
-            IMAGE = pygame.image.load("./img/cave.jpg")
-            screen.blit(IMAGE, (10, 10))
+            s = re.search(r"bg='(.*)'" ,x)
+            if s:
+                self.msg_engine.script_bg(s.group(1), screen)
+
         # 分離-----------------------------------
 
         blitx = 10
@@ -453,8 +455,16 @@ class MessageEngine:
 
     def search_script(self, text):
         """スクリプト部分を検索する"""
+        # TODO: set_scriptと共通のpatternを使用する
         pass
 
+    def script_bg(self, bg, screen):
+        """背景の変更"""
+        # TODO: imgディレクトリをグローバル変数化する
+        dir = ("./img/" + bg)
+        print(dir)
+        bg_image = pygame.image.load(dir)
+        screen.blit(bg_image, (10, 10))
 
 class Map:
     def __init__(self):
