@@ -252,6 +252,7 @@ class Fulltext:
 
     def draw_effect(self, screen, set_script_data):
         """スクリプトを読み込んで特殊効果を描画する"""
+        # TODO: 読み込みに応じたスクリプトを作成する
         curpage_script = [x[0] for x in set_script_data if x[1] == str(self.cur_page)]
         for x in curpage_script:
             s = re.search(r"bg='(.*)'", x)
@@ -443,9 +444,10 @@ class MessageEngine:
                         break
 
         print(self.script_index)
-        # 元のmessageからスクリプト部分を削除する
 
-        # 最後に配列を返す
+        # 元のmessageからスクリプト部分を削除する
+        del_pattern = self.get_script_argument()
+
         return self.script_index
 
     def get_script_list(self):
@@ -459,6 +461,20 @@ class MessageEngine:
             "(\@[AB])",
         ]
         return pattern
+
+    def get_script_argument(self):
+        """スクリプトの引数取得用リストを生成する"""
+        goal_pattern = []
+        pattern = self.get_script_list()
+        print("これは元のスクリプトリスト", pattern)
+        # 外側のカッコを削除して、''の内側にカッコを挿入する。
+        for s in pattern:
+            text0 = re.sub(r'\(', '', s)
+            text1 = re.sub(r'\)', '', text0)
+            text2 = re.sub(r"'(.*)'", r"'(.*)'", text1)
+            goal_pattern.append(text2)
+        print("これは引数取得用", goal_pattern)
+        return goal_pattern
 
     def script_bg(self, bg, screen):
         """背景の変更"""
