@@ -368,8 +368,10 @@ class MessageEngine:
         screen.blit(self.font.render(text, True, (255, 255, 255)), [x, y])
 
     def set(self, root, search):
-        self.set_script_data = self.set_script(self.load_xml(root, search))
-        self.set_data = self.set_text(self.create_text_data(root, search))
+        self.raw_text = self.load_xml(root, search)
+        self.set_script_data = self.set_script(self.raw_text)
+        self.shaped_text = self.create_text_data(self.raw_text)
+        self.set_data = self.set_text(self.shaped_text)
 
     def set_script(self, text):
         """scriptとcur_pageのリストを作成する"""
@@ -391,16 +393,12 @@ class MessageEngine:
                 print(s.start()) # 位置
                 # 位置を比較してcur_pageを導出
                 for p in range(len(self.page_index)):
-                    print(p)
                     if s.start() < self.page_index[p]:
                         self.script_index = np.append(self.script_index, np.array(
                         [[s.group(), p]]), axis=0)
                         break
 
         print(self.script_index)
-
-        # 元のmessageからスクリプト部分を削除する
-        del_pattern = self.get_script_argument()
 
         return self.script_index
 
@@ -445,12 +443,9 @@ class MessageEngine:
         ]
         return pattern
 
-    def del_script(self):
-        """スクリプト部分を削除する"""
-        pass
-
     def get_script_argument(self):
         """スクリプトの引数取得用リストを生成する"""
+        # TODO: 一気に置換できない？
         goal_pattern = []
         pattern = self.get_script_list()
         print("これは元のスクリプトリスト", pattern)
@@ -461,6 +456,16 @@ class MessageEngine:
             text2 = re.sub(r"'(.*)'", r"'(.*)'", text1)
             goal_pattern.append(text2)
         print("これは引数取得用", goal_pattern)
+        return goal_pattern
+
+    def get_script_delete_list(self):
+        """削除用リストを生成する"""
+        goal_pattern = []
+        pattern = self.get_script_list()
+        for s in pattern:
+            text0 = re.sub(r'\(', '', s)
+            text1 = re.sub(r'\)', '', text0)
+            goal_pattern.append(text1)
         return goal_pattern
 
     def script_bg(self, bg, screen):
@@ -484,13 +489,21 @@ class MessageEngine:
     def split_text(self, input):
         """タブ文字改行文字を削除する"""
         # 削除しないと、setできない？
-        goal_text = input.strip().replace(' ', '')  # タブ文字と改行文字の削除
+        goal_text = input.strip().replace(' ', '').replace('\n', '')  # タブ文字と改行文字の削除
         return goal_text
 
-    def create_text_data(self, root, search):
-        """rootから読み取ってsplitする"""
-        # TODO: 削除予定
-        goal_text = self.split_text(self.load_xml(root, search))
+    def del_script(self, raw_text):
+        """スクリプト部分を削除する"""
+        del_pattern = self.get_script_delete_list()
+        goal_text = raw_text # raw_textを使うのは最初だけ！
+        for pat in del_pattern:
+            goal_text = re.sub(pat, "", goal_text)
+        return goal_text
+
+    def create_text_data(self, raw_text):
+        """テキスト用データを生成する"""
+        remove_text = self.del_script(raw_text)
+        goal_text = self.split_text(remove_text)
         return goal_text
 
 class Map:
