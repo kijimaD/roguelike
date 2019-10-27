@@ -6,9 +6,8 @@ import sys
 import time
 import pygame.mixer
 import numpy as np
-import json
 import xml.etree.ElementTree as ET
-import re # 正規表現
+import re
 
 # バトルディッガーのクローンを作成する。
 
@@ -17,6 +16,7 @@ SCR_W = 640
 SCR_H = 320
 TITLE, WINDOWTEXT, FIELD, FULLTEXT, COMMAND = range(5)
 DEFAULT_FONT = "Yu Mincho"
+IMG_DIR = ("./img")
 
 class PyRPG:
     def __init__(self):
@@ -27,7 +27,6 @@ class PyRPG:
         self.title = Title(self.msg_engine)
         self.fulltext = Fulltext(Rect(0, 0, 640, 480), self.msg_engine)
         self.windowtext = WindowText(Rect(0, 0, 640, 480), self.msg_engine)
-        # テキストを読み込み
         self.root = ET.parse('scenario_data.xml').getroot()
         # メインループを起動
         self.game_state = TITLE
@@ -112,7 +111,6 @@ class PyRPG:
         # TODO: 個別のイベントと分離させて汎用したい
         if event.type == KEYDOWN:
             if event.key == K_1:
-                # テスト用
                 print("フルテキストモードで1を押しました")
             if event.key == K_RETURN:
                 # ページ送り
@@ -177,12 +175,11 @@ class Fulltext:
         self.next_show_text = []
 
     def update(self):
-        """画面を更新する（未実装）"""
+        """画面を更新する"""
         pass
 
     def draw(self, screen, set_data, set_script_data):
         """ウィンドウと文章を表示する"""
-        # TODO: 最後のページでない場合に▼を表示する
         screen.fill((40, 40, 40))  # 前の画面をリセット
 
         Window.show(self)
@@ -195,14 +192,17 @@ class Fulltext:
 
         show_text = [x[2] for x in set_data if x[1]
                      == str(self.cur_page)]  # cur_pageが同じリストを抜き出す
+
+        # 最後のページでない場合に▼を追加する
         self.next_show_text = [x[2] for x in set_data if x[1]
-                               == str(self.cur_page + 1)]  # 次の文字が空か判定する
+                               == str(self.cur_page + 1)]  # 次の文字
+        if len(self.next_show_text):
+            show_text.append("▽")
+
         for c in show_text:
             # テキスト表示用Surfaceを作る
             jtext = self.font.render(c, True, (255, 255, 255))
 
-            # TODO: シナリオ内のコマンドシーケンスを解釈するには？引数もとる。
-            # 描画用の1文字ループと、解釈用のループを分けたほうがいい？
             if c == "^":  # 改行
                 blitx = 10
                 blity += jtext.get_rect().h
@@ -246,7 +246,6 @@ class Fulltext:
 
 class WindowText:
     """通常のウィンドウメッセージ"""
-    # TODO: シナリオ＋演出データをタグ形式にして演出データを追加していく。
     EDGE_WIDTH = 4
 
     def __init__(self, rect, msg_engine):
@@ -258,6 +257,7 @@ class WindowText:
 
     def draw(self, screen, set_data, set_script_data):
         """ウィンドウと文章を表示する"""
+        # TODO: アニメーションをつける
         screen.fill((40, 40, 40))
         Window.show(self)
         Window.draw_msgwindow(self, screen)
@@ -377,15 +377,12 @@ class MessageEngine:
         """scriptとcur_pageのリストを作成する"""
         self.page_index = []
         self.script_index = np.empty([0, 2]) # [script, cur_page]
-        count_page = 0
 
         # 改ページ文字の位置を検索
         for m in re.finditer("\|", text, re.MULTILINE):
             self.page_index.append(m.start())
 
-        print("これはpage_index:",self.page_index[1])
         # スクリプト部分を検索し、リストをくっつけて配列にする
-        # TODO 表現ごとにループを使って非効率、一度にやるようにしたい。（or|でできない？）
         pattern = self.get_script_list()
         for pat in pattern:
             for s in re.finditer(pat, text, re.MULTILINE):
@@ -433,7 +430,6 @@ class MessageEngine:
 
     def get_script_list(self):
         """スクリプトのリストを生成する（検索用）"""
-        # TODO: set_scriptと共通のpatternを使用する
         pattern = []
         pattern += [
             "([ab]='.*')",
@@ -445,16 +441,14 @@ class MessageEngine:
 
     def get_script_argument(self):
         """スクリプトの引数取得用リストを生成する"""
-        # TODO: 一気に置換できない？
         goal_pattern = []
         pattern = self.get_script_list()
-        print("これは元のスクリプトリスト", pattern)
         # 外側のカッコを削除して、''の内側にカッコを挿入する。
         for s in pattern:
-            text0 = re.sub(r'\(', '', s)
-            text1 = re.sub(r'\)', '', text0)
-            text2 = re.sub(r"'(.*)'", r"'(.*)'", text1)
-            goal_pattern.append(text2)
+            text = re.sub(r'\(', '', s)
+            text = re.sub(r'\)', '', text)
+            text = re.sub(r"'(.*)'", r"'(.*)'", text)
+            goal_pattern.append(text)
         print("これは引数取得用", goal_pattern)
         return goal_pattern
 
@@ -469,9 +463,8 @@ class MessageEngine:
         return goal_pattern
 
     def script_bg(self, bg, screen):
-        """背景の変更"""
-        # TODO: imgディレクトリをグローバル変数化する
-        dir = ("./img/" + bg)
+        """背景を変更する"""
+        dir = (IMG_DIR + "/" + bg)
         bg_image = pygame.image.load(dir)
         screen.blit(bg_image, (10, 10))
 
@@ -554,8 +547,7 @@ class Character:
         pass
 
     def draw(self, draw_side):
-        if draw_side == L:
-            pass
+        pass
 
 
 class Enemy:
