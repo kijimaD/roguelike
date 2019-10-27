@@ -16,7 +16,7 @@ SCREEN = Rect(0, 0, 640, 480)
 SCR_W = 640
 SCR_H = 320
 TITLE, WINDOWTEXT, FIELD, FULLTEXT, COMMAND = range(5)
-DEFAULT_FONT = "Noto Sans CJK JP"
+DEFAULT_FONT = "Yu Mincho"
 
 class PyRPG:
     def __init__(self):
@@ -58,9 +58,9 @@ class PyRPG:
         if self.game_state == TITLE:
             self.title.draw(self.screen, self.cursor_y)
         elif self.game_state == FULLTEXT:
-            self.fulltext.draw(self.screen, self.set_data, self.set_script_data)
+            self.fulltext.draw(self.screen, self.msg_engine.set_data, self.msg_engine.set_script_data)
         elif self.game_state == WINDOWTEXT:
-            self.windowtext.draw(self.screen, self.set_data, self.set_script_data)
+            self.windowtext.draw(self.screen, self.msg_engine.set_data, self.msg_engine.set_script_data)
 
     def check_event(self):
         """イベントハンドラ"""
@@ -86,8 +86,7 @@ class PyRPG:
                 # 最初から（モノローグへ）
                 print("タイトルモードで1を押しました")
                 self.game_state = FULLTEXT
-                self.set_script_data = self.msg_engine.set_script(self.load_xml(self.root, 'monologue0'))
-                self.set_data = self.msg_engine.set(self.create_text_data(self.root, 'monologue0'))
+                self.msg_engine.set(self.root, 'monologue0')
             if event.key == K_2:
                 # 途中から
                 self.game_state = FIELD
@@ -102,7 +101,7 @@ class PyRPG:
             if event.key == K_RETURN:
                 if self.cursor_y == 0:
                     self.game_state = FULLTEXT
-                    self.set_data = self.msg_engine.set(self.create_text_data(self.root, 'monologue0'))
+                    self.msg_engine.set(self.root, 'monologue0')
                     print(self.set_data)
                     time.sleep(0.1)
                 if self.cursor_y == 1:
@@ -121,7 +120,7 @@ class PyRPG:
                 self.fulltext.next()
                 if len(self.fulltext.next_show_text) == 0:
                     self.game_state = WINDOWTEXT
-                    self.set_data = self.msg_engine.set(self.create_text_data(self.root, 'intro0'))
+                    self.msg_engine.set(self.root, 'intro0')
 
     def windowtext_handler(self, event):
         """ウィンドウテキストのイベントハンドラ"""
@@ -131,26 +130,6 @@ class PyRPG:
                 print('ウィンドウテキストモードでENTERを押しました')
                 self.windowtext.next()
 
-    def load_xml(self,root,search):
-        """xmlの中から検索する"""
-        # TODO: 検索とsplitを分離させる
-        reg = ".//evt[@id='{}']"
-        set_reg = reg.format(search)
-        for e in root.findall(set_reg):
-            # print("これは検索した結果です:", e.text)
-            pass
-        goal_text = e.text
-        return goal_text
-
-    def split_text(self, input):
-        """タブ文字改行文字を削除する"""
-        # 削除しないと、setできない？
-        goal_text = input.strip().replace(' ', '')  # タブ文字と改行文字の削除
-        return goal_text
-
-    def create_text_data(self, raw_xml, search):
-        goal_text = self.split_text(self.load_xml(self.root, search))
-        return goal_text
 
 class Title:
     """タイトル画面クラス"""
@@ -388,34 +367,9 @@ class MessageEngine:
         """メッセージの描画"""
         screen.blit(self.font.render(text, True, (255, 255, 255)), [x, y])
 
-    def set(self, message):
-        """全体の文字の位置を求めて、リストを作成する。※改ページの処理に過ぎない"""
-        # （文字列群）最初にパターンマッチで|を探し、それぞれでスクリプトを探す。結果をリストに格納する。['command','cur_page']な具合に。
-        self.cur_pos = 0
-        self.cur_page = 0
-        self.next_flag = False
-        self.hide_flag = False
-        self.text = np.empty([0, 3])
-        count_page = 0
-        count_pos = 0
-
-        p = 0
-        for i in range(len(message)):
-            ch = message[i]  # chとmessage[i]は文字。
-            # if ch == "/":
-                # 注:fulltext.draw()に完全対応していない
-                # continue
-            if ch == "|":
-                count_page += 1
-                count_pos += 1
-                continue
-            else:
-                self.text = np.append(self.text, np.array(
-                    [[count_pos, count_page, ch]]), axis=0)
-                p += 1
-                count_pos += 1
-
-        return self.text
+    def set(self, root, search):
+        self.set_script_data = self.set_script(self.load_xml(root, search))
+        self.set_data = self.set_text(self.create_text_data(root, search))
 
     def set_script(self, text):
         """scriptとcur_pageのリストを作成する"""
@@ -450,6 +404,35 @@ class MessageEngine:
 
         return self.script_index
 
+    def set_text(self, text):
+        """全体の文字の位置を求めて、リストを作成する。※改ページの処理に過ぎない"""
+        # （文字列群）最初にパターンマッチで|を探し、それぞれでスクリプトを探す。結果をリストに格納する。['command','cur_page']な具合に。
+        self.cur_pos = 0
+        self.cur_page = 0
+        self.next_flag = False
+        self.hide_flag = False
+        self.text = np.empty([0, 3])
+        count_page = 0
+        count_pos = 0
+
+        p = 0
+        for i in range(len(text)):
+            ch = text[i]  # chとmessage[i]は文字。
+            # if ch == "/":
+            # 注:fulltext.draw()に完全対応していない
+            # continue
+            if ch == "|":
+                count_page += 1
+                count_pos += 1
+                continue
+            else:
+                self.text = np.append(self.text, np.array(
+                    [[count_pos, count_page, ch]]), axis=0)
+                p += 1
+                count_pos += 1
+
+        return self.text
+
     def get_script_list(self):
         """スクリプトのリストを生成する（検索用）"""
         # TODO: set_scriptと共通のpatternを使用する
@@ -461,6 +444,10 @@ class MessageEngine:
             "(\@[AB])",
         ]
         return pattern
+
+    def del_script(self):
+        """スクリプト部分を削除する"""
+        pass
 
     def get_script_argument(self):
         """スクリプトの引数取得用リストを生成する"""
@@ -482,6 +469,29 @@ class MessageEngine:
         dir = ("./img/" + bg)
         bg_image = pygame.image.load(dir)
         screen.blit(bg_image, (10, 10))
+
+    # ファイル関連 ==============================
+    def load_xml(self, root, search):
+        """xmlの中からシーン検索する"""
+        reg = ".//evt[@id='{}']"
+        set_reg = reg.format(search)
+        for e in root.findall(set_reg):
+            # print("これは検索した結果です:", e.text)
+            pass
+        goal_text = e.text
+        return goal_text
+
+    def split_text(self, input):
+        """タブ文字改行文字を削除する"""
+        # 削除しないと、setできない？
+        goal_text = input.strip().replace(' ', '')  # タブ文字と改行文字の削除
+        return goal_text
+
+    def create_text_data(self, root, search):
+        """rootから読み取ってsplitする"""
+        # TODO: 削除予定
+        goal_text = self.split_text(self.load_xml(root, search))
+        return goal_text
 
 class Map:
     def __init__(self):
