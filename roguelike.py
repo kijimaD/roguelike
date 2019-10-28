@@ -101,7 +101,6 @@ class PyRPG:
                 if self.cursor_y == 0:
                     self.game_state = FULLTEXT
                     self.msg_engine.set(self.root, 'monologue0')
-                    print(self.set_data)
                     time.sleep(0.1)
                 if self.cursor_y == 1:
                     pass
@@ -144,10 +143,16 @@ class Title:
     def draw(self, screen, cursor_y):
         """タイトルの描画"""
         screen.fill((0, 0, 0))
-        pygame.draw.rect(screen, (255, 255, 255), (10, 110 + cursor_y * 20, 100, 18), 1)
+        # pygame.draw.rect(screen, (255, 255, 255), (10, 100 + cursor_y * 20, 100, 18), 1)
+        if cursor_y == 0:
+            new_game = "はじめから[1]←"
+            continue_game = "つづきから[2]"
+        elif cursor_y == 1:
+            new_game = "はじめから[1]"
+            continue_game = "つづきから[2]←"
         self.msg_engine.draw(screen, 10, 10, "クローンディッガー")
-        self.msg_engine.draw(screen, 10, 100, "はじめから[1]")
-        self.msg_engine.draw(screen, 10, 120, "つづきから[2]")
+        self.msg_engine.draw(screen, 10, 100, new_game)
+        self.msg_engine.draw(screen, 10, 120, continue_game)
 
 
 class Fulltext:
@@ -232,6 +237,7 @@ class Fulltext:
     def draw_effect(self, screen, set_script_data):
         """スクリプトを読み込んで特殊効果を描画する"""
         # TODO: 読み込みに応じたスクリプトを作成する
+        # TODO: 背景が保持されていない！
         curpage_script = [x[0] for x in set_script_data if x[1] == str(self.cur_page)]
         for x in curpage_script:
             s = re.search(r"bg='(.*)'", x)
