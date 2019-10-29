@@ -237,9 +237,11 @@ class Fulltext:
     def draw_effect(self, screen, set_script_data):
         """スクリプトを読み込んで特殊効果を描画する"""
         # TODO: 読み込みに応じたスクリプトを作成する
-        # TODO: 背景が保持されていない！
-        curpage_script = [x[0] for x in set_script_data if x[1] == str(self.cur_page)]
-        for x in curpage_script:
+        self.script_stack = []
+        for p in range(self.cur_page + 1):
+            self.script_stack += [x[0] for x in set_script_data if x[1] == str(p)]
+        print("これはスクリプトスタック:",self.script_stack,"range:",range(self.cur_page))
+        for x in self.script_stack:
             s = re.search(r"bg='(.*)'", x)
             if s:
                 self.msg_engine.script_bg(s.group(1), screen)
