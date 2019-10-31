@@ -238,13 +238,22 @@ class Fulltext:
         """スクリプトを読み込んで特殊効果を描画する"""
         # TODO: 読み込みに応じたスクリプトを作成する
         self.script_stack = []
+        s = []
+        # TODO: 最後のページだけが取得できていない！
         for p in range(self.cur_page + 1):
             self.script_stack += [x[0] for x in set_script_data if x[1] == str(p)]
-        print("これはスクリプトスタック:",self.script_stack,"range:",range(self.cur_page))
-        for x in self.script_stack:
+        print('stack:',self.script_stack)
+        print('script_data', set_script_data)
+        # リストを逆にして、最初にマッチしたbgだけ実行する = リストの最後だけ実行
+        for x in self.script_stack[::-1]:
             s = re.search(r"bg='(.*)'", x)
             if s:
-                self.msg_engine.script_bg(s.group(1), screen)
+                if s.group(1) == '':
+                    screen.fill((0, 0, 0))  # 前の画面をリセット
+                    break
+                else:
+                    self.msg_engine.script_bg(s.group(1), screen)
+                    break
 
     def next(self):
         """メッセージを先に進める"""
@@ -389,19 +398,23 @@ class MessageEngine:
         # 改ページ文字の位置を検索
         for m in re.finditer("\|", text, re.MULTILINE):
             self.page_index.append(m.start())
-
         # スクリプト部分を検索し、リストをくっつけて配列にする
         pattern = self.get_script_list()
         for pat in pattern:
             for s in re.finditer(pat, text, re.MULTILINE):
-                print(s.group()) # script
-                print(s.start()) # 位置
+                # print(s.group()) # script
+                # print(s.start()) # 位置
                 # 位置を比較してcur_pageを導出
                 for p in range(len(self.page_index)):
                     if s.start() < self.page_index[p]:
                         self.script_index = np.append(self.script_index, np.array(
                         [[s.group(), p]]), axis=0)
                         break
+                # 最後のページ
+                if max(self.page_index) < s.start():
+                    self.script_index = np.append(self.script_index, np.array(
+                    [[s.group(), len(self.page_index)]]), axis=0)
+                    break
 
         print(self.script_index)
 
