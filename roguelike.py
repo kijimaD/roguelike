@@ -145,11 +145,11 @@ class Title:
         screen.fill((0, 0, 0))
         # pygame.draw.rect(screen, (255, 255, 255), (10, 100 + cursor_y * 20, 100, 18), 1)
         if cursor_y == 0:
-            new_game = "はじめから[1]←"
-            continue_game = "つづきから[2]"
+            new_game = "＞はじめから[1]"
+            continue_game = "　つづきから[2]"
         elif cursor_y == 1:
-            new_game = "はじめから[1]"
-            continue_game = "つづきから[2]←"
+            new_game = "　はじめから[1]"
+            continue_game = "＞つづきから[2]"
         self.msg_engine.draw(screen, 10, 10, "クローンディッガー")
         self.msg_engine.draw(screen, 10, 100, new_game)
         self.msg_engine.draw(screen, 10, 120, continue_game)
@@ -242,8 +242,6 @@ class Fulltext:
         # TODO: 最後のページだけが取得できていない！
         for p in range(self.cur_page + 1):
             self.script_stack += [x[0] for x in set_script_data if x[1] == str(p)]
-        print('stack:',self.script_stack)
-        print('script_data', set_script_data)
         # リストを逆にして、最初にマッチしたbgだけ実行する = リストの最後だけ実行
         for x in self.script_stack[::-1]:
             s = re.search(r"bg='(.*)'", x)
@@ -415,8 +413,6 @@ class MessageEngine:
                     self.script_index = np.append(self.script_index, np.array(
                     [[s.group(), len(self.page_index)]]), axis=0)
                     break
-
-        print(self.script_index)
 
         return self.script_index
 
