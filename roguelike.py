@@ -18,6 +18,7 @@ TITLE, WINDOWTEXT, FIELD, FULLTEXT, COMMAND = range(5)
 DEFAULT_FONT = "Yu Mincho"
 IMG_DIR = ("./img")
 
+
 class PyRPG:
     def __init__(self):
         pygame.init()
@@ -155,7 +156,47 @@ class Title:
         self.msg_engine.draw(screen, 10, 120, continue_game)
 
 
-class Fulltext:
+class Window:
+    """ウィンドウの基本クラス"""
+    EDGE_WIDTH = 4
+
+    def __init__(self, rect):
+        self.rect = rect
+        self.inner_rect = self.rect.inflate(-self.EDGE_WIDTH *
+                                            2, -self.EDGE_WIDTH * 2)
+        self.is_visible = False  # ウィンドウを表示中か？
+
+    def draw(self, screen):
+        """ウィンドウを描画"""
+        if self.is_visible is False:
+            return
+        pygame.draw.rect(screen, (255, 255, 255), self.rect, 0)
+        pygame.draw.rect(screen, (0, 0, 0), self.inner_rect, 0)
+
+    def draw_msgwindow(self, screen):
+        """メッセージウィンドウを描画"""
+        pass
+
+    def show(self):
+        """ウィンドウ表示"""
+        self.is_visible = True
+
+    def hide(self):
+        """ウィンドウを隠す"""
+        self.in_visible = False
+
+    def update(self):
+        """画面を更新"""
+        pass
+
+    def next(self):
+        """メッセージを先に進める"""
+        self.cur_page += 1
+        self.cur_pos = 0
+        self.first_flip = 0
+
+
+class Fulltext(Window):
     """全画面の文字表示クラス"""
 
     # MAX_CHARS_PER_LINE = 20  # １行の最大文字数
@@ -179,9 +220,6 @@ class Fulltext:
         self.first_flip = 0
         self.next_show_text = []
 
-    def update(self):
-        """画面を更新する"""
-        pass
 
     def draw(self, screen, set_data, set_script_data):
         """ウィンドウと文章を表示する"""
@@ -253,13 +291,8 @@ class Fulltext:
                     self.msg_engine.script_bg(s.group(1), screen)
                     break
 
-    def next(self):
-        """メッセージを先に進める"""
-        self.cur_page += 1
-        self.cur_pos = 0
-        self.first_flip = 0
 
-class WindowText:
+class WindowText(Window):
     """通常のウィンドウメッセージ"""
     EDGE_WIDTH = 4
 
@@ -315,12 +348,6 @@ class WindowText:
         # 各スクリプトの描画
         cur_script = [x for x in set_script_data if x[0] == str(self.cur_page)]
 
-    def next(self):
-        """メッセージを先に進める"""
-        self.cur_page += 1
-        self.cur_pos = 0
-        self.first_flip = 0
-
     def draw_left_character(self, screen):
         """人物モデル（左）"""
         pygame.draw.circle(screen, (255, 0, 0), (120, 140), 40)
@@ -338,38 +365,6 @@ class WindowText:
         """吹き出し（右）"""
         pygame.draw.line(screen, (0, 0, 0), (380, 260), (420, 220), 3)
         pygame.draw.line(screen, (0, 0, 0), (420, 220), (460, 220), 3)
-
-    def update(self):
-        pass
-
-
-class Window:
-    """ウィンドウの基本クラス"""
-    EDGE_WIDTH = 4
-
-    def __init__(self, rect):
-        self.rect = rect
-        self.inner_rect = self.rect.inflate(-self.EDGE_WIDTH *
-                                            2, -self.EDGE_WIDTH * 2)
-        self.is_visible = False  # ウィンドウを表示中か？
-
-    def draw(self, screen):
-        """ウィンドウを描画"""
-        if self.is_visible is False:
-            return
-        pygame.draw.rect(screen, (255, 255, 255), self.rect, 0)
-        pygame.draw.rect(screen, (0, 0, 0), self.inner_rect, 0)
-
-    def draw_msgwindow(self, screen):
-        """メッセージウィンドウを描画"""
-        pass
-
-    def show(self):
-        """ウィンドウ表示"""
-        self.is_visible = True
-
-    def hide(self):
-        self.in_visible = False
 
 
 class MessageEngine:
@@ -391,7 +386,7 @@ class MessageEngine:
     def set_script(self, text):
         """scriptとcur_pageのリストを作成する"""
         self.page_index = []
-        self.script_index = np.empty([0, 2]) # [script, cur_page]
+        self.script_index = np.empty([0, 2])  # [script, cur_page]
 
         # 改ページ文字の位置を検索
         for m in re.finditer("\|", text, re.MULTILINE):
@@ -406,12 +401,12 @@ class MessageEngine:
                 for p in range(len(self.page_index)):
                     if s.start() < self.page_index[p]:
                         self.script_index = np.append(self.script_index, np.array(
-                        [[s.group(), p]]), axis=0)
+                            [[s.group(), p]]), axis=0)
                         break
                 # 最後のページ
                 if max(self.page_index) < s.start():
                     self.script_index = np.append(self.script_index, np.array(
-                    [[s.group(), len(self.page_index)]]), axis=0)
+                        [[s.group(), len(self.page_index)]]), axis=0)
                     break
 
         return self.script_index
@@ -505,7 +500,7 @@ class MessageEngine:
     def del_script(self, raw_text):
         """スクリプト部分を削除する"""
         del_pattern = self.get_script_delete_list()
-        goal_text = raw_text # raw_textを使うのは最初だけ！
+        goal_text = raw_text  # raw_textを使うのは最初だけ！
         for pat in del_pattern:
             goal_text = re.sub(pat, "", goal_text)
         return goal_text
@@ -515,6 +510,7 @@ class MessageEngine:
         remove_text = self.del_script(raw_text)
         goal_text = self.split_text(remove_text)
         return goal_text
+
 
 class Map:
     def __init__(self):
