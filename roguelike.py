@@ -58,9 +58,9 @@ class PyRPG:
         if self.game_state == TITLE:
             self.title.draw(self.screen, self.cursor_y)
         elif self.game_state == FULLTEXT:
-            self.fulltext.draw(self.screen, self.msg_engine.set_data, self.msg_engine.set_script_data)
+            self.fulltext.draw_msg(self.screen, self.msg_engine.set_data, self.msg_engine.set_script_data)
         elif self.game_state == WINDOWTEXT:
-            self.windowtext.draw(self.screen, self.msg_engine.set_data, self.msg_engine.set_script_data)
+            self.windowtext.draw_unify(self.screen, self.msg_engine.set_data, self.msg_engine.set_script_data)
 
     def check_event(self):
         """イベントハンドラ"""
@@ -161,9 +161,12 @@ class Window:
     EDGE_WIDTH = 4
 
     def __init__(self, rect):
+        self.font = pygame.font.SysFont(DEFAULT_FONT, 20)
         self.rect = rect
         self.inner_rect = self.rect.inflate(-self.EDGE_WIDTH *
                                             2, -self.EDGE_WIDTH * 2)
+        self.text = []
+        self.cur_page = 0
         self.is_visible = False  # ウィンドウを表示中か？
 
     def draw(self, screen):
@@ -173,72 +176,25 @@ class Window:
         pygame.draw.rect(screen, (255, 255, 255), self.rect, 0)
         pygame.draw.rect(screen, (0, 0, 0), self.inner_rect, 0)
 
-    def draw_msgwindow(self, screen):
-        """メッセージウィンドウを描画"""
-        pass
-
-    def show(self):
-        """ウィンドウ表示"""
-        self.is_visible = True
-
-    def hide(self):
-        """ウィンドウを隠す"""
-        self.in_visible = False
-
-    def update(self):
-        """画面を更新"""
-        pass
-
-    def next(self):
-        """メッセージを先に進める"""
-        self.cur_page += 1
-        self.cur_pos = 0
-        self.first_flip = 0
-
-
-class Fulltext(Window):
-    """全画面の文字表示クラス"""
-
-    # MAX_CHARS_PER_LINE = 20  # １行の最大文字数
-    # MAX_LINES_PER_PAGE = 3  # １ページの最大行数
-    # MAX_CHARS_PER_PAGE = 20 * 3  # １ページの最大文字数
-    # MAX_LINES = 30  # 行間の大きさ
-    # LINE_HEIGHT = 8
-    EDGE_WIDTH = 4
-
-    def __init__(self, rect, msg_engine):
-        Window.__init__(self, rect)
-        self.msg_engine = msg_engine
-
-        self.font = pygame.font.SysFont(DEFAULT_FONT, 20)
-        self.text = []
-        self.cur_pos = 0
-        self.cur_page = 0
-        self.next_flag = False
-        self.hide_flag = False
-        self.frame = 0
-        self.first_flip = 0
-        self.next_show_text = []
-
-
-    def draw(self, screen, set_data, set_script_data):
+    def draw_msg(self, screen, set_data, set_script_data):
         """ウィンドウと文章を表示する"""
+        # TODO: drawと入れ替えるべきでは？ウィンドウもメッセージも描画しているので。
         screen.fill((40, 40, 40))  # 前の画面をリセット
 
-        Window.show(self)
-        Window.draw(self, screen)
+        self.show()
+        self.draw(screen)
 
         self.draw_effect(screen, set_script_data)
 
-        blitx = 10
-        blity = 10
+        blitx = self.blitx
+        blity = self.blity
 
         show_text = [x[2] for x in set_data if x[1]
                      == str(self.cur_page)]  # cur_pageが同じリストを抜き出す
 
-        # 最後のページでない場合に▼を追加する
         self.next_show_text = [x[2] for x in set_data if x[1]
                                == str(self.cur_page + 1)]  # 次の文字
+        # 最後のページでない場合に▼を追加する
         if len(self.next_show_text):
             show_text.append("▽")
 
@@ -291,6 +247,49 @@ class Fulltext(Window):
                     self.msg_engine.script_bg(s.group(1), screen)
                     break
 
+    def show(self):
+        """ウィンドウ表示"""
+        self.is_visible = True
+
+    def hide(self):
+        """ウィンドウを隠す"""
+        self.in_visible = False
+
+    def update(self):
+        """画面を更新"""
+        pass
+
+    def next(self):
+        """メッセージを先に進める"""
+        self.cur_page += 1
+        self.cur_pos = 0
+        self.first_flip = 0
+
+
+class Fulltext(Window):
+    """全画面の文字表示クラス"""
+
+    # MAX_CHARS_PER_LINE = 20  # １行の最大文字数
+    # MAX_LINES_PER_PAGE = 3  # １ページの最大行数
+    # MAX_CHARS_PER_PAGE = 20 * 3  # １ページの最大文字数
+    # MAX_LINES = 30  # 行間の大きさ
+    # LINE_HEIGHT = 8
+    EDGE_WIDTH = 4
+
+    def __init__(self, rect, msg_engine):
+        Window.__init__(self, rect)
+        self.msg_engine = msg_engine
+        self.text = []
+        self.cur_pos = 0
+        self.cur_page = 0
+        self.next_flag = False
+        self.hide_flag = False
+        self.frame = 0
+        self.first_flip = 0
+        self.next_show_text = []
+        self.blitx = 10
+        self.blity = 10
+
 
 class WindowText(Window):
     """通常のウィンドウメッセージ"""
@@ -298,55 +297,15 @@ class WindowText(Window):
 
     def __init__(self, rect, msg_engine):
         Window.__init__(self, rect)
-        self.font = pygame.font.SysFont(DEFAULT_FONT, 20)
         self.msg_engine = msg_engine
         self.cur_pos = 0
         self.cur_page = 0
+        self.blitx = 10
+        self.blity = 260
 
-    def draw(self, screen, set_data, set_script_data):
-        """ウィンドウと文章を表示する"""
-        # TODO: アニメーションをつける
-        screen.fill((40, 40, 40))
-        Window.show(self)
-        Window.draw_msgwindow(self, screen)
-
-        pygame.draw.rect(screen, (0, 0, 0), Rect(10, 260, 620, 200), 3)
-        self.draw_left_character(screen)
-        self.draw_left_bubble(screen)
-
-        blitx = 10
-        blity = 260
-
-        show_text = [x[2] for x in set_data if x[1]
-                     == str(self.cur_page)]  # cur_pageが同じリストを抜き出す
-        self.next_show_text = [x[2] for x in set_data if x[1]
-                               == str(self.cur_page + 1)]  # 次の文字が空か判定する
-        for c in show_text:
-            # テキスト表示用Surfaceを作る
-            jtext = self.font.render(c, True, (255, 255, 255))
-
-            if c == "^":  # 改行
-                blitx = 10
-                blity += jtext.get_rect().h
-                continue
-            elif c == "|":  # 改ページ
-                screen.fill((40, 40, 40))
-                Window.show(self)
-                Window.draw(self, screen)
-                blitx = 10
-                blity = 260
-                continue
-
-            # blitの前にはみ出さないかチェック
-            if blitx + jtext.get_rect().w >= SCR_W:
-                blitx = 10
-                blity += jtext.get_rect().h
-
-            screen.blit(jtext, (blitx, blity))
-            blitx += jtext.get_rect().w
-
-        # 各スクリプトの描画
-        cur_script = [x for x in set_script_data if x[0] == str(self.cur_page)]
+    def draw_unify(self, screen, set_data, set_script_data):
+        self.draw_msg(screen, set_data, set_script_data)
+        pygame.draw.rect(screen, (255, 255, 255), Rect(10, 260, 620, 200), 3)
 
     def draw_left_character(self, screen):
         """人物モデル（左）"""
