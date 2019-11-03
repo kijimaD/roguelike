@@ -102,7 +102,6 @@ class PyRPG:
                 if self.cursor_y == 0:
                     self.game_state = FULLTEXT
                     self.msg_engine.set(self.root, 'monologue0')
-                    time.sleep(0.1)
                 if self.cursor_y == 1:
                     pass
 
