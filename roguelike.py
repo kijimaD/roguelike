@@ -19,7 +19,7 @@ DEFAULT_FONT = "Yu Mincho"
 IMG_DIR = ("./img")
 
 
-class PyRPG:
+class Game:
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((SCREEN.size))
@@ -85,11 +85,9 @@ class PyRPG:
         """タイトル画面のイベントハンドラ"""
         if event.type == KEYDOWN:
             if event.key == K_1:
-                # 最初から（モノローグへ）
+                # 最初から（OPへ）
                 print("タイトルモードで1を押しました")
-                # self.game_state = FULLTEXT
-                # self.msg_engine.set(self.root, 'monologue0')
-                self.plot.opening(self.root)
+                self.game_state = self.plot.opening(self.root)
             if event.key == K_2:
                 # 途中から
                 self.game_state = FIELD
@@ -103,14 +101,13 @@ class PyRPG:
                     self.cursor_y += 1
             if event.key == K_RETURN:
                 if self.cursor_y == 0:
-                    self.game_state = FULLTEXT
-                    self.msg_engine.set(self.root, 'monologue0')
+                    self.game_state = self.plot.opening(self.root)
                 if self.cursor_y == 1:
                     pass
 
     def fulltext_handler(self, event):
         """フルテキストモードのイベントハンドラ"""
-        # TODO: 個別のイベントと分離させて汎用したい
+        # TODO: 個別のイベントと分離させて汎用したい、2度目以降にsetできてない？
         if event.type == KEYDOWN:
             if event.key == K_1:
                 print("フルテキストモードで1を押しました")
@@ -119,8 +116,10 @@ class PyRPG:
                 print("フルテキストモードでENTERを押しました")
                 self.fulltext.next()
                 if len(self.fulltext.next_show_text) == 0:
-                    self.game_state = WINDOWTEXT
-                    self.msg_engine.set(self.root, 'intro0')
+                    # self.game_state = WINDOWTEXT
+                    # self.msg_engine.set(self.root, 'intro0')
+                    self.plot.plot_count += 1
+                    self.game_state = self.plot.opening(self.root)
 
     def windowtext_handler(self, event):
         """ウィンドウテキストのイベントハンドラ"""
@@ -129,6 +128,9 @@ class PyRPG:
                 # ページ送り
                 print('ウィンドウテキストモードでENTERを押しました')
                 self.windowtext.next()
+                if len(self.windowtext.next_show_text) == 0:
+                    self.plot.plot_count += 1
+                    self.game_state = self.plot.opening(self.root)
 
 
 class Title:
@@ -235,7 +237,6 @@ class Window:
         # TODO: 読み込みに応じたスクリプトを作成する
         self.script_stack = []
         s = []
-        # TODO: 最後のページだけが取得できていない！
         for p in range(self.cur_page + 1):
             self.script_stack += [x[0] for x in set_script_data if x[1] == str(p)]
         # リストを逆にして、最初にマッチしたbgだけ実行する = リストの最後だけ実行
@@ -472,22 +473,29 @@ class MessageEngine:
         goal_text = self.split_text(remove_text)
         return goal_text
 
+
 class Plot:
     def __init__(self, msg_engine):
         self.msg_engine = msg_engine
         self.plot_count = 0
+        self.game_state = 0
 
     def opening(self, root):
         if self.plot_count == 0:
             self.game_state = FULLTEXT
             self.msg_engine.set(root, 'monologue0')
-            self.plot_count += 1
         elif self.plot_count == 1:
             self.game_state = WINDOWTEXT
             self.msg_engine.set(root, 'intro0')
-            self.plot_count += 1
+        elif self.plot_count == 2:
+            self.game_state = FULLTEXT
+            self.msg_engine.set(root, 'monologue0')
         else:
             self.plot_count = 0
+        print('game_state: ',self.game_state)
+        print('plot_count: ', self.plot_count)
+        return self.game_state
+
 
 class Map:
     def __init__(self):
@@ -549,4 +557,4 @@ class Hero:
 
 
 if __name__ == "__main__":
-    PyRPG()
+    Game()
