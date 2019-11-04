@@ -25,6 +25,7 @@ class PyRPG:
         self.screen = pygame.display.set_mode((SCREEN.size))
         pygame.display.set_caption("Roguelike")
         self.msg_engine = MessageEngine()
+        self.plot = Plot(self.msg_engine)
         self.title = Title(self.msg_engine)
         self.fulltext = Fulltext(Rect(0, 0, 640, 480), self.msg_engine)
         self.windowtext = WindowText(Rect(0, 0, 640, 480), self.msg_engine)
@@ -32,6 +33,7 @@ class PyRPG:
         # メインループを起動
         self.game_state = TITLE
         self.cursor_y = 0
+        self.plot_count = 0
         self.mainloop()
 
     def mainloop(self):
@@ -85,8 +87,9 @@ class PyRPG:
             if event.key == K_1:
                 # 最初から（モノローグへ）
                 print("タイトルモードで1を押しました")
-                self.game_state = FULLTEXT
-                self.msg_engine.set(self.root, 'monologue0')
+                # self.game_state = FULLTEXT
+                # self.msg_engine.set(self.root, 'monologue0')
+                self.plot.opening(self.root)
             if event.key == K_2:
                 # 途中から
                 self.game_state = FIELD
@@ -469,6 +472,22 @@ class MessageEngine:
         goal_text = self.split_text(remove_text)
         return goal_text
 
+class Plot:
+    def __init__(self, msg_engine):
+        self.msg_engine = msg_engine
+        self.plot_count = 0
+
+    def opening(self, root):
+        if self.plot_count == 0:
+            self.game_state = FULLTEXT
+            self.msg_engine.set(root, 'monologue0')
+            self.plot_count += 1
+        elif self.plot_count == 1:
+            self.game_state = WINDOWTEXT
+            self.msg_engine.set(root, 'intro0')
+            self.plot_count += 1
+        else:
+            self.plot_count = 0
 
 class Map:
     def __init__(self):
