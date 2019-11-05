@@ -107,7 +107,7 @@ class Game:
 
     def fulltext_handler(self, event):
         """フルテキストモードのイベントハンドラ"""
-        # TODO: 個別のイベントと分離させて汎用したい、2度目以降にsetできてない？
+        # TODO: 2度目以降にsetできてない
         if event.type == KEYDOWN:
             if event.key == K_1:
                 print("フルテキストモードで1を押しました")
@@ -116,8 +116,6 @@ class Game:
                 print("フルテキストモードでENTERを押しました")
                 self.fulltext.next()
                 if len(self.fulltext.next_show_text) == 0:
-                    # self.game_state = WINDOWTEXT
-                    # self.msg_engine.set(self.root, 'intro0')
                     self.plot.plot_count += 1
                     self.game_state = self.plot.opening(self.root)
 
@@ -163,14 +161,13 @@ class Title:
 class Window:
     """ウィンドウの基本クラス"""
     EDGE_WIDTH = 4
-
     def __init__(self, rect):
         self.font = pygame.font.SysFont(DEFAULT_FONT, 20)
         self.rect = rect
         self.inner_rect = self.rect.inflate(-self.EDGE_WIDTH *
                                             2, -self.EDGE_WIDTH * 2)
-        self.text = []
         self.cur_page = 0
+        self.text = []
         self.is_visible = False  # ウィンドウを表示中か？
 
     def draw(self, screen):
@@ -195,7 +192,6 @@ class Window:
 
         show_text = [x[2] for x in set_data if x[1]
                      == str(self.cur_page)]  # cur_pageが同じリストを抜き出す
-
         self.next_show_text = [x[2] for x in set_data if x[1]
                                == str(self.cur_page + 1)]  # 次の文字
         # 最後のページでない場合に▼を追加する
@@ -222,7 +218,6 @@ class Window:
             if blitx + jtext.get_rect().w >= SCR_W:
                 blitx = 10
                 blity += jtext.get_rect().h
-
             screen.blit(jtext, (blitx, blity))
 
             # ループの最初だけflipさせる。flipの意味がよくわからない。
@@ -234,7 +229,7 @@ class Window:
 
     def draw_effect(self, screen, set_script_data):
         """スクリプトを読み込んで特殊効果を描画する"""
-        # TODO: 読み込みに応じたスクリプトを作成する
+        # TODO: 効果スクリプトを追加する
         self.script_stack = []
         s = []
         for p in range(self.cur_page + 1):
@@ -263,11 +258,12 @@ class Window:
         pass
 
     def next(self):
-        """メッセージを先に進める"""
+        """メッセージを先に進める。なかったらcur_pageをリセットする"""
         self.cur_page += 1
         self.cur_pos = 0
         self.first_flip = 0
-
+        if len(self.next_show_text) == 0:
+            self.cur_page = 0
 
 class Fulltext(Window):
     """全画面の文字表示クラス"""
@@ -284,7 +280,7 @@ class Fulltext(Window):
         self.msg_engine = msg_engine
         self.text = []
         self.cur_pos = 0
-        self.cur_page = 0
+        # self.cur_page = 0
         self.next_flag = False
         self.hide_flag = False
         self.frame = 0
@@ -302,7 +298,7 @@ class WindowText(Window):
         Window.__init__(self, rect)
         self.msg_engine = msg_engine
         self.cur_pos = 0
-        self.cur_page = 0
+        # self.cur_page = 0
         self.blitx = 10
         self.blity = 260
 
@@ -376,9 +372,6 @@ class MessageEngine:
     def set_text(self, text):
         """全体の文字の位置を求めて、リストを作成する。※改ページの処理に過ぎない"""
         # （文字列群）最初にパターンマッチで|を探し、それぞれでスクリプトを探す。結果をリストに格納する。['command','cur_page']な具合に。
-        self.cur_pos = 0
-        self.cur_page = 0
-        self.next_flag = False
         self.hide_flag = False
         self.text = np.empty([0, 3])
         count_page = 0
@@ -492,8 +485,6 @@ class Plot:
             self.msg_engine.set(root, 'monologue0')
         else:
             self.plot_count = 0
-        print('game_state: ',self.game_state)
-        print('plot_count: ', self.plot_count)
         return self.game_state
 
 
