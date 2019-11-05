@@ -9,15 +9,12 @@ import numpy as np
 import xml.etree.ElementTree as ET
 import re
 
-# バトルディッガーのクローンを作成する。
-
 SCREEN = Rect(0, 0, 640, 480)
 SCR_W = 640
 SCR_H = 320
 TITLE, WINDOWTEXT, FIELD, FULLTEXT, COMMAND = range(5)
 DEFAULT_FONT = "Yu Mincho"
 IMG_DIR = ("./img")
-
 
 class Game:
     def __init__(self):
@@ -30,10 +27,11 @@ class Game:
         self.fulltext = Fulltext(Rect(0, 0, 640, 480), self.msg_engine)
         self.windowtext = WindowText(Rect(0, 0, 640, 480), self.msg_engine)
         self.root = ET.parse('scenario_data.xml').getroot()
-        # メインループを起動
-        self.game_state = TITLE
         self.cursor_y = 0
         self.plot_count = 0
+        self.game_count = 0
+        # メインループを起動
+        self.game_state = TITLE
         self.mainloop()
 
     def mainloop(self):
@@ -48,6 +46,7 @@ class Game:
 
     def update(self):
         """ ゲーム状態の更新 """
+        self.game_counter()
         if self.game_state == TITLE:
             self.title.update()
         elif self.game_state == FULLTEXT:
@@ -60,9 +59,9 @@ class Game:
         if self.game_state == TITLE:
             self.title.draw(self.screen, self.cursor_y)
         elif self.game_state == FULLTEXT:
-            self.fulltext.draw_msg(self.screen, self.msg_engine.set_data, self.msg_engine.set_script_data)
+            self.fulltext.draw_msg(self.screen, self.msg_engine.set_data, self.msg_engine.set_script_data, self.game_count)
         elif self.game_state == WINDOWTEXT:
-            self.windowtext.draw_unify(self.screen, self.msg_engine.set_data, self.msg_engine.set_script_data)
+            self.windowtext.draw_unify(self.screen, self.msg_engine.set_data, self.msg_engine.set_script_data, self.game_count)
 
     def check_event(self):
         """イベントハンドラ"""
@@ -130,6 +129,11 @@ class Game:
                     self.plot.plot_count += 1
                     self.game_state = self.plot.opening(self.root)
 
+    def game_counter(self):
+        self.game_count += 1
+        if self.game_count > 100:
+            self.game_count = 0
+
 
 class Title:
     """タイトル画面クラス"""
@@ -177,7 +181,7 @@ class Window:
         pygame.draw.rect(screen, (255, 255, 255), self.rect, 0)
         pygame.draw.rect(screen, (0, 0, 0), self.inner_rect, 0)
 
-    def draw_msg(self, screen, set_data, set_script_data):
+    def draw_msg(self, screen, set_data, set_script_data, game_count):
         """ウィンドウと文章を表示する"""
         # TODO: drawと入れ替えるべきでは？ウィンドウもメッセージも描画しているので。
         screen.fill((40, 40, 40))  # 前の画面をリセット
@@ -194,9 +198,10 @@ class Window:
                      == str(self.cur_page)]  # cur_pageが同じリストを抜き出す
         self.next_show_text = [x[2] for x in set_data if x[1]
                                == str(self.cur_page + 1)]  # 次の文字
-        # 最後のページでない場合に▼を追加する
-        if len(self.next_show_text):
-            show_text.append("▽")
+        # 最後のページでない場合に▼を追加する。
+        # アニメーションというより点滅だ
+        if len(self.next_show_text) and game_count % 10 > 3:
+                show_text.append("▼")
 
         for c in show_text:
             # テキスト表示用Surfaceを作る
@@ -302,8 +307,8 @@ class WindowText(Window):
         self.blitx = 10
         self.blity = 260
 
-    def draw_unify(self, screen, set_data, set_script_data):
-        self.draw_msg(screen, set_data, set_script_data)
+    def draw_unify(self, screen, set_data, set_script_data, game_count):
+        self.draw_msg(screen, set_data, set_script_data, game_count)
         pygame.draw.rect(screen, (255, 255, 255), Rect(10, 260, 620, 200), 3)
 
     def draw_left_character(self, screen):
