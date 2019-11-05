@@ -16,6 +16,7 @@ TITLE, WINDOWTEXT, FIELD, FULLTEXT, COMMAND = range(5)
 DEFAULT_FONT = "Yu Mincho"
 IMG_DIR = ("./img")
 
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -59,9 +60,11 @@ class Game:
         if self.game_state == TITLE:
             self.title.draw(self.screen, self.cursor_y)
         elif self.game_state == FULLTEXT:
-            self.fulltext.draw_msg(self.screen, self.msg_engine.set_data, self.msg_engine.set_script_data, self.game_count)
+            self.fulltext.draw_msg(self.screen, self.msg_engine.set_data, self.msg_engine.set_script_data,
+                                   self.game_count)
         elif self.game_state == WINDOWTEXT:
-            self.windowtext.draw_unify(self.screen, self.msg_engine.set_data, self.msg_engine.set_script_data, self.game_count)
+            self.windowtext.draw_unify(self.screen, self.msg_engine.set_data, self.msg_engine.set_script_data,
+                                       self.game_count)
 
     def check_event(self):
         """イベントハンドラ"""
@@ -106,7 +109,6 @@ class Game:
 
     def fulltext_handler(self, event):
         """フルテキストモードのイベントハンドラ"""
-        # TODO: 2度目以降にsetできてない
         if event.type == KEYDOWN:
             if event.key == K_1:
                 print("フルテキストモードで1を押しました")
@@ -165,6 +167,7 @@ class Title:
 class Window:
     """ウィンドウの基本クラス"""
     EDGE_WIDTH = 4
+
     def __init__(self, rect):
         self.font = pygame.font.SysFont(DEFAULT_FONT, 20)
         self.rect = rect
@@ -199,9 +202,9 @@ class Window:
         self.next_show_text = [x[2] for x in set_data if x[1]
                                == str(self.cur_page + 1)]  # 次の文字
         # 最後のページでない場合に▼を追加する。
-        # アニメーションというより点滅だ
-        if len(self.next_show_text) and game_count % 10 > 3:
-                show_text.append("▼")
+        # 点滅する
+        if len(self.next_show_text) and (game_count % 10) > 5:
+            show_text.append("▼")
 
         for c in show_text:
             # テキスト表示用Surfaceを作る
@@ -236,6 +239,7 @@ class Window:
         """スクリプトを読み込んで特殊効果を描画する"""
         # TODO: 効果スクリプトを追加する
         self.script_stack = []
+        script_list = self.msg_engine.get_script_argument()
         s = []
         for p in range(self.cur_page + 1):
             self.script_stack += [x[0] for x in set_script_data if x[1] == str(p)]
@@ -244,7 +248,7 @@ class Window:
             s = re.search(r"bg='(.*)'", x)
             if s:
                 if s.group(1) == '':
-                    screen.fill((0, 0, 0))  # 前の画面をリセット
+                    screen.fill((0, 0, 0))  # 画面をリセット
                     break
                 else:
                     self.msg_engine.script_bg(s.group(1), screen)
@@ -270,6 +274,7 @@ class Window:
         if len(self.next_show_text) == 0:
             self.cur_page = 0
 
+
 class Fulltext(Window):
     """全画面の文字表示クラス"""
 
@@ -285,7 +290,6 @@ class Fulltext(Window):
         self.msg_engine = msg_engine
         self.text = []
         self.cur_pos = 0
-        # self.cur_page = 0
         self.next_flag = False
         self.hide_flag = False
         self.frame = 0
@@ -303,7 +307,6 @@ class WindowText(Window):
         Window.__init__(self, rect)
         self.msg_engine = msg_engine
         self.cur_pos = 0
-        # self.cur_page = 0
         self.blitx = 10
         self.blity = 260
 
@@ -342,9 +345,9 @@ class MessageEngine:
 
     def set(self, root, search):
         self.raw_text = self.load_xml(root, search)
-        self.set_script_data = self.set_script(self.raw_text)
+        self.set_script_data = self.set_script(self.raw_text)  # scriptとcur_pageのリスト
         self.shaped_text = self.create_text_data(self.raw_text)
-        self.set_data = self.set_text(self.shaped_text)
+        self.set_data = self.set_text(self.shaped_text)  # テキストとページ位置のリスト
 
     def set_script(self, text):
         """scriptとcur_pageのリストを作成する"""
@@ -421,7 +424,7 @@ class MessageEngine:
             text = re.sub(r'\)', '', text)
             text = re.sub(r"'(.*)'", r"'(.*)'", text)
             goal_pattern.append(text)
-        print("これは引数取得用", goal_pattern)
+        # print("これは引数取得用", goal_pattern)
         return goal_pattern
 
     def get_script_delete_list(self):
@@ -441,6 +444,7 @@ class MessageEngine:
         screen.blit(bg_image, (10, 10))
 
     # ファイル関連 ==============================
+
     def load_xml(self, root, search):
         """xmlの中からシーン検索する"""
         reg = ".//evt[@id='{}']"
@@ -530,8 +534,6 @@ class PlayerCharacter:
 
 class Character:
     """登場人物"""
-
-    # TODO: シーンセットのプロトタイプを作る
 
     def __init__(self, icon, message):
         self.icon = icon
