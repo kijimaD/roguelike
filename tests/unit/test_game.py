@@ -1,5 +1,10 @@
-import src.roguelike.roguelike as game
-# from tasks import Task
+# coding: utf-8
+
+# import roguelike as main
+# TODO: importできていない。
+from roguelike import Game
+import pytest
+
 
 def test_game():
     """"""
@@ -9,7 +14,8 @@ def test_game():
 
 def test_update():
     """TODO: どうやってテストする？"""
-    game = game.update()
+    upd = Game()
+    assert upd.game_state == "TITLE"
 
 def test_render():
-
+    pass
