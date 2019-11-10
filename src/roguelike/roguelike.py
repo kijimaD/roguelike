@@ -14,8 +14,8 @@ SCR_W = 640
 SCR_H = 320
 TITLE, WINDOWTEXT, FIELD, FULLTEXT, COMMAND = range(5)
 DEFAULT_FONT = "Yu Mincho"
-IMG_DIR = ("../img")
-TEXT_DIR = ("../data")
+IMG_DIR = ("../../img")
+TEXT_DIR = ("../../data")
 
 class Game:
     def __init__(self):

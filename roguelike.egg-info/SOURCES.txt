@@ -1,0 +1,6 @@
+README.md
+setup.py
+roguelike.egg-info/PKG-INFO
+roguelike.egg-info/SOURCES.txt
+roguelike.egg-info/dependency_links.txt
+roguelike.egg-info/top_level.txt
