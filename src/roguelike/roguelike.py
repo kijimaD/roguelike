@@ -14,6 +14,7 @@ SCR_W = 640
 SCR_H = 320
 TITLE, WINDOWTEXT, FIELD, FULLTEXT, COMMAND = range(5)
 DEFAULT_FONT = "Yu Mincho"
+# TODO: import用に絶対パスにする。
 IMG_DIR = ("../../img")
 TEXT_DIR = ("../../data")
 
@@ -34,7 +35,7 @@ class Game:
         self.game_count = 0
         # メインループを起動
         self.game_state = TITLE
-        self.mainloop()
+        # self.mainloop() # mainに移動
 
     def mainloop(self):
         """メインループ"""
@@ -556,4 +557,5 @@ class Hero:
 
 
 if __name__ == "__main__":
-    Game()
+    game = Game()
+    game.mainloop()

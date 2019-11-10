@@ -1,7 +1,5 @@
 # coding: utf-8
 
-# import roguelike as main
-# TODO: importできていない。
 from roguelike import Game
 import pytest
 
@@ -13,9 +11,7 @@ def test_game():
     assert t_1 == t_2
 
 def test_update():
-    """TODO: どうやってテストする？"""
+    """"""
+    # TODO: ループをどうやってテストする？インスタンス作成すら、できないじゃない…
     upd = Game()
-    assert upd.game_state == "TITLE"
-
-def test_render():
-    pass
+    assert isinstance(upd.update,str) == False
