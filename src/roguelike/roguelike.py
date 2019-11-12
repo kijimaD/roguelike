@@ -14,7 +14,7 @@ SCR_W = 640
 SCR_H = 320
 TITLE, WINDOWTEXT, FIELD, FULLTEXT, COMMAND = range(5)
 DEFAULT_FONT = "Yu Mincho"
-# TODO: import用に絶対パスにする。
+# TODO: import用に絶対パスにする
 IMG_DIR = ("../../img")
 TEXT_DIR = ("../../data")
 
