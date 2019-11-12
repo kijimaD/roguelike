@@ -33,9 +33,7 @@ class Game:
         self.cursor_y = 0
         self.plot_count = 0
         self.game_count = 0
-        # メインループを起動
         self.game_state = TITLE
-        # self.mainloop() # mainに移動
 
     def mainloop(self):
         """メインループ"""
@@ -361,7 +359,7 @@ class MessageEngine:
         self.script_index = np.empty([0, 2])  # [script, cur_page]
 
         # 改ページ文字の位置を検索
-        for m in re.finditer("\|", text, re.MULTILINE):
+        for m in re.finditer("\\|", text, re.MULTILINE):
             self.page_index.append(m.start())
         # スクリプト部分を検索し、リストをくっつけて配列にする
         pattern = self.get_script_list()
@@ -416,7 +414,7 @@ class MessageEngine:
             "([ab]='.*')",
             "(bgm='.*')",
             "(bg='.*')",
-            "(\@[AB])",
+            "(\\@[AB])",
         ]
         return pattern
 
