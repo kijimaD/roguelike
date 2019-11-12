@@ -29,8 +29,7 @@ class Game:
         self.title = Title(self.msg_engine)
         self.fulltext = Fulltext(Rect(0, 0, 640, 480), self.msg_engine)
         self.windowtext = WindowText(Rect(0, 0, 640, 480), self.msg_engine)
-        text_locate = TEXT_DIR + "/scenario_data.xml"
-        self.root = ET.parse(text_locate).getroot()
+        self.root = self.file_input()
         self.cursor_y = 0
         self.plot_count = 0
         self.game_count = 0
@@ -139,6 +138,10 @@ class Game:
         if self.game_count > 100:
             self.game_count = 0
 
+    def file_input(self):
+        text_locate = TEXT_DIR + "/scenario_data.xml"
+        root = ET.parse(text_locate).getroot()
+        return root
 
 class Title:
     """タイトル画面クラス"""
