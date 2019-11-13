@@ -132,11 +132,14 @@ class Game:
                     self.game_state = self.plot.opening(self.root)
 
     def game_counter(self):
+        """描画に使用するカウンタ。"""
+        # TODO: テストはどうする？
         self.game_count += 1
         if self.game_count > 100:
             self.game_count = 0
 
     def file_input(self):
+        """テキストファイルをxmlで読み取る"""
         text_locate = TEXT_DIR + "/scenario_data.xml"
         root = ET.parse(text_locate).getroot()
         return root
@@ -487,6 +490,7 @@ class Plot:
         self.game_state = 0
 
     def opening(self, root):
+        """オープニング。gamestateを返すのを忘れないように"""
         if self.plot_count == 0:
             self.game_state = FULLTEXT
             self.msg_engine.set(root, 'monologue0')
