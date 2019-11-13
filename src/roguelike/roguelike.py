@@ -47,7 +47,7 @@ class Game:
 
     def update(self):
         """ ゲーム状態の更新 """
-        self.game_counter()
+        self.game_count = self.game_counter(self.game_count)
         if self.game_state == TITLE:
             self.title.update()
         elif self.game_state == FULLTEXT:
@@ -82,6 +82,10 @@ class Game:
                 self.fulltext_handler(event)
             elif self.game_state == WINDOWTEXT:
                 self.windowtext_handler(event)
+            else:
+                print("game_state range error")
+                pygame.quit()
+                sys.exit()
 
     def title_handler(self, event):
         """タイトル画面のイベントハンドラ"""
@@ -131,12 +135,13 @@ class Game:
                     self.plot.plot_count += 1
                     self.game_state = self.plot.opening(self.root)
 
-    def game_counter(self):
+    def game_counter(self, game_count):
         """描画に使用するカウンタ。"""
         # TODO: テストはどうする？
-        self.game_count += 1
-        if self.game_count > 100:
-            self.game_count = 0
+        game_count += 1
+        if game_count > 100:
+            game_count = 0
+        return game_count
 
     def file_input(self):
         """テキストファイルをxmlで読み取る"""
