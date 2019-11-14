@@ -1,8 +1,8 @@
 import pygame
 import pygame.mixer
 from pygame.locals import *
-import os
 
+import os
 SCREEN = Rect(0, 0, 640, 480)
 SCR_W = 640
 SCR_H = 320

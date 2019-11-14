@@ -1,22 +1,18 @@
 # coding: utf-8
 
 import pytest
-import roguelike
-from roguelike import MessageEngine
+from roguelike.roguelike import MessageEngine
 from mock import Mock
 
-# TODO: Gameクラスを使いたいが、依存してるとチェックになるのか？
+# TODO: Gameクラスを使いたいが、チェックにならない
 # だがどうしようもないように思える。テストどうしの依存がダメであって、メソッドの依存は仕方ないものじゃないのか。
 # ユニットテスト…個々のメソッドをチェックすることなので、やはり一つ一つ独立していないといけないんだ。
 # モックオブジェクト…を使うのか？
 
-DEFAULT_FONT = roguelike.DEFAULT_FONT
-
 class TestMsgEngine(object):
     # TODO: 定数を読み込めない。
     msg_engine = MessageEngine()
-    msg_engine.DEFAULT_FONT = roguelike.DEFAULT_FONT
-    print('DEFAULT_FONT',msg_engine.DEFAULT_FONT)
+    # ERRER: インスタンス化の時点で失敗している。
 
     @pytest.fixture
     def input(self):
