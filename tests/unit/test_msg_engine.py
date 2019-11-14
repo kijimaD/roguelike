@@ -10,10 +10,13 @@ from mock import Mock
 # ユニットテスト…個々のメソッドをチェックすることなので、やはり一つ一つ独立していないといけないんだ。
 # モックオブジェクト…を使うのか？
 
+DEFAULT_FONT = roguelike.DEFAULT_FONT
+
 class TestMsgEngine(object):
-    # TODO: グローバル変数を読み込めない
+    # TODO: 定数を読み込めない。
     msg_engine = MessageEngine()
     msg_engine.DEFAULT_FONT = roguelike.DEFAULT_FONT
+    print('DEFAULT_FONT',msg_engine.DEFAULT_FONT)
 
     @pytest.fixture
     def input(self):

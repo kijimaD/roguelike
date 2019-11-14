@@ -1,23 +1,16 @@
 # coding: utf-8
 
 import pygame
-from pygame.locals import *
-import sys
-import time
 import pygame.mixer
+from pygame.locals import *
+import time
+import sys
 import numpy as np
 import xml.etree.ElementTree as ET
 import re
 import os
 
-SCREEN = Rect(0, 0, 640, 480)
-SCR_W = 640
-SCR_H = 320
-TITLE, WINDOWTEXT, FIELD, FULLTEXT, COMMAND = range(5)
-DEFAULT_FONT = "Yu Mincho"
-HOME_DIR = os.getcwd() + "/../../"
-IMG_DIR = (HOME_DIR + "img")
-TEXT_DIR = (HOME_DIR + "data")
+from consts import *
 
 class Game:
     def __init__(self):
@@ -83,7 +76,7 @@ class Game:
             elif self.game_state == WINDOWTEXT:
                 self.windowtext_handler(event)
             else:
-                print("game_state range error")
+                print("game_state range error!")
                 pygame.quit()
                 sys.exit()
 
@@ -137,7 +130,6 @@ class Game:
 
     def game_counter(self, game_count):
         """描画に使用するカウンタ。"""
-        # TODO: テストはどうする？
         game_count += 1
         if game_count > 100:
             game_count = 0
