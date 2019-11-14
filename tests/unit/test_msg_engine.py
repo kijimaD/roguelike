@@ -1,26 +1,31 @@
 # coding: utf-8
 
+# TODO: テストで共通に読み込むようにしたい。
+import pygame
+from pygame.locals import *
+import pygame.mixer
 import pytest
-from roguelike.roguelike import MessageEngine
 from mock import Mock
 
-# TODO: Gameクラスを使いたいが、チェックにならない
-# だがどうしようもないように思える。テストどうしの依存がダメであって、メソッドの依存は仕方ないものじゃないのか。
-# ユニットテスト…個々のメソッドをチェックすることなので、やはり一つ一つ独立していないといけないんだ。
-# モックオブジェクト…を使うのか？
+from roguelike.roguelike import MessageEngine
+from roguelike.consts import *
 
 class TestMsgEngine(object):
-    # TODO: 定数を読み込めない。
+    pygame.init()
     msg_engine = MessageEngine()
-    # ERRER: インスタンス化の時点で失敗している。
 
     @pytest.fixture
     def input(self):
         m = Mock
 
+    def check_const(self):
+        """定数を読みこんだか確認する"""
+        assert TITLE == 0
+        assert FULLTEXT == 3
+
     def test_draw(self):
-        """"""
-        # TODO: 描画はどうしたら成功だといえる？
+        """drawのテスト"""
+        # TODO: 描画はテストが困難？
         pass
 
     def test_set(self):
