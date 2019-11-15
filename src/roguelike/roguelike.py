@@ -470,10 +470,10 @@ class MessageEngine:
 
         return goal_text
 
-    def split_text(self, input):
+    def stlips_text(self, input):
         """タブ文字改行文字を削除する"""
         # 削除しないと、setできない？
-        goal_text = input.strip().replace(' ', '').replace('\n', '')  # タブ文字と改行文字の削除
+        goal_text = input.strip().replace(' ', '').replace('\n', '')  # タブ文字と改行文字と空白の削除
         return goal_text
 
     def del_script(self, raw_text):
@@ -487,7 +487,7 @@ class MessageEngine:
     def create_text_data(self, raw_text):
         """テキスト用データを生成する"""
         remove_text = self.del_script(raw_text)
-        goal_text = self.split_text(remove_text)
+        goal_text = self.stlips_text(remove_text)
         return goal_text
 
 
