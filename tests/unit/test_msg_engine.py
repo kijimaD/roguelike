@@ -25,6 +25,12 @@ class TestMsgEngine(object):
     game = Game()
     msg_engine = MessageEngine()
 
+    def setup(self):
+        """xmlからロードする"""
+        # TODO: テスト用の別ファイルを用意する
+        test_file = TEXT_DIR + "/scenario_data.xml"
+        self.root = ET.parse(test_file).getroot()
+
     @pytest.fixture
     def input(self):
         m = Mock
@@ -41,17 +47,13 @@ class TestMsgEngine(object):
         # self.msg_engine.set(root, search)
         pass
 
-    def test_load_xml(self):
-        """シーン検索をテスト。"""
-        # TODO: 入力を検証するにはどうしたらいい？
-        # file_inputを使いたいが、ユニットテストにならない。
-        # しかし、使わないとrootを準備できない。どうやってfindallできるような中身を準備するのか？
-
-        self.game.file_input = Mock()
+    def test_load_xml_input(self):
+        """シーン検索を入力テスト。"""
         mock = MagicMock()
-
         search = 'monologue0'
-        load_value = self.msg_engine.load_xml(mock, search)
 
+        load_value = self.msg_engine.load_xml(mock, search)
         assert load_value == ""
 
+        load_value = self.msg_engine.load_xml(self.root, search)
+        assert len(str(load_value)) > 0
