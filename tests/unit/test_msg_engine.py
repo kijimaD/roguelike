@@ -58,12 +58,18 @@ class TestMsgEngine(object):
         load_value = self.msg_engine.load_xml(self.root, search)
         assert len(str(load_value)) > 0
 
-    def test_stlip_text(self):
+    def test_stlips_text(self):
         """改行文字・空白文字の除去ができているかのテスト"""
-        raw_text = "  正常\nであれば 文字しか見えません"
+        raw_text = "  こん\nに ち は"
         test = self.msg_engine.stlips_text(raw_text)
-        assert test == "正常であれば文字しか見えません"
+        assert test == "こんにちは"
 
         raw_text = ""
         test = self.msg_engine.stlips_text(raw_text)
         assert test == ""
+
+    def test_del_script(self):
+        """スクリプト部分の削除のテスト"""
+        test = self.msg_engine.del_script("こ@Aん@Bにbg=''ちbgm=''は")
+        assert test == 'こんにちは'
+
