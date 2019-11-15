@@ -10,6 +10,7 @@ import xml.etree.ElementTree as ET
 import re
 import os
 
+# TODO: 外部ファイルから読み込みたい。（テストは外部ファイル読み込みだが、このファイルでうまくいかない）
 SCREEN = Rect(0, 0, 640, 480)
 SCR_W = 640
 SCR_H = 320
@@ -18,6 +19,7 @@ DEFAULT_FONT = "Yu Mincho"
 HOME_DIR = os.getcwd() + "/../../"
 IMG_DIR = (HOME_DIR + "img")
 TEXT_DIR = (HOME_DIR + "data")
+
 
 class Game:
     def __init__(self):
@@ -147,6 +149,7 @@ class Game:
         text_locate = TEXT_DIR + "/scenario_data.xml"
         root = ET.parse(text_locate).getroot()
         return root
+
 
 class Title:
     """タイトル画面クラス"""
@@ -460,10 +463,11 @@ class MessageEngine:
         """xmlの中からシーン検索する"""
         reg = ".//evt[@id='{}']"
         set_reg = reg.format(search)
+
+        goal_text = ""
         for e in root.findall(set_reg):
-            # print("これは検索した結果です:", e.text)
-            pass
-        goal_text = e.text
+            goal_text += e.text
+
         return goal_text
 
     def split_text(self, input):

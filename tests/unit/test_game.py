@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from mock import Mock
-from roguelike import Game
+from roguelike.roguelike import Game
 import pytest
 import pygame
 
