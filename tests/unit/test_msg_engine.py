@@ -78,7 +78,6 @@ class TestMsgEngine(object):
 
     def test_get_script_argument(self):
         test = self.msg_engine.get_script_argument()
-        
 
     # raw_text関連=====================================
        

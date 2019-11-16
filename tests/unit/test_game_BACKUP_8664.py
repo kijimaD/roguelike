@@ -27,4 +27,8 @@ class TestGame:
         # MEMO:テストしやすい！こういう風に書く。テストをうまく書くというよりテストしやすいメソッドにすることが重要だ。
         assert self.game.game_counter(0) == 1
         assert self.game.game_counter(1) == 2
+<<<<<<< HEAD
         assert self.game.game_counter(100) == 0
+=======
+        assert self.game.game_counter(100) == 0
+>>>>>>> dc5f5cff18aa165c0c70bcce5b09b35dcbe76575

@@ -352,14 +352,23 @@ class MessageEngine:
         screen.blit(self.font.render(text, True, (255, 255, 255)), [x, y])
 
     def set(self, root, search):
-        """テキストとスクリプト用の配列を作成する"""
+        """テキストとスクリプト用の配列を作成し、各インスタンス変数に格納する"""
+        # raw_textから2つに分岐する感じ。
+>>>>>>> origin/dev
         raw_text = self.load_xml(root, search)
         self.set_script_data = self.set_script(raw_text)  # scriptとcur_pageのリスト作成
         shaped_text = self.create_text_data(raw_text)  # 整形
         self.set_data = self.set_text(shaped_text)  # テキストとページ位置のリスト作成
 
     def set_script(self, text):
-        """scriptとcur_pageのリストを作成する"""
+        """scriptとcur_pageのリストを作成する
+        [['スクリプト','ページ番号']]
+        "bgm='morning'@Aおはよう|bgm='evening'@Bこんばんは"
+        [["bgm='morning'",'0'],
+         ["bgm='evening'",'1'],
+         ['@A','0']
+         ['@B','1']]
+        """
         self.page_index = []
         self.script_index = np.empty([0, 2])  # [script, cur_page]
 
@@ -378,7 +387,7 @@ class MessageEngine:
                         self.script_index = np.append(self.script_index, np.array(
                             [[s.group(), p]]), axis=0)
                         break
-                # 最後のページ
+                # 最後のページ。
                 if max(self.page_index) < s.start():
                     self.script_index = np.append(self.script_index, np.array(
                         [[s.group(), len(self.page_index)]]), axis=0)
