@@ -354,7 +354,6 @@ class MessageEngine:
     def set(self, root, search):
         """テキストとスクリプト用の配列を作成し、各インスタンス変数に格納する"""
         # raw_textから2つに分岐する感じ。
->>>>>>> origin/dev
         raw_text = self.load_xml(root, search)
         self.set_script_data = self.set_script(raw_text)  # scriptとcur_pageのリスト作成
         shaped_text = self.create_text_data(raw_text)  # 整形
