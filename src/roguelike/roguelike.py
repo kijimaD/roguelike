@@ -31,7 +31,7 @@ class Game:
         self.title = Title(self.msg_engine)
         self.fulltext = Fulltext(Rect(0, 0, 640, 480), self.msg_engine)
         self.windowtext = WindowText(Rect(0, 0, 640, 480), self.msg_engine)
-        self.root = self.file_input()
+        self.root = self.msg_engine.file_input()
         self.cursor_y = 0
         self.plot_count = 0
         self.game_count = 0
@@ -143,12 +143,6 @@ class Game:
         if game_count > 100:
             game_count = 0
         return game_count
-
-    def file_input(self):
-        """テキストファイルをxmlで読み取る"""
-        text_locate = TEXT_DIR + "/scenario_data.xml"
-        root = ET.parse(text_locate).getroot()
-        return root
 
 
 class Title:
@@ -469,7 +463,13 @@ class MessageEngine:
         bg_image = pygame.image.load(dir)
         screen.blit(bg_image, (10, 10))
 
-    # =================
+    # raw_text生成=================
+
+    def file_input(self):
+        """xmlファイルを読み込み"""
+        text_locate = TEXT_DIR + "/scenario_data.xml"
+        root = ET.parse(text_locate).getroot()
+        return root
 
     def load_xml(self, root, search):
         """xmlの中からシーン検索する"""
