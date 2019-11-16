@@ -15,7 +15,7 @@ SCREEN = Rect(0, 0, 640, 480)
 SCR_W = 640
 SCR_H = 320
 TITLE, WINDOWTEXT, FIELD, FULLTEXT, COMMAND = range(5)
-DEFAULT_FONT = "Yu Mincho"
+DEFAULT_FONT = "Ricty Diminished Discord"
 HOME_DIR = os.getcwd() + "/../../"
 IMG_DIR = (HOME_DIR + "img")
 TEXT_DIR = (HOME_DIR + "data")
@@ -162,11 +162,11 @@ class Title:
         screen.fill((0, 0, 0))
         # pygame.draw.rect(screen, (255, 255, 255), (10, 100 + cursor_y * 20, 100, 18), 1)
         if cursor_y == 0:
-            new_game = "＞はじめから[1]"
-            continue_game = "　つづきから[2]"
+            new_game = ">はじめから[1]"
+            continue_game = " つづきから[2]"
         elif cursor_y == 1:
-            new_game = "　はじめから[1]"
-            continue_game = "＞つづきから[2]"
+            new_game = " はじめから[1]"
+            continue_game = ">つづきから[2]"
         self.msg_engine.draw(screen, 10, 10, "クローンディッガー")
         self.msg_engine.draw(screen, 10, 100, new_game)
         self.msg_engine.draw(screen, 10, 120, continue_game)
@@ -212,7 +212,7 @@ class Window:
         # 最後のページでない場合に▼を追加する。
         # 点滅する
         if len(self.next_show_text) and (game_count % 10) > 5:
-            show_text.append("▼")
+            show_text.append("->")
 
         for c in show_text:
             # テキスト表示用Surfaceを作る
