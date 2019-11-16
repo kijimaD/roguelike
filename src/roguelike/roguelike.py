@@ -421,6 +421,7 @@ class MessageEngine:
         return self.text
 
     # script関連=================
+    # 元データ/引数取得用/削除用の正規表現パターンを作成する。
 
     def get_script_list(self):
         """スクリプトのリストを生成する（検索用）"""
@@ -436,6 +437,7 @@ class MessageEngine:
 
     def get_script_argument(self):
         """スクリプトの引数取得用リストを生成する"""
+        # TODO: 元リストを渡すようにしたい。テストしやすいから。また、つながりがよくわからないのでリファクタリングする。
         goal_pattern = []
         pattern = self.get_script_list()
         # 外側のカッコを削除して、''の内側にカッコを挿入する。

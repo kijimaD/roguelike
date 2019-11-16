@@ -71,7 +71,14 @@ class TestMsgEngine(object):
 
     # script関連=======================================
 
-    
+    def test_get_script_list(self):
+       """型をチェック"""
+       test = self.msg_engine.get_script_list()
+       assert type(test) is list
+
+    def test_get_script_argument(self):
+        test = self.msg_engine.get_script_argument()
+        
 
     # raw_text関連=====================================
        
