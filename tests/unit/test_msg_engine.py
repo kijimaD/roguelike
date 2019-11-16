@@ -47,16 +47,28 @@ class TestMsgEngine(object):
         # self.msg_engine.set(root, search)
         pass
 
+    def test_set_script(self):
+        """script配列作成の入出力比較によるテスト"""
+        test_input = "@A\nこんにちは|\nbgm='morning'こんばんは"
+        test = self.msg_engine.set_script(test_input)
+        print(test)
+        prepare = np.array([["bgm='morning'", '1'],
+                            ['@A', '0'],
+                            ])
+        # ndarrayの比較(リストではない！)
+        assert (test == prepare).all()
+
     def test_set_text(self):
-        """ndarrayの比較（リストではない！）テスト。"""
-        test = self.msg_engine.set_text('こん|に|ちは')
+        """text配列作成の入出力比較によるテスト"""
+        test_input = 'こん|に|ちは'
+        test = self.msg_engine.set_text(test_input)
         prepare = np.array([['0', '0', 'こ'],
                             ['1', '0', 'ん'],
                             ['3', '1', 'に'],
                             ['5', '2', 'ち'],
                             ['6', '2', 'は']
                             ])
-        assert(test == prepare).all()
+        assert (test == prepare).all()
 
     def test_load_xml_input(self):
         """シーン検索を入力テスト。"""

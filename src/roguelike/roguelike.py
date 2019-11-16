@@ -358,6 +358,7 @@ class MessageEngine:
         screen.blit(self.font.render(text, True, (255, 255, 255)), [x, y])
 
     def set(self, root, search):
+        """テキストとスクリプト用の配列を作成する"""
         self.raw_text = self.load_xml(root, search)
         self.set_script_data = self.set_script(self.raw_text)  # scriptとcur_pageのリスト作成
         self.shaped_text = self.create_text_data(self.raw_text)  # 整形
