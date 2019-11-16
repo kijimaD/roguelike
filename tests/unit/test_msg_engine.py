@@ -29,7 +29,7 @@ class TestMsgEngine(object):
         """xmlからロードする"""
         # TODO: テスト用の別ファイルを用意する
         test_file = TEXT_DIR + "/scenario_data.xml"
-        self.root = ET.parse(test_file).getroot()
+        self.dummy_root = ET.parse(test_file).getroot()
 
     @pytest.fixture
     def input(self):
@@ -42,18 +42,24 @@ class TestMsgEngine(object):
 
     def test_set(self):
         """テキストデータの検証。"""
-        # root = 'aa\nfa'
-        # search = 'monologue0'
-        # self.msg_engine.set(root, search)
-        pass
+        mock = MagicMock()
+        search = 'test1'
+
+        test = self.msg_engine.set(self.dummy_root, search)
+        print(self.msg_engine.set_script_data)
+        print(self.msg_engine.set_data)
+        assert self.msg_engine.set_script_data == ''
+        assert self.msg_engine.set_data == ''
 
     def test_set_script(self):
         """script配列作成の入出力比較によるテスト"""
-        test_input = "@A\nこんにちは|\nbgm='morning'こんばんは"
+        # TODO: 改ページがないシーンの場合エラーになる
+        test_input = "bgm='morning'\n@Aおはよう|bgm='evening'\n@B\nこんばんは"
         test = self.msg_engine.set_script(test_input)
-        print(test)
-        prepare = np.array([["bgm='morning'", '1'],
+        prepare = np.array([["bgm='morning'", '0'],
+                            ["bgm='evening'", '1'],
                             ['@A', '0'],
+                            ['@B', '1'],
                             ])
         # ndarrayの比較(リストではない！)
         assert (test == prepare).all()
@@ -70,16 +76,23 @@ class TestMsgEngine(object):
                             ])
         assert (test == prepare).all()
 
+    def test_file_input_char(self):
+        """ファイル入力を文字数でチェック"""
+        # TODO: テスト用のファイルを作成する
+        root = self.msg_engine.file_input()
+        assert len(str(root)) > 0
+
     def test_load_xml_input(self):
         """シーン検索を入力テスト。"""
         mock = MagicMock()
         search = 'monologue0'
 
         # TODO: Mockへの値の入れ方がわからない。値を変えられないのであまり意味がない。
+        # 文字がないことをテストしているだけ
         load_value = self.msg_engine.load_xml(mock, search)
         assert load_value == ""
 
-        load_value = self.msg_engine.load_xml(self.root, search)
+        load_value = self.msg_engine.load_xml(self.dummy_root, search)
         assert len(str(load_value)) > 0
 
     def test_stlips_text(self):
