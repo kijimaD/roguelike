@@ -37,14 +37,13 @@ class TestMsgEngine(object):
 
     def check_const(self):
         """定数を読み込んだか確認する"""
+        # TODO: いらなくない？
         assert TITLE == 0
         assert FULLTEXT == 3
 
     def test_set(self):
-        """テキストデータの検証。"""
-        # root = 'aa\nfa'
-        # search = 'monologue0'
-        # self.msg_engine.set(root, search)
+        """テキスト＋スクリプトの配列を作る"""
+        # TODO: どうやってテストする？
         pass
 
     def test_set_script(self):
@@ -69,6 +68,12 @@ class TestMsgEngine(object):
                             ['6', '2', 'は']
                             ])
         assert (test == prepare).all()
+
+    # script関連=======================================
+
+    
+
+    # raw_text関連=====================================
        
     def test_file_input_char(self):
         """ファイル入力を文字数でチェック"""

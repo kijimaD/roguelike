@@ -212,7 +212,7 @@ class Window:
         # 最後のページでない場合に▼を追加する。
         # 点滅する
         if len(self.next_show_text) and (game_count % 10) > 5:
-            show_text.append("->")
+            show_text.append("▼")
 
         for c in show_text:
             # テキスト表示用Surfaceを作る
@@ -353,10 +353,10 @@ class MessageEngine:
 
     def set(self, root, search):
         """テキストとスクリプト用の配列を作成する"""
-        self.raw_text = self.load_xml(root, search)
-        self.set_script_data = self.set_script(self.raw_text)  # scriptとcur_pageのリスト作成
-        self.shaped_text = self.create_text_data(self.raw_text)  # 整形
-        self.set_data = self.set_text(self.shaped_text)  # テキストとページ位置のリスト作成
+        raw_text = self.load_xml(root, search)
+        self.set_script_data = self.set_script(raw_text)  # scriptとcur_pageのリスト作成
+        shaped_text = self.create_text_data(raw_text)  # 整形
+        self.set_data = self.set_text(shaped_text)  # テキストとページ位置のリスト作成
 
     def set_script(self, text):
         """scriptとcur_pageのリストを作成する"""
