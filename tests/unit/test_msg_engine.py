@@ -47,11 +47,23 @@ class TestMsgEngine(object):
         # self.msg_engine.set(root, search)
         pass
 
+    def test_set_text(self):
+        """ndarrayの比較（リストではない！）テスト。"""
+        test = self.msg_engine.set_text('こん|に|ちは')
+        prepare = np.array([['0', '0', 'こ'],
+                            ['1', '0', 'ん'],
+                            ['3', '1', 'に'],
+                            ['5', '2', 'ち'],
+                            ['6', '2', 'は']
+                            ])
+        assert(test == prepare).all()
+
     def test_load_xml_input(self):
         """シーン検索を入力テスト。"""
         mock = MagicMock()
         search = 'monologue0'
 
+        # TODO: Mockへの値の入れ方がわからない。値を変えられないのであまり意味がない。
         load_value = self.msg_engine.load_xml(mock, search)
         assert load_value == ""
 
@@ -70,6 +82,12 @@ class TestMsgEngine(object):
 
     def test_del_script(self):
         """スクリプト部分の削除のテスト"""
-        test = self.msg_engine.del_script("こ@Aん@Bにbg=''ちbgm=''は")
+        raw_text = "こ@Aん@Bにbg=''ちbgm=''は"
+        test = self.msg_engine.del_script(raw_text)
         assert test == 'こんにちは'
 
+    def test_create_text_data(self):
+        """スクリプト削除＋空白文字削除ができているかテスト"""
+        raw_text = "こ@Aん@B にbg=''ち\nは"
+        test = self.msg_engine.create_text_data(raw_text)
+        assert test == 'こんにちは'

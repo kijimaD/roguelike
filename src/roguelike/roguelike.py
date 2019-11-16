@@ -359,9 +359,9 @@ class MessageEngine:
 
     def set(self, root, search):
         self.raw_text = self.load_xml(root, search)
-        self.set_script_data = self.set_script(self.raw_text)  # scriptとcur_pageのリスト
-        self.shaped_text = self.create_text_data(self.raw_text)
-        self.set_data = self.set_text(self.shaped_text)  # テキストとページ位置のリスト
+        self.set_script_data = self.set_script(self.raw_text)  # scriptとcur_pageのリスト作成
+        self.shaped_text = self.create_text_data(self.raw_text)  # 整形
+        self.set_data = self.set_text(self.shaped_text)  # テキストとページ位置のリスト作成
 
     def set_script(self, text):
         """scriptとcur_pageのリストを作成する"""
@@ -392,8 +392,16 @@ class MessageEngine:
         return self.script_index
 
     def set_text(self, text):
-        """全体の文字の位置を求めて、リストを作成する。※改ページの処理に過ぎない"""
-        # （文字列群）最初にパターンマッチで|を探し、それぞれでスクリプトを探す。結果をリストに格納する。['command','cur_page']な具合に。
+        """全体の文字の位置を求めて、リストを作成する。※改ページの処理に過ぎない。
+        [['文字位置','ページ位置','文字']]
+        'こん|に|ちは'は、
+        [['0','0','こ'],
+         ['1','0','ん'],
+         ['3','1','に'],
+         ['5','2','ち'],
+         ['6','2','は']] てな具合になる。
+        """
+
         self.hide_flag = False
         self.text = np.empty([0, 3])
         count_page = 0
@@ -417,8 +425,11 @@ class MessageEngine:
 
         return self.text
 
+    # script関連=================
+
     def get_script_list(self):
         """スクリプトのリストを生成する（検索用）"""
+        # TODO: 定数で渡したほうがよくないか？
         pattern = []
         pattern += [
             "([ab]='.*')",
@@ -457,7 +468,7 @@ class MessageEngine:
         bg_image = pygame.image.load(dir)
         screen.blit(bg_image, (10, 10))
 
-    # ファイル関連 ==============================
+    # =================
 
     def load_xml(self, root, search):
         """xmlの中からシーン検索する"""
@@ -485,7 +496,7 @@ class MessageEngine:
         return goal_text
 
     def create_text_data(self, raw_text):
-        """テキスト用データを生成する"""
+        """テキスト用データを生成する。スクリプト削除＋余計な文字削除"""
         remove_text = self.del_script(raw_text)
         goal_text = self.stlips_text(remove_text)
         return goal_text
