@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from roguelike import Title, MessageEngine
+from roguelike.roguelike import MessageEngine
 DEFAULT_FONT = "Yu Mincho"
 
 # def test_update():

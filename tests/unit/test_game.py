@@ -28,8 +28,3 @@ class TestGame:
         assert self.game.game_counter(0) == 1
         assert self.game.game_counter(1) == 2
         assert self.game.game_counter(100) == 0
-
-    def test_file_input_char(self):
-        """ファイル入力を文字数でチェック"""
-        root = self.game.file_input()
-        assert len(str(root)) > 0
