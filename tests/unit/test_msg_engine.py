@@ -1,6 +1,8 @@
 # coding: utf-8
 
 # TODO: テストで共通に読み込むようにしたい。
+# TODO: 起動するディレクトリを変えると動かない
+
 import pygame
 import pygame.mixer
 from pygame.locals import *
@@ -27,7 +29,7 @@ class TestMsgEngine(object):
 
     def setup(self):
         """xmlからロードする"""
-        # TODO: テスト用の別ファイルを用意する
+        # TODO: テスト用の別ファイルを用意する.
         test_file = TEXT_DIR + "/scenario_data.xml"
         self.root = ET.parse(test_file).getroot()
 
@@ -79,7 +81,7 @@ class TestMsgEngine(object):
     def test_get_script_argument(self):
         """変化をチェック"""
         test = self.msg_engine.get_script_argument()
-        # TODO: コード側を改変する.
+        # TODO: コード側を改変する....
 
     # raw_text関連=====================================
        

@@ -11,12 +11,13 @@ import re
 import os
 
 # TODO: 外部ファイルから読み込みたい。（テストは外部ファイル読み込みだが、このファイルでうまくいかない）
+# Game()するたびに画面が出るのがウザい。特に全テストのときはいくつも出てくる。
 SCREEN = Rect(0, 0, 640, 480)
 SCR_W = 640
 SCR_H = 320
 TITLE, WINDOWTEXT, FIELD, FULLTEXT, COMMAND = range(5)
 DEFAULT_FONT = "Ricty Diminished Discord"
-HOME_DIR = os.getcwd() + "/../../"
+HOME_DIR = os.getcwd() + "/../../" # TODO: 修正する
 IMG_DIR = (HOME_DIR + "img")
 TEXT_DIR = (HOME_DIR + "data")
 
@@ -24,7 +25,7 @@ TEXT_DIR = (HOME_DIR + "data")
 class Game:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((SCREEN.size))
+        # self.screen = pygame.display.set_mode((SCREEN.size))
         pygame.display.set_caption("Roguelike")
         self.msg_engine = MessageEngine()
         self.plot = Plot(self.msg_engine)
@@ -536,6 +537,7 @@ class Plot:
 
 
 class Map:
+    "フィールドビューx"
     def __init__(self):
         pass
 
@@ -550,6 +552,7 @@ class Map:
 
 
 class Buttle:
+    "戦闘"
     pass
 
 
@@ -594,4 +597,5 @@ class Hero:
 
 if __name__ == "__main__":
     game = Game()
+    game.screen = pygame.display.set_mode((SCREEN.size)) # テストにウィンドウが出るのを避けるためここに置く
     game.mainloop()
