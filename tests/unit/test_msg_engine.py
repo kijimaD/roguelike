@@ -54,7 +54,7 @@ class TestMsgEngine(object):
         prepare = np.array([["bgm='morning'", '1'],
                             ['@A', '0'],
                             ])
-        # ndarrayの比較(リストではない！)
+        # ndarrayの比較(リストではなく多次元配列)
         assert (test == prepare).all()
 
     def test_set_text(self):
@@ -77,7 +77,9 @@ class TestMsgEngine(object):
        assert type(test) is list
 
     def test_get_script_argument(self):
+        """変化をチェック"""
         test = self.msg_engine.get_script_argument()
+        # TODO: コード側を改変する.
 
     # raw_text関連=====================================
        
