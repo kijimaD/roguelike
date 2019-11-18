@@ -10,14 +10,17 @@ import xml.etree.ElementTree as ET
 import re
 import os
 
-# TODO: 外部ファイルから読み込みたい。（テストは外部ファイル読み込みだが、このファイルでうまくいかない）
 # TODO: クラスで分割する
+# TODO: v外部ファイルから読み込みたい。（テストは外部ファイル読み込みだが、このファイルでうまくいかない）
 SCREEN = Rect(0, 0, 640, 480)
 SCR_W = 640
 SCR_H = 320
 TITLE, WINDOWTEXT, FIELD, FULLTEXT, COMMAND = range(5)
 DEFAULT_FONT = "Ricty Diminished Discord"
-HOME_DIR = "../../"
+HOME_DIR = "../../" # パッケージのroguelikeのディレクトリを読み込めばいい。
+
+# ちゃんとする…テストとroguelike.pyの階層がたまたま同じだから動いているが、変えるとうごかない。
+# mainとして動くときと、モジュールとして読み込まれるときで、ディレクトリで違うから。同じにするには、絶対パスで指定する必要がある。
 IMG_DIR = (HOME_DIR + "img")
 TEXT_DIR = (HOME_DIR + "data")
 

@@ -21,6 +21,7 @@ from mock import MagicMock
 from roguelike.roguelike import MessageEngine
 from roguelike.consts import *
 
+import roguelike # パス出力のテスト
 
 class TestMsgEngine(object):
     pygame.init()
@@ -52,7 +53,6 @@ class TestMsgEngine(object):
         """script配列作成の入出力比較によるテスト"""
         test_input = "@A\nこんにちは|\nbgm='morning'こんばんは"
         test = self.msg_engine.set_script(test_input)
-        print(test)
         prepare = np.array([["bgm='morning'", '1'],
                             ['@A', '0'],
                             ])
@@ -142,3 +142,4 @@ class TestMsgEngine(object):
         raw_text = "こ@Aん@B にbg=''ち\nは"
         test = self.msg_engine.create_text_data(raw_text)
         assert test == 'こんにちは'
+        print(roguelike__path__)
