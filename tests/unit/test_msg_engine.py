@@ -73,15 +73,22 @@ class TestMsgEngine(object):
 
     # script関連=======================================
 
-    def test_get_script_list(self):
+    def test_get_script_list_type(self):
        """型をチェック"""
        test = self.msg_engine.get_script_list()
        assert type(test) is list
 
     def test_get_script_argument(self):
-        """変化をチェック"""
-        test = self.msg_engine.get_script_argument()
-        # TODO: コード側を改変する....
+        """入出力チェック"""
+        pattern = [
+            "(bgm='.*')",
+        ]
+        test = self.msg_engine.get_script_argument(pattern)
+        
+        test_goal = [
+            "bgm='(.*)'",
+        ]
+        assert test == test_goal
 
     # raw_text関連=====================================
        

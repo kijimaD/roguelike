@@ -248,7 +248,7 @@ class Window:
         """スクリプトを読み込んで特殊効果を描画する"""
         # TODO: 効果スクリプトを追加する
         self.script_stack = []
-        script_list = self.msg_engine.get_script_argument()
+        script_list = self.msg_engine.argument_script_list
         s = []
         for p in range(self.cur_page + 1):
             self.script_stack += [x[0] for x in set_script_data if x[1] == str(p)]
@@ -347,6 +347,8 @@ class MessageEngine:
 
     def __init__(self):
         self.font = pygame.font.SysFont(DEFAULT_FONT, 20)
+        self.base_script_list = self.get_script_list()
+        self.argument_script_list = self.get_script_argument(self.base_script_list)
 
     def draw(self, screen, x, y, text):
         """メッセージの描画"""
@@ -431,7 +433,7 @@ class MessageEngine:
 
     # script関連=================
     # 元データ/引数取得用/削除用の正規表現パターンを作成する。
-
+    
     def get_script_list(self):
         """スクリプトのリストを生成する（検索用）"""
         # TODO: 定数で渡したほうがよくないか？
@@ -444,12 +446,11 @@ class MessageEngine:
         ]
         return pattern
 
-    def get_script_argument(self):
+    def get_script_argument(self, pattern):
         """スクリプトの引数取得用リストを生成する"""
-        # TODO: 元リストを渡すようにしたい。テストしやすいから。また、つながりがよくわからないのでリファクタリングする。
         goal_pattern = []
-        pattern = self.get_script_list()
         # 外側のカッコを削除して、''の内側にカッコを挿入する。
+        # TODO: 一発で加工したい。
         for s in pattern:
             text = re.sub(r'\(', '', s)
             text = re.sub(r'\)', '', text)
