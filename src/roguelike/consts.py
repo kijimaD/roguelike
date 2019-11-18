@@ -8,6 +8,6 @@ SCR_W = 640
 SCR_H = 320
 TITLE, WINDOWTEXT, FIELD, FULLTEXT, COMMAND = range(5)
 DEFAULT_FONT = "Yu Mincho"
-HOME_DIR = os.getcwd() + "/../../"
+HOME_DIR = "../../"
 IMG_DIR = (HOME_DIR + "img")
 TEXT_DIR = (HOME_DIR + "data")

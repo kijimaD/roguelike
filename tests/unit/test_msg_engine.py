@@ -71,24 +71,36 @@ class TestMsgEngine(object):
                             ])
         assert (test == prepare).all()
 
-    # script関連=======================================
+    # 正規表現生成=======================================
 
     def test_get_script_list_type(self):
        """型をチェック"""
        test = self.msg_engine.get_script_list()
        assert type(test) is list
 
-    def test_get_script_argument(self):
-        """入出力チェック"""
+    def test_get_script_argument_output(self):
+        """スクリプト引数取得の正規表現の出力チェック"""
         pattern = [
             "(bgm='.*')",
         ]
         test = self.msg_engine.get_script_argument(pattern)
         
-        test_goal = [
+        test_expect = [
             "bgm='(.*)'",
         ]
-        assert test == test_goal
+        assert test == test_expect
+
+    def test_get_script_delete_list_output(self):
+        """スクリプト削除の正規表現の出力チェック"""
+        pattern = [
+            "(bgm='.*')",
+        ]
+        test = self.msg_engine.get_script_delete_list(pattern)
+
+        test_expect = [
+            "bgm='.*'",
+        ]
+        assert test == test_expect
 
     # raw_text関連=====================================
        

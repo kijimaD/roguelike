@@ -11,13 +11,12 @@ import re
 import os
 
 # TODO: 外部ファイルから読み込みたい。（テストは外部ファイル読み込みだが、このファイルでうまくいかない）
-# Game()するたびに画面が出るのがウザい。特に全テストのときはいくつも出てくる。
 SCREEN = Rect(0, 0, 640, 480)
 SCR_W = 640
 SCR_H = 320
 TITLE, WINDOWTEXT, FIELD, FULLTEXT, COMMAND = range(5)
 DEFAULT_FONT = "Ricty Diminished Discord"
-HOME_DIR = os.getcwd() + "/../../" # TODO: 修正する
+HOME_DIR = "../../"
 IMG_DIR = (HOME_DIR + "img")
 TEXT_DIR = (HOME_DIR + "data")
 
@@ -347,8 +346,9 @@ class MessageEngine:
 
     def __init__(self):
         self.font = pygame.font.SysFont(DEFAULT_FONT, 20)
-        self.base_script_list = self.get_script_list()
-        self.argument_script_list = self.get_script_argument(self.base_script_list)
+        base_script_list = self.get_script_list()
+        self.argument_script_list = self.get_script_argument(self.get_script_list())
+        self.delete_script_list = self.get_script_delete_list(self.get_script_list())
 
     def draw(self, screen, x, y, text):
         """メッセージの描画"""
@@ -431,12 +431,13 @@ class MessageEngine:
 
         return self.text
 
-    # script関連=================
+    # 正規表現生成=================
     # 元データ/引数取得用/削除用の正規表現パターンを作成する。
     
     def get_script_list(self):
         """スクリプトのリストを生成する（検索用）"""
-        # TODO: 定数で渡したほうがよくないか？
+        # 例) "(bgm='.*)"
+        
         pattern = []
         pattern += [
             "([ab]='.*')",
@@ -448,8 +449,9 @@ class MessageEngine:
 
     def get_script_argument(self, pattern):
         """スクリプトの引数取得用リストを生成する"""
+        # 例) "bgm='(.*)'"
+        
         goal_pattern = []
-        # 外側のカッコを削除して、''の内側にカッコを挿入する。
         # TODO: 一発で加工したい。
         for s in pattern:
             text = re.sub(r'\(', '', s)
@@ -459,10 +461,11 @@ class MessageEngine:
         # print("これは引数取得用", goal_pattern)
         return goal_pattern
 
-    def get_script_delete_list(self):
+    def get_script_delete_list(self, pattern):
         """削除用リストを生成する"""
+        # 例) "bgm='.*'"
+        
         goal_pattern = []
-        pattern = self.get_script_list()
         for s in pattern:
             text0 = re.sub(r'\(', '', s)
             text1 = re.sub(r'\)', '', text0)
@@ -502,7 +505,7 @@ class MessageEngine:
 
     def del_script(self, raw_text):
         """スクリプト部分を削除する"""
-        del_pattern = self.get_script_delete_list()
+        del_pattern = self.get_script_delete_list(self.get_script_list())
         goal_text = raw_text  # raw_textを使うのは最初だけ！
         for pat in del_pattern:
             goal_text = re.sub(pat, "", goal_text)
