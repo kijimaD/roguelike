@@ -11,6 +11,7 @@ import re
 import os
 
 # TODO: 外部ファイルから読み込みたい。（テストは外部ファイル読み込みだが、このファイルでうまくいかない）
+# TODO: クラスで分割する
 SCREEN = Rect(0, 0, 640, 480)
 SCR_W = 640
 SCR_H = 320
@@ -541,7 +542,7 @@ class Plot:
 
 
 class Map:
-    "フィールドビューx"
+    "フィールドビュー"
     def __init__(self):
         pass
 

@@ -1,6 +1,6 @@
 # coding: utf-8
 
-# TODO: テストで共通に読み込むようにしたい。
+# TODO: テストで共通importしたい
 # TODO: 起動するディレクトリを変えると動かない
 
 import pygame
