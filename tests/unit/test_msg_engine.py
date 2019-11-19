@@ -9,7 +9,7 @@ import xml.etree.ElementTree as ET
 from mock import Mock
 from mock import MagicMock
 from roguelike.main import Game
-from roguelike.main import MessageEngine
+from roguelike.msg_engine import MessageEngine
 from roguelike.consts import *
 
 import roguelike # パス出力のテスト
