@@ -8,8 +8,8 @@ import re
 import xml.etree.ElementTree as ET
 from mock import Mock
 from mock import MagicMock
-from roguelike.roguelike import Game
-from roguelike.roguelike import MessageEngine
+from roguelike.main import Game
+from roguelike.main import MessageEngine
 from roguelike.consts import *
 
 import roguelike # パス出力のテスト
