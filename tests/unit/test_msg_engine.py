@@ -1,15 +1,13 @@
-# coding: utf-8
-
 # TODO: テストで共通importしたい
 # TODO: 起動するディレクトリを変えると動かない
 
 import numpy as np
-import xml.etree.ElementTree as ET
-import re
+import os
 import pytest
+import re
+import xml.etree.ElementTree as ET
 from mock import Mock
 from mock import MagicMock
-
 from roguelike.roguelike import Game
 from roguelike.roguelike import MessageEngine
 from roguelike.consts import *
@@ -138,4 +136,7 @@ class TestMsgEngine(object):
         
         print(roguelike.__path__)        
         main_dir = os.path.split(os.path.abspath(__file__))[0]
+        print(os.path.abspath(__file__))
         print(main_dir)
+        marge = os.path.join(main_dir, '../../')
+        print(marge)

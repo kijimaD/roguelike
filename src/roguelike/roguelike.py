@@ -1,14 +1,14 @@
-# coding: utf-8
+#!/usr/bin/python3
 
 import pygame
 import pygame.mixer
-from pygame.locals import *
-import time
 import sys
+import time
 import numpy as np
 import xml.etree.ElementTree as ET
 import re
 import os
+from pygame.locals import *
 
 # TODO: クラスで分割する
 # TODO: v外部ファイルから読み込みたい。（テストは外部ファイル読み込みだが、このファイルでうまくいかない）
@@ -17,12 +17,10 @@ SCR_W = 640
 SCR_H = 320
 TITLE, WINDOWTEXT, FIELD, FULLTEXT, COMMAND = range(5)
 DEFAULT_FONT = "Ricty Diminished Discord"
-HOME_DIR = "../../" # パッケージのroguelikeのディレクトリを読み込めばいい。
-# CAUTION: スクリプトの実行ディレクトリがunitじゃないと動かない
-# ちゃんとする…テストとroguelike.pyの階層がたまたま同じだから動いているが、変えるとうごかない。
-# mainとして動くときと、モジュールとして読み込まれるときで、ディレクトリで違うから。同じにするには、絶対パスで指定する必要がある。
-IMG_DIR = (HOME_DIR + "img")
-TEXT_DIR = (HOME_DIR + "data")
+run_dir = os.path.split(os.path.abspath(__file__))[0]
+HOME_DIR = os.path.join(run_dir, '../../')
+IMG_DIR = os.path.join(HOME_DIR , "img")
+TEXT_DIR = os.path.join(HOME_DIR , "data")
 
 
 class Game:
