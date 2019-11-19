@@ -1,14 +1,21 @@
 #!/usr/bin/python3
 
+import os
 import pygame
 import pygame.mixer
 import sys
 import time
 import numpy as np
-import xml.etree.ElementTree as ET
 import re
-import os
+import xml.etree.ElementTree as ET
 from pygame.locals import *
+
+# from roguelike import Title
+# roguelikeをパッケージとして認識しない
+
+# from roguelike.sublib import Title
+# roguelike.title import Title などとしたいが、'roguelike is not a package' と出る。テストでは同じ文でできてるのになぁ…。
+# pygameなどを見ていても普通にできているように
 
 # TODO: クラスで分割する
 # TODO: v外部ファイルから読み込みたい。（テストは外部ファイル読み込みだが、このファイルでうまくいかない）
@@ -146,7 +153,6 @@ class Game:
             game_count = 0
         return game_count
 
-
 class Title:
     """タイトル画面クラス"""
     START, CONTINUE, EXIT = 0, 1, 2
@@ -172,8 +178,8 @@ class Title:
         self.msg_engine.draw(screen, 10, 10, "クローンディッガー")
         self.msg_engine.draw(screen, 10, 100, new_game)
         self.msg_engine.draw(screen, 10, 120, continue_game)
-
-
+    
+    
 class Window:
     """ウィンドウの基本クラス"""
     EDGE_WIDTH = 4

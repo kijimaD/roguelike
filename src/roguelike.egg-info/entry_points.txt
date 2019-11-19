@@ -1,0 +1,3 @@
+[console_scripts]
+roguelike = roguelike.roguelike:Game
+
