@@ -18,7 +18,7 @@ SCR_H = 320
 TITLE, WINDOWTEXT, FIELD, FULLTEXT, COMMAND = range(5)
 DEFAULT_FONT = "Ricty Diminished Discord"
 HOME_DIR = "../../" # パッケージのroguelikeのディレクトリを読み込めばいい。
-
+# CAUTION: スクリプトの実行ディレクトリがunitじゃないと動かない
 # ちゃんとする…テストとroguelike.pyの階層がたまたま同じだから動いているが、変えるとうごかない。
 # mainとして動くときと、モジュールとして読み込まれるときで、ディレクトリで違うから。同じにするには、絶対パスで指定する必要がある。
 IMG_DIR = (HOME_DIR + "img")

@@ -3,21 +3,14 @@
 # TODO: テストで共通importしたい
 # TODO: 起動するディレクトリを変えると動かない
 
-import pygame
-import pygame.mixer
-from pygame.locals import *
-import time
-import sys
 import numpy as np
 import xml.etree.ElementTree as ET
 import re
-import os
-
-from roguelike.roguelike import Game
 import pytest
 from mock import Mock
 from mock import MagicMock
 
+from roguelike.roguelike import Game
 from roguelike.roguelike import MessageEngine
 from roguelike.consts import *
 
@@ -142,4 +135,7 @@ class TestMsgEngine(object):
         raw_text = "こ@Aん@B にbg=''ち\nは"
         test = self.msg_engine.create_text_data(raw_text)
         assert test == 'こんにちは'
-        print(roguelike__path__)
+        
+        print(roguelike.__path__)        
+        main_dir = os.path.split(os.path.abspath(__file__))[0]
+        print(main_dir)
