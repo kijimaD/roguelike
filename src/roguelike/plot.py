@@ -1,3 +1,5 @@
+import pygame.mixer
+from roguelike.utils import Utils
 from roguelike.consts import *
 
 class Plot:

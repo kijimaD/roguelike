@@ -6,7 +6,7 @@ from roguelike.consts import *
 """雑多なツール類"""
 class Utils:
     def __init__():
-        pass
+        pygame.mixer.init()
 
     def load_image(file):
         """例外処理を組み込んだload"""
@@ -26,10 +26,12 @@ class Utils:
     
     def load_sound(file):
         """例外処理を組み込んだload"""
-        if not pygame.mixer: return dummysound()
         file = os.path.join(SOUND_DIR, file)
         try:
-            sound = pygame.mixer.Sound(file)
+            # sound = pygame.mixer.Sound(file)
+            # なぜかSoundでできない
+            sound = pygame.mixer.music.load(file)
+            return sound            
         except pygame.error:
             raise SystemExit('Cound not load sound "%s" %s' %(file, pygame.get_error()))
-        return sound
+
