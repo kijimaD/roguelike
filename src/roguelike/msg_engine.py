@@ -3,6 +3,7 @@ import numpy as np
 import re
 import xml.etree.ElementTree as ET
 from roguelike.consts import *
+from roguelike.utils import Utils
 
 # TODO: ファイル関連の操作に例外処理を入れる
 
@@ -139,14 +140,14 @@ class MessageEngine:
 
     def script_bg(self, bg, screen):
         """背景を変更する"""
-        dir = (IMG_DIR + "/" + bg)
-        bg_image = pygame.image.load(dir)
+        # bg_image = pygame.image.load(dir)
+        bg_image = Utils.load_image(bg)
         screen.blit(bg_image, (10, 10))
 
     # raw_text生成=================
 
     def file_input(self):
-        """xmlファイルを読み込み"""
+        """xmlファイルを読み込む"""
         text_locate = TEXT_DIR + "/scenario_data.xml"
         root = ET.parse(text_locate).getroot()
         return root

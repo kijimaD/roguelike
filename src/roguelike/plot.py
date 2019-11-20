@@ -1,3 +1,5 @@
+from roguelike.consts import *
+
 class Plot:
     def __init__(self, msg_engine):
         self.msg_engine = msg_engine
