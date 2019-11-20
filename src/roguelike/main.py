@@ -16,6 +16,12 @@ from roguelike import Window
 from roguelike import Fulltext
 from roguelike import WindowText
 from roguelike import MessageEngine
+from roguelike import FieldView
+from roguelike import Plot
+from roguelike import Command
+from roguelike import PlayerCharacter
+from roguelike import Character
+from roguelike import Enemy
 
 class Game:
     def __init__(self):
@@ -139,88 +145,6 @@ class Game:
         if game_count > 100:
             game_count = 0
         return game_count
-
-    
-class Plot:
-    def __init__(self, msg_engine):
-        self.msg_engine = msg_engine
-        self.plot_count = 0
-        self.game_state = 0
-
-    def opening(self, root):
-        """オープニング。gamestateを返すのを忘れないように"""
-        if self.plot_count == 0:
-            self.game_state = FULLTEXT
-            self.msg_engine.set(root, 'monologue0')
-        elif self.plot_count == 1:
-            self.game_state = WINDOWTEXT
-            self.msg_engine.set(root, 'intro0')
-        elif self.plot_count == 2:
-            self.game_state = FULLTEXT
-            self.msg_engine.set(root, 'monologue0')
-        else:
-            self.plot_count = 0
-        return self.game_state
-
-
-class Map:
-    "フィールドビュー"
-    def __init__(self):
-        pass
-
-    def is_movable(self):
-        pass
-
-    def get_message(self):
-        pass
-
-    def draw(self):
-        pass
-
-
-class Buttle:
-    "戦闘"
-    pass
-
-
-class FieldView:
-    pass
-
-
-class Command:
-    pass
-
-
-class Item:
-    pass
-
-
-class PlayerCharacter:
-    """マップ上での操作キャラクター"""
-    pass
-
-
-class Character:
-    """登場人物"""
-
-    def __init__(self, icon, message):
-        self.icon = icon
-        self.message = message
-
-    def talk(self):
-        pass
-
-    def draw(self, draw_side):
-        pass
-
-
-class Enemy:
-    pass
-
-
-class Hero:
-    pass
-
 
 if __name__ == "__main__":
     game = Game()

@@ -133,10 +133,3 @@ class TestMsgEngine(object):
         raw_text = "こ@Aん@B にbg=''ち\nは"
         test = self.msg_engine.create_text_data(raw_text)
         assert test == 'こんにちは'
-        
-        print(roguelike.__path__)        
-        main_dir = os.path.split(os.path.abspath(__file__))[0]
-        print(os.path.abspath(__file__))
-        print(main_dir)
-        marge = os.path.join(main_dir, '../../')
-        print(marge)
