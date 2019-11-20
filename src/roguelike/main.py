@@ -22,6 +22,7 @@ from roguelike import Command
 from roguelike import PlayerCharacter
 from roguelike import Character
 from roguelike import Enemy
+from roguelike import Utils
 
 class Game:
     def __init__(self):

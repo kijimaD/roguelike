@@ -4,6 +4,8 @@ import re
 import xml.etree.ElementTree as ET
 from roguelike.consts import *
 
+# TODO: ファイル関連の操作に例外処理を入れる
+
 class MessageEngine:
     """メッセージエンジンクラス"""
 

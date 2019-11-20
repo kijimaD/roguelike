@@ -1,6 +1,3 @@
-# TODO: テストで共通importしたい
-# TODO: 起動するディレクトリを変えると動かない
-
 import numpy as np
 import os
 import pytest
@@ -12,8 +9,6 @@ from roguelike.main import Game
 from roguelike.msg_engine import MessageEngine
 from roguelike.consts import *
 
-import roguelike # パス出力のテスト
-
 class TestMsgEngine(object):
     pygame.init()
     game = Game()
@@ -22,7 +17,7 @@ class TestMsgEngine(object):
     def setup(self):
         """xmlからロードする"""
         # TODO: テスト用の別ファイルを用意する.
-        test_file = TEXT_DIR + "/scenario_data.xml"
+        test_file = os.path.join(TEXT_DIR, 'scenario_data.xml')
         self.root = ET.parse(test_file).getroot()
 
     @pytest.fixture
