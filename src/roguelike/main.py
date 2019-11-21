@@ -40,9 +40,11 @@ class Game:
         self.plot_count = 0
         self.game_count = 0
         self.game_state = TITLE
+        Utils.play_bgm('title.mp3') # 暫定。各ゲームモードで一回だけ実行されるようなフックがない。
 
     def mainloop(self):
-        """メインループ"""
+        """メインループ
+        """
         clock = pygame.time.Clock()
         while True:
             clock.tick(60)
@@ -52,7 +54,8 @@ class Game:
             self.check_event()
 
     def update(self):
-        """ ゲーム状態の更新 """
+        """ゲーム状態の更新
+        """
         self.game_count = self.game_counter(self.game_count)
         if self.game_state == TITLE:
             self.title.update()
@@ -62,7 +65,8 @@ class Game:
             self.windowtext.update()
 
     def render(self):
-        """ゲームオブジェクトのレンダリング"""
+        """ゲームオブジェクトのレンダリング
+        """
         if self.game_state == TITLE:
             self.title.draw(self.screen, self.cursor_y)
         elif self.game_state == FULLTEXT:
@@ -73,7 +77,8 @@ class Game:
                                        self.game_count)
 
     def check_event(self):
-        """イベントハンドラ"""
+        """イベントハンドラ
+        """
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -94,7 +99,8 @@ class Game:
                 sys.exit()
 
     def title_handler(self, event):
-        """タイトル画面のイベントハンドラ"""
+        """タイトル画面のイベントハンドラ
+        """
         if event.type == KEYDOWN:
             if event.key == K_1:
                 # 最初から（OPへ）
@@ -118,7 +124,8 @@ class Game:
                     pass
 
     def fulltext_handler(self, event):
-        """フルテキストモードのイベントハンドラ"""
+        """フルテキストモードのイベントハンドラ
+        """
         if event.type == KEYDOWN:
             if event.key == K_1:
                 print("フルテキストモードで1を押しました")
@@ -126,7 +133,7 @@ class Game:
                 # ページ送り
                 print("フルテキストモードでENTERを押しました")
                 self.fulltext.next()
-                # TODO: タイムラグがある
+                # TODO: タイムラグが酷い、操作と同時に鳴らしたい。
                 machine_gun = Utils.load_sound('next_short.wav')
                 machine_gun.play()
                 if len(self.fulltext.next_show_text) == 0:
@@ -134,7 +141,8 @@ class Game:
                     self.game_state = self.plot.opening(self.root)
 
     def windowtext_handler(self, event):
-        """ウィンドウテキストのイベントハンドラ"""
+        """ウィンドウテキストのイベントハンドラ
+        """
         if event.type == KEYDOWN:
             if event.key == K_RETURN:
                 # ページ送り
@@ -145,7 +153,8 @@ class Game:
                     self.game_state = self.plot.opening(self.root)
 
     def game_counter(self, game_count):
-        """描画に使用するカウンタ。"""
+        """描画に使用するカウンタ。
+        """
         game_count += 1
         if game_count > 100:
             game_count = 0
