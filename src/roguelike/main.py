@@ -27,6 +27,7 @@ from roguelike import Utils
 class Game:
     def __init__(self):
         pygame.init()
+        pygame.mixer.init()
         # self.screen = pygame.display.set_mode((SCREEN.size))
         pygame.display.set_caption("Roguelike")
         self.msg_engine = MessageEngine()
@@ -125,6 +126,9 @@ class Game:
                 # ページ送り
                 print("フルテキストモードでENTERを押しました")
                 self.fulltext.next()
+                # TODO: タイムラグがある
+                machine_gun = Utils.load_sound('next_short.wav')
+                machine_gun.play()
                 if len(self.fulltext.next_show_text) == 0:
                     self.plot.plot_count += 1
                     self.game_state = self.plot.opening(self.root)
