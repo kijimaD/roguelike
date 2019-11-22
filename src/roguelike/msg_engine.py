@@ -5,10 +5,9 @@ import xml.etree.ElementTree as ET
 from roguelike.consts import *
 from roguelike.utils import Utils
 
-# TODO: ファイル関連の操作に例外処理を入れる
-
 class MessageEngine:
-    """メッセージエンジンクラス"""
+    """メッセージエンジンクラス
+    """
 
     def __init__(self):
         self.font = pygame.font.SysFont(DEFAULT_FONT, 20)
@@ -17,11 +16,13 @@ class MessageEngine:
         self.delete_script_list = self.get_script_delete_list(self.get_script_list())
 
     def draw(self, screen, x, y, text):
-        """メッセージの描画"""
+        """メッセージの描画
+        """
         screen.blit(self.font.render(text, True, (255, 255, 255)), [x, y])
 
     def set(self, root, search):
-        """テキストとスクリプト用の配列を作成し、各インスタンス変数に格納する"""
+        """テキストとスクリプト用の配列を作成し、各インスタンス変数に格納する
+        """
         # raw_textから2つに分岐する感じ。
         raw_text = self.load_xml(root, search)
         self.set_script_data = self.set_script(raw_text)  # scriptとcur_pageのリスト作成
@@ -99,11 +100,12 @@ class MessageEngine:
 
     # 正規表現生成=================
     # 元データ/引数取得用/削除用の正規表現パターンを作成する。
-    
+
     def get_script_list(self):
-        """スクリプトのリストを生成する（検索用）"""
-        # 例) "(bgm='.*)"
-        
+        """スクリプトのリストを生成する（検索用）
+        例) "(bgm='.*)"
+        """
+
         pattern = []
         pattern += [
             "([ab]='.*')",
@@ -114,9 +116,10 @@ class MessageEngine:
         return pattern
 
     def get_script_argument(self, pattern):
-        """スクリプトの引数取得用リストを生成する"""
-        # 例) "bgm='(.*)'"
-        
+        """スクリプトの引数取得用リストを生成する
+        例) "bgm='(.*)'"
+        """
+
         goal_pattern = []
         # TODO: 一発で加工したい。
         for s in pattern:
@@ -128,9 +131,10 @@ class MessageEngine:
         return goal_pattern
 
     def get_script_delete_list(self, pattern):
-        """削除用リストを生成する"""
-        # 例) "bgm='.*'"
-        
+        """削除用リストを生成する
+        例) "bgm='.*'"
+        """
+
         goal_pattern = []
         for s in pattern:
             text0 = re.sub(r'\(', '', s)
@@ -139,7 +143,8 @@ class MessageEngine:
         return goal_pattern
 
     def script_bg(self, bg, screen):
-        """背景を変更する"""
+        """背景を変更する
+        """
         # bg_image = pygame.image.load(dir)
         bg_image = Utils.load_image(bg)
         screen.blit(bg_image, (10, 10))
@@ -147,13 +152,15 @@ class MessageEngine:
     # raw_text生成=================
 
     def file_input(self):
-        """xmlファイルを読み込む"""
+        """xmlファイルを読み込む
+        """
         text_locate = TEXT_DIR + "/scenario_data.xml"
         root = ET.parse(text_locate).getroot()
         return root
 
     def load_xml(self, root, search):
-        """xmlの中からシーン検索する"""
+        """xmlの中からシーン検索する
+        """
         reg = ".//evt[@id='{}']"
         set_reg = reg.format(search)
 
@@ -164,13 +171,15 @@ class MessageEngine:
         return goal_text
 
     def stlips_text(self, input):
-        """タブ文字改行文字を削除する"""
+        """タブ文字改行文字を削除する
+        """
         # 削除しないと、setできない？
         goal_text = input.strip().replace(' ', '').replace('\n', '')  # タブ文字と改行文字と空白の削除
         return goal_text
 
     def del_script(self, raw_text):
-        """スクリプト部分を削除する"""
+        """スクリプト部分を削除する
+        """
         del_pattern = self.get_script_delete_list(self.get_script_list())
         goal_text = raw_text  # raw_textを使うのは最初だけ！
         for pat in del_pattern:
@@ -178,7 +187,8 @@ class MessageEngine:
         return goal_text
 
     def create_text_data(self, raw_text):
-        """テキスト用データを生成する。スクリプト削除＋余計な文字削除"""
+        """テキスト用データを生成する。スクリプト削除＋余計な文字削除
+        """
         remove_text = self.del_script(raw_text)
         goal_text = self.stlips_text(remove_text)
         return goal_text

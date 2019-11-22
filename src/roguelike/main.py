@@ -133,9 +133,9 @@ class Game:
                 # ページ送り
                 print("フルテキストモードでENTERを押しました")
                 self.fulltext.next()
-                # TODO: タイムラグが酷い、操作と同時に鳴らしたい。
-                machine_gun = Utils.load_sound('next_short.wav')
-                machine_gun.play()
+                # TODO: 操作と再生のタイムラグが酷い、操作と同時に鳴らしたい。
+                next_sound = Utils.load_sound('next_short.wav')
+                next_sound.play()
                 if len(self.fulltext.next_show_text) == 0:
                     self.plot.plot_count += 1
                     self.game_state = self.plot.opening(self.root)

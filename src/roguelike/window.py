@@ -4,7 +4,8 @@ from roguelike.utils import Utils
 import re
 
 class Window:
-    """ウィンドウの基本クラス"""
+    """ウィンドウの基本クラス
+    """
     EDGE_WIDTH = 4
 
     def __init__(self, rect):
@@ -17,14 +18,16 @@ class Window:
         self.is_visible = False  # ウィンドウを表示中か？
 
     def draw(self, screen):
-        """ウィンドウを描画"""
+        """ウィンドウを描画
+        """
         if self.is_visible is False:
             return
         pygame.draw.rect(screen, (255, 255, 255), self.rect, 0)
         pygame.draw.rect(screen, (0, 0, 0), self.inner_rect, 0)
 
     def draw_msg(self, screen, set_data, set_script_data, game_count):
-        """ウィンドウと文章を表示する"""
+        """ウィンドウと文章を表示する
+        """
         # TODO: drawと入れ替えるべきでは？ウィンドウもメッセージも描画しているので。
         screen.fill((40, 40, 40))  # 前の画面をリセット
 
@@ -75,38 +78,43 @@ class Window:
             blitx += jtext.get_rect().w
 
     def draw_effect(self, screen, set_script_data):
-        """スクリプトを読み込んで特殊効果を描画する"""
+        """スクリプトを読み込んで特殊効果を描画する
+        """
         # TODO: 効果スクリプトを追加する
+        # TODO: わかりにくく、テストしにくい。
         self.script_stack = []
-        script_list = self.msg_engine.argument_script_list
-        s = []
         for p in range(self.cur_page + 1):
-            self.script_stack += [x[0] for x in set_script_data if x[1] == str(p)]
+            # 同じページのものだけ取り出す
+            self.script_stack += [x[0] for x in set_script_data if x[1] == str(p)
         # リストを逆にして、最初にマッチしたbgだけ実行する = リストの最後だけ実行
         for x in self.script_stack[::-1]:
-            s = re.search(r"bg='(.*)'", x)
-            if s:
-                if s.group(1) == '':
+            bg = re.search(r"bg='(.*)'", x)
+            if bg:
+                if bg.group(1) == '':
                     screen.fill((0, 0, 0))  # 画面をリセット
                     break
                 else:
-                    self.msg_engine.script_bg(s.group(1), screen)
-                    break
+                    self.msg_engine.script_bg(bg.group(1), screen)
+                    break # 一つでも画像にあたったら抜ける
 
     def show(self):
-        """ウィンドウ表示"""
+        """ウィンドウ表示
+        """
         self.is_visible = True
 
     def hide(self):
-        """ウィンドウを隠す"""
+        """ウィンドウを隠す
+        """
         self.in_visible = False
 
     def update(self):
-        """画面を更新"""
+        """画面を更新
+        """
         pass
 
     def next(self):
-        """メッセージを先に進める。なかったらcur_pageをリセットする"""
+        """メッセージを先に進める。なかったらcur_pageをリセットする
+        """
         self.cur_page += 1
         self.cur_pos = 0
         self.first_flip = 0
