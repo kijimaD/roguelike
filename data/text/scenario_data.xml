@@ -23,7 +23,7 @@
         娑婆にいた頃は真っ黒に日焼けしたゴツい体で、まさにオレはカブトムシだった。
     </evt>
     <evt id="monologue0">
-        bgm='10.mp3'
+        bgm='Black_Sacred_Storm.mp3'
         bg='cave.jpg'
         (1)^
         「遺跡」は古代の昔から各地に存在し、いつ建築されたのかは全く明らかになっていない。^^
@@ -48,6 +48,7 @@
         命の危険を犯して潜る人々はいつしか遺跡ハンターと呼ばれるようになった。
     </evt>
     <evt id="intro0">
+	    bgm='title.mp3'
         a='Player'
         b='Sirase'
 		@A

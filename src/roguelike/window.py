@@ -1,6 +1,7 @@
 import pygame
 from roguelike.consts import *
 from roguelike.utils import Utils
+from roguelike.msg_engine import MessageEngine
 import re
 
 class Window:
@@ -90,6 +91,7 @@ class Window:
         """特殊効果を描画する
         """
         # リストを逆にして、最初にマッチしたbgだけ実行する = リストの最後だけ実行
+        # なぜかmonologue1が2回ループしている。背景もおかしい。
         for x in script_stack[::-1]:
             bg = re.search(r"bg='(.*)'", x)
             if bg:
@@ -97,8 +99,15 @@ class Window:
                     screen.fill((0, 0, 0))  # 画面をリセット
                     break
                 else:
-                    self.msg_engine.script_bg(bg.group(1), screen)
-                    break # 一つでも画像にあたったら抜ける
+                    self.msg_engine.script_change_bg(bg.group(1), screen)
+                    break
+        for x in script_stack[::-1]:
+            bgm = re.search(r"bgm='(.*)'", x)
+            if bgm:
+                if bgm.group(1) == '':
+                    break
+                else:
+                    self.msg_engine.script_change_music(bgm.group(1))
 
     def show(self):
         """ウィンドウ表示

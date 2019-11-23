@@ -40,7 +40,9 @@ class Game:
         self.plot_count = 0
         self.game_count = 0
         self.game_state = TITLE
-        Utils.play_bgm('title.mp3') # 暫定。各ゲームモードで一回だけ実行されるようなフックがない。
+        Utils.play_bgm('title.mp3') # TODO: 暫定。ループ内で一回だけ実行するにはどうしたらいいのか？
+        # 今再生している音を変数に入れておいて、名前が同じであれば再生しないようにすればいいのではないか？
+        self.msg_engine.cur_music = "title.mp3"
 
     def mainloop(self):
         """メインループ
@@ -162,5 +164,5 @@ class Game:
 
 if __name__ == "__main__":
     game = Game()
-    game.screen = pygame.display.set_mode((SCREEN.size)) # テストにウィンドウが出るのを避けるためここに置く
+    game.screen = pygame.display.set_mode((SCREEN.size)) # テストにウィンドウが出るのを避けるためここに書く
     game.mainloop()

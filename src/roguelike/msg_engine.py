@@ -14,6 +14,7 @@ class MessageEngine:
         base_script_list = self.get_script_list()
         self.argument_script_list = self.get_script_argument(self.get_script_list())
         self.delete_script_list = self.get_script_delete_list(self.get_script_list())
+        self.cur_music = ""
 
     def draw(self, screen, x, y, text):
         """メッセージの描画
@@ -142,12 +143,20 @@ class MessageEngine:
             goal_pattern.append(text1)
         return goal_pattern
 
-    def script_bg(self, bg, screen):
+    # スクリプト===================
+
+    def script_change_bg(self, bg, screen):
         """背景を変更する
         """
-        # bg_image = pygame.image.load(dir)
         bg_image = Utils.load_image(bg)
         screen.blit(bg_image, (10, 10))
+
+    def script_change_music(self, bgm):
+        """BGMを変更する
+        """
+        if self.cur_music != bgm:
+            Utils.play_bgm(bgm)
+            self.cur_music = bgm
 
     # raw_text生成=================
 
