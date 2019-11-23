@@ -15,7 +15,8 @@ class TestMsgEngine(object):
     msg_engine = MessageEngine()
 
     def setup(self):
-        """xmlからロードする"""
+        """xmlからロードする
+        """
         # TODO: テスト用の別ファイルを用意する.
         test_file = os.path.join(TEXT_DIR, 'scenario_data.xml')
         self.root = ET.parse(test_file).getroot()
@@ -25,18 +26,20 @@ class TestMsgEngine(object):
         m = Mock
 
     def check_const(self):
-        """定数を読み込んだか確認する"""
-        # TODO: いらなくない？
+        """定数を読み込んだか確認する
+        """
         assert TITLE == 0
         assert FULLTEXT == 3
 
     def test_set(self):
-        """テキスト＋スクリプトの配列を作る"""
+        """テキスト＋スクリプトの配列を作る
+        """
         # TODO: どうやってテストする？
         pass
 
     def test_set_script(self):
-        """script配列作成の入出力比較によるテスト"""
+        """script配列作成の入出力比較によるテスト
+        """
         test_input = "@A\nこんにちは|\nbgm='morning'こんばんは"
         test = self.msg_engine.set_script(test_input)
         prepare = np.array([["bgm='morning'", '1'],
@@ -46,7 +49,8 @@ class TestMsgEngine(object):
         assert (test == prepare).all()
 
     def test_set_text(self):
-        """text配列作成の入出力比較によるテスト"""
+        """text配列作成の入出力比較によるテスト
+        """
         test_input = 'こん|に|ちは'
         test = self.msg_engine.set_text(test_input)
         prepare = np.array([['0', '0', 'こ'],
@@ -60,24 +64,27 @@ class TestMsgEngine(object):
     # 正規表現生成=======================================
 
     def test_get_script_list_type(self):
-       """型をチェック"""
+       """型をチェック
+       """
        test = self.msg_engine.get_script_list()
        assert type(test) is list
 
     def test_get_script_argument_output(self):
-        """スクリプト引数取得の正規表現の出力チェック"""
+        """スクリプト引数取得の正規表現の出力チェック
+        """
         pattern = [
             "(bgm='.*')",
         ]
         test = self.msg_engine.get_script_argument(pattern)
-        
+
         test_expect = [
             "bgm='(.*)'",
         ]
         assert test == test_expect
 
     def test_get_script_delete_list_output(self):
-        """スクリプト削除の正規表現の出力チェック"""
+        """スクリプト削除の正規表現の出力チェック
+        """
         pattern = [
             "(bgm='.*')",
         ]
@@ -89,14 +96,16 @@ class TestMsgEngine(object):
         assert test == test_expect
 
     # raw_text関連=====================================
-       
+
     def test_file_input_char(self):
-        """ファイル入力を文字数でチェック"""
+        """ファイル入力を文字数でチェック
+        """
         root = self.msg_engine.file_input()
         assert len(str(root)) > 0
-       
+
     def test_load_xml_input(self):
-        """シーン検索を入力テスト。"""
+        """シーン検索を入力テスト。
+        """
         mock = MagicMock()
         search = 'monologue0'
 
@@ -108,7 +117,8 @@ class TestMsgEngine(object):
         assert len(str(load_value)) > 0
 
     def test_stlips_text(self):
-        """改行文字・空白文字の除去ができているかのテスト"""
+        """改行文字・空白文字の除去ができているかのテスト
+        """
         raw_text = "  こん\nに ち は"
         test = self.msg_engine.stlips_text(raw_text)
         assert test == "こんにちは"
@@ -118,13 +128,15 @@ class TestMsgEngine(object):
         assert test == ""
 
     def test_del_script(self):
-        """スクリプト部分の削除のテスト"""
+        """スクリプト部分の削除のテスト
+        """
         raw_text = "こ@Aん@Bにbg=''ちbgm=''は"
         test = self.msg_engine.del_script(raw_text)
         assert test == 'こんにちは'
 
     def test_create_text_data(self):
-        """スクリプト削除＋空白文字削除ができているかテスト"""
+        """スクリプト削除＋空白文字削除ができているかテスト
+        """
         raw_text = "こ@Aん@B にbg=''ち\nは"
         test = self.msg_engine.create_text_data(raw_text)
         assert test == 'こんにちは'

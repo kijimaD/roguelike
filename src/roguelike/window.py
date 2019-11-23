@@ -34,7 +34,8 @@ class Window:
         self.show()
         self.draw(screen)
 
-        self.draw_effect(screen, set_script_data)
+        script_stack = self.load_effect(set_script_data, self.cur_page)
+        self.draw_effect(screen, script_stack)
 
         blitx = self.blitx
         blity = self.blity
@@ -77,17 +78,19 @@ class Window:
 
             blitx += jtext.get_rect().w
 
-    def draw_effect(self, screen, set_script_data):
-        """スクリプトを読み込んで特殊効果を描画する
+    def load_effect(self, set_script_data, cur_page):
+        """ページごとにスクリプトを読み込む
         """
-        # TODO: 効果スクリプトを追加する
-        # TODO: わかりにくく、テストしにくい。
-        self.script_stack = []
-        for p in range(self.cur_page + 1):
-            # 同じページのものだけ取り出す
-            self.script_stack += [x[0] for x in set_script_data if x[1] == str(p)
+        self.script_stack = [] # for内でも保持するためselfを使う
+        for p in range(cur_page + 1):
+            self.script_stack += [x[0] for x in set_script_data if x[1] == str(p)]
+        return self.script_stack
+
+    def draw_effect(self, screen, script_stack):
+        """特殊効果を描画する
+        """
         # リストを逆にして、最初にマッチしたbgだけ実行する = リストの最後だけ実行
-        for x in self.script_stack[::-1]:
+        for x in script_stack[::-1]:
             bg = re.search(r"bg='(.*)'", x)
             if bg:
                 if bg.group(1) == '':
