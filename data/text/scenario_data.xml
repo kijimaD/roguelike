@@ -50,7 +50,7 @@
     <evt id="intro0">
 	    bgm='title.mp3'
         A='Player'
-        B='Sirase'
+        B='Mao'
 		@A
         お、見えてきたな…あれが、サクラジマだ。|
 		@B

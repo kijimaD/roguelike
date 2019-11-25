@@ -166,7 +166,10 @@ class MessageEngine:
     def draw_right_character(self, character_name, screen):
         """人物モデル（右）
         """
-        pygame.draw.circle(screen, (0, 0, 255), (520, 140), 40)
+        chara_path = character_name + '.png'
+        image = Utils.load_image(chara_path)
+        screen.blit(image, (420, 100))
+        # pygame.draw.circle(screen, (0, 0, 255), (520, 140), 40)
 
     def draw_left_bubble(self, screen):
         """吹き出し（左）
