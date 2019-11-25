@@ -109,7 +109,7 @@ class MessageEngine:
 
         pattern = []
         pattern += [
-            "([ab]='.*')",
+            "([AB]='.*')",
             "(bgm='.*')",
             "(bg='.*')",
             "(\\@[AB])",
@@ -157,6 +157,28 @@ class MessageEngine:
         if self.cur_music != bgm:
             Utils.play_bgm(bgm)
             self.cur_music = bgm
+
+    def draw_left_character(self, character_name, screen):
+        """人物モデル（左）
+        """
+        pygame.draw.circle(screen, (255, 0, 0), (120, 140), 40)
+
+    def draw_right_character(self, character_name, screen):
+        """人物モデル（右）
+        """
+        pygame.draw.circle(screen, (0, 0, 255), (520, 140), 40)
+
+    def draw_left_bubble(self, screen):
+        """吹き出し（左）
+        """
+        pygame.draw.line(screen, (255, 255, 255), (260, 260), (220, 220), 3)
+        pygame.draw.line(screen, (255, 255, 255), (220, 220), (180, 220), 3)
+
+    def draw_right_bubble(self, screen):
+        """吹き出し（右）
+        """
+        pygame.draw.line(screen, (255, 255, 255), (380, 260), (420, 220), 3)
+        pygame.draw.line(screen, (255, 255, 255), (420, 220), (460, 220), 3)
 
     # raw_text生成=================
 

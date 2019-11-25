@@ -91,7 +91,7 @@ class Window:
         """特殊効果を描画する
         """
         # リストを逆にして、最初にマッチしたbgだけ実行する = リストの最後だけ実行
-        # なぜかmonologue1が2回ループしている。背景もおかしい。
+        # FIXME:: 書き方がひどいかもしれない。余計にforを回してしまう。あと同じことを書いているところが多い。
         for x in script_stack[::-1]:
             bg = re.search(r"bg='(.*)'", x)
             if bg:
@@ -101,6 +101,7 @@ class Window:
                 else:
                     self.msg_engine.script_change_bg(bg.group(1), screen)
                     break
+                
         for x in script_stack[::-1]:
             bgm = re.search(r"bgm='(.*)'", x)
             if bgm:
@@ -108,6 +109,24 @@ class Window:
                     break
                 else:
                     self.msg_engine.script_change_music(bgm.group(1))
+
+        for x in script_stack[::-1]:
+            left = re.search(r"A='(.*)'", x)
+            if left:
+                if left.group(1) == '':
+                    break
+                else:
+                    self.msg_engine.draw_left_character(left.group(1), screen)
+                    self.msg_engine.draw_left_bubble(screen)
+
+        for x in script_stack[::-1]:
+            right = re.search(r"B='(.*)'", x)
+            if right:
+                if right.group(1) == '':
+                    break
+                else:
+                    self.msg_engine.draw_right_character(right.group(1), screen)
+                    self.msg_engine.draw_right_bubble(screen)
 
     def show(self):
         """ウィンドウ表示

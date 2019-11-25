@@ -16,9 +16,6 @@ class Plot:
         elif self.plot_count == 1:
             self.game_state = WINDOWTEXT
             self.msg_engine.set(root, 'intro0')
-        elif self.plot_count == 2:
-            self.game_state = FULLTEXT
-            self.msg_engine.set(root, 'monologue0')
         else:
             self.plot_count = 0
         return self.game_state
