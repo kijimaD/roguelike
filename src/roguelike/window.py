@@ -91,7 +91,7 @@ class Window:
         """特殊効果を描画する
         """
         # リストを逆にして、最初にマッチしたbgだけ実行する = リストの最後だけ実行
-        # FIXME:: 書き方がひどいかもしれない。余計にforを回してしまう。あと同じことを書いているところが多い。
+        # FIXME:: 書き方がひどい。余計にforを回してしまう。あと同じことを書いているところが多い。
         for x in script_stack[::-1]:
             bg = re.search(r"bg='(.*)'", x)
             if bg:
@@ -101,7 +101,7 @@ class Window:
                 else:
                     self.msg_engine.script_change_bg(bg.group(1), screen)
                     break
-                
+
         for x in script_stack[::-1]:
             bgm = re.search(r"bgm='(.*)'", x)
             if bgm:
@@ -109,7 +109,9 @@ class Window:
                     break
                 else:
                     self.msg_engine.script_change_music(bgm.group(1))
+                    break
 
+# 吹き出しはトグルし、キャラは同時に存在する。
         for x in script_stack[::-1]:
             left = re.search(r"A='(.*)'", x)
             if left:
@@ -117,7 +119,6 @@ class Window:
                     break
                 else:
                     self.msg_engine.draw_left_character(left.group(1), screen)
-                    self.msg_engine.draw_left_bubble(screen)
 
         for x in script_stack[::-1]:
             right = re.search(r"B='(.*)'", x)
@@ -126,7 +127,16 @@ class Window:
                     break
                 else:
                     self.msg_engine.draw_right_character(right.group(1), screen)
+
+        for x in script_stack[::-1]:
+            bubble = re.search(r"@([AB])", x)
+            if bubble:
+                if bubble.group(1) == 'A':
+                    self.msg_engine.draw_left_bubble(screen)
+                    break
+                elif bubble.group(1) == 'B':
                     self.msg_engine.draw_right_bubble(screen)
+                    break
 
     def show(self):
         """ウィンドウ表示
