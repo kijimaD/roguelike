@@ -40,9 +40,8 @@ class Game:
         self.plot_count = 0
         self.game_count = 0
         self.game_state = TITLE
-        Utils.play_bgm('title.mp3') # TODO: 暫定。ループ内で一回だけ実行するにはどうしたらいいのか？
-        # 今再生している音を変数に入れておいて、名前が同じであれば再生しないようにすればいいのではないか？
         self.msg_engine.cur_music = "title.mp3"
+        Utils.play_bgm('title.mp3') # TODO: 暫定の位置。
 
     def mainloop(self):
         """メインループ
@@ -65,6 +64,8 @@ class Game:
             self.fulltext.update()
         elif self.game_state == WINDOWTEXT:
             self.windowtext.update()
+        elif self.game_state == COMMAND:
+            self.command.update()
 
     def render(self):
         """ゲームオブジェクトのレンダリング
@@ -77,6 +78,8 @@ class Game:
         elif self.game_state == WINDOWTEXT:
             self.windowtext.draw_unify(self.screen, self.msg_engine.set_data, self.msg_engine.set_script_data,
                                        self.game_count)
+        elif self.game_state == COMMAND:
+            pass
 
     def check_event(self):
         """イベントハンドラ
@@ -95,6 +98,8 @@ class Game:
                 self.fulltext_handler(event)
             elif self.game_state == WINDOWTEXT:
                 self.windowtext_handler(event)
+            elif self.game_state == COMMAND:
+                self.command_handler(event)
             else:
                 print("game_state range error!")
                 pygame.quit()
@@ -128,7 +133,7 @@ class Game:
     def fulltext_handler(self, event):
         """フルテキストモードのイベントハンドラ
         """
-        if event.type == KEYDOWN:
+        If event.type == KEYDOWN:
             if event.key == K_1:
                 print("フルテキストモードで1を押しました")
             if event.key == K_RETURN:
@@ -153,6 +158,13 @@ class Game:
                 if len(self.windowtext.next_show_text) == 0:
                     self.plot.plot_count += 1
                     self.game_state = self.plot.opening(self.root)
+
+    def command_handler(self, event):
+        """コマンドモードのイベントハンドラ
+        """
+        if event.type == KEYDOWN:
+            if event.key == K_RETURN:
+                pass
 
     def game_counter(self, game_count):
         """描画に使用するカウンタ。
