@@ -95,6 +95,17 @@ class TestMsgEngine(object):
         ]
         assert test == test_expect
 
+    # xml内スクリプト=======================================
+
+    def test_script_change_music(self):
+        """BGM再生の入出力チェック
+        """
+        no_change = self.msg_engine.script_change_music("title.mp3", "title.mp3")
+        assert no_change == "title.mp3"
+        # なぜmorningはできる？
+        change = self.msg_engine.script_change_music("title.mp3", "diffrent_bgm")
+        assert change == "title.mp3"
+
     # raw_text関連=====================================
 
     def test_file_input_char(self):

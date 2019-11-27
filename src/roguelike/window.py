@@ -17,6 +17,7 @@ class Window:
         self.cur_page = 0
         self.text = []
         self.is_visible = False  # ウィンドウを表示中か？
+        self.cur_music = ""
 
     def draw(self, screen):
         """ウィンドウを描画
@@ -91,7 +92,7 @@ class Window:
         """特殊効果を描画する
         """
         # リストを逆にして、最初にマッチしたbgだけ実行する = リストの最後だけ実行
-        # FIXME:: 書き方がひどい。余計にforを回してしまう。あと同じことを書いているところが多い。
+        # FIXME: 書き方がひどい。同じことを書いている。
         for x in script_stack[::-1]:
             bg = re.search(r"bg='(.*)'", x)
             if bg:
@@ -108,10 +109,10 @@ class Window:
                 if bgm.group(1) == '':
                     break
                 else:
-                    self.msg_engine.script_change_music(bgm.group(1))
+                    # self.cur_music はmainの変数にしたほうがいいかもしれない。
+                    self.cur_music = self.msg_engine.script_change_music(bgm.group(1), self.cur_music)
                     break
 
-# 吹き出しはトグルし、キャラは同時に存在する。
         for x in script_stack[::-1]:
             left = re.search(r"A='(.*)'", x)
             if left:

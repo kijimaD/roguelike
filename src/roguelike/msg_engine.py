@@ -14,7 +14,6 @@ class MessageEngine:
         base_script_list = self.get_script_list()
         self.argument_script_list = self.get_script_argument(self.get_script_list())
         self.delete_script_list = self.get_script_delete_list(self.get_script_list())
-        self.cur_music = ""
 
     def draw(self, screen, x, y, text):
         """メッセージの描画
@@ -143,7 +142,7 @@ class MessageEngine:
             goal_pattern.append(text1)
         return goal_pattern
 
-    # スクリプト===================
+    # xml内スクリプト===================
 
     def script_change_bg(self, bg, screen):
         """背景を変更する
@@ -151,12 +150,14 @@ class MessageEngine:
         bg_image = Utils.load_image(bg)
         screen.blit(bg_image, (10, 10))
 
-    def script_change_music(self, bgm):
-        """BGMを変更する
+    def script_change_music(self, bgm, cur_music):
+        """再生中のBGMが違った場合のみ、再生する
         """
-        if self.cur_music != bgm:
+        if cur_music != bgm:
             Utils.play_bgm(bgm)
-            self.cur_music = bgm
+            cur_music = bgm
+
+        return cur_music
 
     def draw_left_character(self, character_name, screen):
         """人物モデル（左）
