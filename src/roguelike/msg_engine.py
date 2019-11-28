@@ -12,7 +12,7 @@ class MessageEngine:
     def __init__(self):
         self.font = pygame.font.SysFont(DEFAULT_FONT, 20)
         base_script_list = self.get_script_list()
-        self.argument_script_list = self.get_script_argument(self.get_script_list())
+        self.argument_script2_list = self.get_script_argument(self.get_script_list())
         self.delete_script_list = self.get_script_delete_list(self.get_script_list())
 
     def draw(self, screen, x, y, text):
@@ -113,7 +113,10 @@ class MessageEngine:
             "(bgm='.*')",
             "(bg='.*')",
             "(\\@[AB])",
-            "(\\@CHOICE(.*))"
+            "(CHOICE=(.*))",
+            "(STATES=(.*))",
+            "(FLAG=(.*))",
+            "(TO=(.*))",
         ]
         return pattern
 
