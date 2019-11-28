@@ -50,7 +50,6 @@ class Window:
         # 点滅する
         if len(self.next_show_text) and (game_count % 10) > 5:
             show_text.append("▼")
-
         for c in show_text:
             # テキスト表示用Surfaceを作る
             jtext = self.font.render(c, True, (255, 255, 255))

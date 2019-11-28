@@ -21,16 +21,18 @@ class MessageEngine:
         screen.blit(self.font.render(text, True, (255, 255, 255)), [x, y])
 
     def set(self, root, search):
-        """テキストとスクリプト用の配列を作成し、各インスタンス変数に格納する
+        """テキストとスクリプト用の配列を作成し、
+        各インスタンス変数に格納する。
         """
         # raw_textから2つに分岐する感じ。
         raw_text = self.load_xml(root, search)
         self.set_script_data = self.set_script(raw_text)  # scriptとcur_pageのリスト作成
-        shaped_text = self.create_text_data(raw_text)  # 整形
+
+        shaped_text = self.create_text_data(raw_text)  # 整形と削除
         self.set_data = self.set_text(shaped_text)  # テキストとページ位置のリスト作成
 
     def set_script(self, text):
-        """scriptとcur_pageのリストを作成する
+        """scriptとcur_pageのリストを作成する。
         [['スクリプト','ページ番号']]
         "bgm='morning'@Aおはよう|bgm='evening'@Bこんばんは"
         [["bgm='morning'",'0'],
@@ -53,8 +55,7 @@ class MessageEngine:
                 # 位置を比較してcur_pageを導出
                 for p in range(len(self.page_index)):
                     if s.start() < self.page_index[p]:
-                        self.script_index = np.append(self.script_index, np.array(
-                            [[s.group(), p]]), axis=0)
+                        self.script_index = np.append(self.script_index, np.array([[s.group(), p]]), axis=0)
                         break
                 # 最後のページ。
                 if max(self.page_index) < s.start():
@@ -105,13 +106,14 @@ class MessageEngine:
         """スクリプトのリストを生成する（検索用）
         例) "(bgm='.*)"
         """
-
+        # TODO: @AAや@Aiueo、@Bioを含まないようにする。
         pattern = []
         pattern += [
             "([AB]='.*')",
             "(bgm='.*')",
             "(bg='.*')",
             "(\\@[AB])",
+            "(\\@CHOICE(.*))"
         ]
         return pattern
 
@@ -209,7 +211,8 @@ class MessageEngine:
         """タブ文字改行文字を削除する
         """
         # 削除しないと、setできない？
-        goal_text = input.strip().replace(' ', '').replace('\n', '')  # タブ文字と改行文字と空白の削除
+        goal_text = input.strip().replace(' ', '').replace('\n', '').replace('\t', '')  # タブ文字と改行文字と空白の削除。
+        # TODO: strip()で一気にやってくれる？はずだが、replace以下がなければ削除されない。
         return goal_text
 
     def del_script(self, raw_text):
@@ -222,8 +225,8 @@ class MessageEngine:
         return goal_text
 
     def create_text_data(self, raw_text):
-        """テキスト用データを生成する。スクリプト削除＋余計な文字削除
+        """テキストを生成する。スクリプト削除＋余計な文字削除
         """
-        remove_text = self.del_script(raw_text)
-        goal_text = self.stlips_text(remove_text)
+        remove_text = self.del_script(raw_text) # スクリプト削除
+        goal_text = self.stlips_text(remove_text) # 余計な文字削除
         return goal_text

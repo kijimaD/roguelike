@@ -130,7 +130,7 @@ class TestMsgEngine(object):
     def test_stlips_text(self):
         """改行文字・空白文字の除去ができているかのテスト
         """
-        raw_text = "  こん\nに ち は"
+        raw_text = "  こん\nに ち は\t"
         test = self.msg_engine.stlips_text(raw_text)
         assert test == "こんにちは"
 
@@ -148,6 +148,6 @@ class TestMsgEngine(object):
     def test_create_text_data(self):
         """スクリプト削除＋空白文字削除ができているかテスト
         """
-        raw_text = "こ@Aん@B にbg=''ち\nは"
+        raw_text = "こ@A\nん@B にbg=''ち\nは@CHOICE())"
         test = self.msg_engine.create_text_data(raw_text)
         assert test == 'こんにちは'

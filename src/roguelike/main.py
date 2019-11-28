@@ -29,7 +29,7 @@ class Game:
         pygame.init()
         pygame.mixer.init()
         # self.screen = pygame.display.set_mode((SCREEN.size))
-        pygame.display.set_caption("Roguelike")
+        pygame.display.set_caption("ディッガーダンジョン")
         self.msg_engine = MessageEngine()
         self.plot = Plot(self.msg_engine)
         self.title = Title(self.msg_engine)
@@ -133,7 +133,7 @@ class Game:
     def fulltext_handler(self, event):
         """フルテキストモードのイベントハンドラ
         """
-        If event.type == KEYDOWN:
+        if event.type == KEYDOWN:
             if event.key == K_1:
                 print("フルテキストモードで1を押しました")
             if event.key == K_RETURN:
