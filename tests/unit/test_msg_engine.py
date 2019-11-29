@@ -72,15 +72,34 @@ class TestMsgEngine(object):
     def test_get_script_argument_output(self):
         """スクリプト引数取得の正規表現の出力チェック
         """
+        # @[AB]は例外的
         pattern = [
             "(bgm='.*')",
+            "(\\@[AB])",
         ]
         test = self.msg_engine.get_script_argument(pattern)
 
         test_expect = [
             "bgm='(.*)'",
+            "@([AB])",
         ]
         assert test == test_expect
+
+    def test_get_script(self):
+        """
+        """
+        script_stack = ["A='Player'", "B='Mao'", "bgm='title.mp3'", '@A', '@B']
+        script_arg = self.msg_engine.get_script_argument(self.msg_engine.get_script_list())
+        for script in script_arg: # bgm='(.*)'
+            for x in script_stack[::-1]: # bgm='title.mp3'
+                reg = re.search(script, x)
+                if reg:
+                    if reg.group(1) == '':
+                        # 特定の処理(引数なしで何もしない)
+                        break
+                    else:
+                        # 特定の処理
+                        break
 
     def test_get_script_delete_list_output(self):
         """スクリプト削除の正規表現の出力チェック
@@ -148,6 +167,6 @@ class TestMsgEngine(object):
     def test_create_text_data(self):
         """スクリプト削除＋空白文字削除ができているかテスト
         """
-        raw_text = "こ@A\nん@B にbg=''ち\nは@CHOICE())"
+        raw_text = "こ@A\nん@B にbg=''ち\nは"
         test = self.msg_engine.create_text_data(raw_text)
         assert test == 'こんにちは'

@@ -113,10 +113,10 @@ class MessageEngine:
             "(bgm='.*')",
             "(bg='.*')",
             "(\\@[AB])",
-            "(CHOICE=(.*))",
-            "(STATES=(.*))",
-            "(FLAG=(.*))",
-            "(TO=(.*))",
+            "(CHOICE='.*')",
+            "(STATES='.*')",
+            "(FLAG='.*')",
+            "(TO='.*')",
         ]
         return pattern
 
@@ -124,14 +124,17 @@ class MessageEngine:
         """スクリプトの引数取得用リストを生成する
         例) "bgm='(.*)'"
         """
-
+        self.text = []
         goal_pattern = []
         # TODO: 一発で加工したい。
         for s in pattern:
-            text = re.sub(r'\(', '', s)
-            text = re.sub(r'\)', '', text)
-            text = re.sub(r"'(.*)'", r"'(.*)'", text)
-            goal_pattern.append(text)
+            if s == '(\\@[AB])':
+                self.text = '@([AB])'
+            else:
+                text = re.sub(r'\(', '', s)
+                text = re.sub(r'\)', '', text)
+                self.text = re.sub(r"'(.*)'", r"'(.*)'", text)
+            goal_pattern.append(self.text)
         # print("これは引数取得用", goal_pattern)
         return goal_pattern
 

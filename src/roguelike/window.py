@@ -90,8 +90,10 @@ class Window:
     def draw_effect(self, screen, script_stack):
         """特殊効果を描画する
         """
+        self.root = self.msg_engine.file_input()
         # リストを逆にして、最初にマッチしたbgだけ実行する = リストの最後だけ実行
         # FIXME: 書き方がひどい。同じことを書いている。
+        print(script_stack)
         for x in script_stack[::-1]:
             bg = re.search(r"bg='(.*)'", x)
             if bg:
@@ -137,6 +139,16 @@ class Window:
                 elif bubble.group(1) == 'B':
                     self.msg_engine.draw_right_bubble(screen)
                     break
+
+        for x in script_stack[::-1]:
+            to = re.search(r"TO='(.*)'", x)
+            if to:
+                if to.group(1) == '':
+                    break
+                else:
+                    break
+                # こちら側からrootにアクセスするにはどうする？
+                # xmlからtoを指定するということはmainから呼び出せないということだ。
 
     def show(self):
         """ウィンドウ表示
