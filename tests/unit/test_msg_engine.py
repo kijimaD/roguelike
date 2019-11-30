@@ -101,7 +101,8 @@ class TestMsgEngine(object):
                         # f()の中身は動的に変化する。
                         fname = 'minimethod_' + self.msg_engine.script_d[p][0]
                         f = getattr(self, fname)
-                        f(reg.group(1))
+                        f(reg.group(1), screen)
+                        break
 
     def minimethod_chara(self):
         print('mini_chara run!')

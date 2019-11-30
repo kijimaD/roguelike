@@ -176,27 +176,30 @@ class Window:
     # ミニメソッド ======
     # window.draw_effectで呼び出される、各キーワードに割当られたメソッド群。
 
-    def minimethod_bg(self, bg):
+    def minimethod_bg(self, bg, screen):
         bg_image = Utils.load_image(bg)
         screen.blit(bg_image, (10, 10))
 
-    def minimethod_bgm(self, bgm):
+    def minimethod_bgm(self, bgm, screen):
+        self.cur_music = self.msg_engine.script_change_music(bgm.group(1), self.cur_music)
+
+    def minimethod_chara(self, chara, screen):
+        self.msg_engine.draw_left_character(chara, screen)
+
+    def minimethod_choice(self, choice, screen):
         pass
 
-    def minimethod_chara(self, chara):
+    def minimethod_flag(self, flag, screen):
         pass
 
-    def minimethod_choice(self, choice):
+    def minimethod_side(self, side, screen):
+            if side == 'A':
+                self.msg_engine.draw_left_bubble(screen)
+            elif side == 'B':
+                self.msg_engine.draw_right_bubble(screen)
+
+    def minimethod_status(self, status, screen):
         pass
 
-    def minimethod_flag(self, flag):
-        pass
-
-    def minimethod_side(self, side):
-        pass
-
-    def minimethod_status(self, status):
-        pass
-
-    def minimethod_to(self, to):
+    def minimethod_to(self, to, screen):
         pass
