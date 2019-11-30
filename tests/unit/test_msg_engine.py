@@ -69,6 +69,33 @@ class TestMsgEngine(object):
        test = self.msg_engine.get_script_list()
        assert type(test) is list
 
+    def test_new_get_script(self):
+        """新関数の実験
+        """
+        # テストではなく、実験用!!!!!
+        pattern_base = np.array([
+                            ['chara', "([AB]='.*')"],
+                            ['bgm', "(bgm='.*')"],
+                            ['bg', "(bg='.*')"],
+                            ['side', "(\\@[AB])"],
+                            ['choice', "(CHOICE='.*')"],
+                            ['states', "(STATES='.*')"],
+                            ['flag', "(FLAG='.*')"],
+                            ['to', "(TO='.*')"],
+        ])
+        arg_list = self.msg_engine.get_script_argument(pattern_base[:, 1])
+        arr_args = np.array(arg_list)
+        v_arr = arr_args[:, np.newaxis]
+
+        del_list = self.msg_engine.get_script_delete_list(pattern_base[:, 1])
+        arr_del = np.array(del_list)
+        v_del = arr_del[:, np.newaxis]
+
+        goal_pattern = np.append(pattern_base, v_arr, axis=1)
+        goal_pattern = np.append(goal_pattern, v_del, axis=1)
+
+        print(goal_pattern)
+
     def test_get_script_argument_output(self):
         """スクリプト引数取得の正規表現の出力チェック
         """
@@ -85,16 +112,18 @@ class TestMsgEngine(object):
         ]
         assert test == test_expect
 
-    def test_get_script(self):
+    def test_draw_effect(self):
+        # テストではなく、実験用!!!!!
         """
         """
         script_stack = ["A='Player'", "B='Mao'", "bgm='title.mp3'", '@A', '@B']
         script_arg = self.msg_engine.get_script_argument(self.msg_engine.get_script_list())
-        for script in script_arg: # bgm='(.*)'
-            for x in script_stack[::-1]: # bgm='title.mp3'
+        # print(self.msg_engine.get_script_list())
+        for script in script_arg:
+            for x in script_stack[::-1]:
                 reg = re.search(script, x)
                 if reg:
-                    if reg.group(1) == '':
+                    if reg.group(1) == '': # reg.group(1)は引数
                         # 特定の処理(引数なしで何もしない)
                         break
                     else:

@@ -102,6 +102,33 @@ class MessageEngine:
     # 正規表現生成=================
     # 元データ/引数取得用/削除用の正規表現パターンを作成する。
 
+    def get_script_d(self):
+        """各正規表現をまとめた多次元配列を生成する
+        例) [['bgm', "(bgm='.*')", "bgm='(.*)'"],
+              ['bg ', "(bg='.*')" , "bg='(.*)'" ]]
+        """
+        base = np.array([['chara', "([AB]='.*')"],
+                         ['bgm', "(bgm='.*')"],
+                         ['bg', "(bg='.*')"],
+                         ['side', "(\\@[AB])"],
+                         ['choice', "(CHOICE='.*')"],
+                         ['states', "(STATES='.*')"],
+                         ['flag', "(FLAG='.*')"],
+                         ['to', "(TO='.*')"],
+        ])
+        arg_list = self.get_script_argument(base[:, 1])
+        arr_args = np.array(arg_list)
+        v_arr = arr_args[:, np.newaxis]
+
+        del_list = self.msg_engine.get_script_delete_list(base[:, 1])
+        arr_del = np.array(del_list)
+        v_del = arr_del[:, np.newaxis]
+
+        goal = np.append(base, v_arr, axis=1)
+        goal = np.append(goal, v_del, axis=1)
+
+        return goal
+
     def get_script_list(self):
         """スクリプトのリストを生成する（検索用）
         例) "(bgm='.*)"
