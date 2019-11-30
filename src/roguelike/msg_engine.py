@@ -11,9 +11,7 @@ class MessageEngine:
 
     def __init__(self):
         self.font = pygame.font.SysFont(DEFAULT_FONT, 20)
-        base_script_list = self.get_script_list()
-        self.argument_script2_list = self.get_script_argument(self.get_script_list())
-        self.delete_script_list = self.get_script_delete_list(self.get_script_list())
+        self.script_d = self.get_script_d()
 
     def draw(self, screen, x, y, text):
         """メッセージの描画
@@ -47,7 +45,7 @@ class MessageEngine:
         for m in re.finditer("\\|", text, re.MULTILINE):
             self.page_index.append(m.start())
         # スクリプト部分を検索し、リストをくっつけて配列にする
-        pattern = self.get_script_list()
+        pattern = self.script_d[:, 1]
         for pat in pattern:
             for s in re.finditer(pat, text, re.MULTILINE):
                 # print(s.group()) # script
@@ -106,6 +104,11 @@ class MessageEngine:
         """各正規表現をまとめた多次元配列を生成する
         例) [['bgm', "(bgm='.*')", "bgm='(.*)'"],
               ['bg ', "(bg='.*')" , "bg='(.*)'" ]]
+        行: 用途
+        0: タイトル
+        1: 検索用(ベース)
+        2: 引数取得
+        3: 削除
         """
         base = np.array([['chara', "([AB]='.*')"],
                          ['bgm', "(bgm='.*')"],
@@ -120,7 +123,7 @@ class MessageEngine:
         arr_args = np.array(arg_list)
         v_arr = arr_args[:, np.newaxis]
 
-        del_list = self.msg_engine.get_script_delete_list(base[:, 1])
+        del_list = self.get_script_delete_list(base[:, 1])
         arr_del = np.array(del_list)
         v_del = arr_del[:, np.newaxis]
 
@@ -129,27 +132,9 @@ class MessageEngine:
 
         return goal
 
-    def get_script_list(self):
-        """スクリプトのリストを生成する（検索用）
-        例) "(bgm='.*)"
-        """
-        # TODO: @AAや@Aiueo、@Bioを含まないようにする。
-        pattern = []
-        pattern += [
-            "([AB]='.*')",
-            "(bgm='.*')",
-            "(bg='.*')",
-            "(\\@[AB])",
-            "(CHOICE='.*')",
-            "(STATES='.*')",
-            "(FLAG='.*')",
-            "(TO='.*')",
-        ]
-        return pattern
-
     def get_script_argument(self, pattern):
         """スクリプトの引数取得用リストを生成する
-        例) "bgm='(.*)'"
+        例) "(bgm='.*')"  => "bgm='(.*)'"
         """
         self.text = []
         goal_pattern = []
@@ -176,6 +161,11 @@ class MessageEngine:
             text1 = re.sub(r'\)', '', text0)
             goal_pattern.append(text1)
         return goal_pattern
+
+    # window.draw_effectで呼び出される各キーワードに割当られるミニメソッド ======
+
+    def minimethod_chara(self):
+        pass
 
     # xml内スクリプト===================
 
@@ -251,7 +241,7 @@ class MessageEngine:
     def del_script(self, raw_text):
         """スクリプト部分を削除する
         """
-        del_pattern = self.get_script_delete_list(self.get_script_list())
+        del_pattern = self.script_d[:, 3]
         goal_text = raw_text  # raw_textを使うのは最初だけ！
         for pat in del_pattern:
             goal_text = re.sub(pat, "", goal_text)

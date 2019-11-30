@@ -31,6 +31,7 @@ class Window:
         """ウィンドウと文章を表示する
         """
         # TODO: drawと入れ替えるべきでは？ウィンドウもメッセージも描画しているので。
+        # TODO: 長いので文字加工と表示を分割する
         screen.fill((40, 40, 40))  # 前の画面をリセット
 
         self.show()
@@ -42,14 +43,17 @@ class Window:
         blitx = self.blitx
         blity = self.blity
 
+        # cur_pageが同じリストを抜き出す
         show_text = [x[2] for x in set_data if x[1]
-                     == str(self.cur_page)]  # cur_pageが同じリストを抜き出す
-        self.next_show_text = [x[2] for x in set_data if x[1]
-                               == str(self.cur_page + 1)]  # 次の文字
-        # 最後のページでない場合に▼を追加する。
-        # 点滅する
+                     == str(self.cur_page)]
+        # 次の文字のリスト
+        self.next_show_text = [x[2] for x in set_data if x[1] == str(self.cur_page + 1)]
+
+        # 最後のページでない場合に▼を追加する。点滅する
         if len(self.next_show_text) and (game_count % 10) > 5:
             show_text.append("▼")
+
+        # 描画
         for c in show_text:
             # テキスト表示用Surfaceを作る
             jtext = self.font.render(c, True, (255, 255, 255))
@@ -71,11 +75,6 @@ class Window:
                 blitx = 10
                 blity += jtext.get_rect().h
             screen.blit(jtext, (blitx, blity))
-
-            # ループの最初だけflipさせる。flipの意味がよくわからない。
-            # if self.first_flip == 0:
-            #     pygame.display.flip()
-            #     self.first_flip += 1
 
             blitx += jtext.get_rect().w
 
