@@ -110,13 +110,14 @@ class MessageEngine:
         2: 引数取得
         3: 削除
         """
-        base = np.array([['chara', "([AB]='.*')"],
-                         ['bgm', "(bgm='.*')"],
+        base = np.array([
                          ['bg', "(bg='.*')"],
-                         ['side', "(\\@[AB])"],
+                         ['bgm', "(bgm='.*')"],
+                         ['chara', "([AB]='.*')"],
                          ['choice', "(CHOICE='.*')"],
-                         ['states', "(STATES='.*')"],
                          ['flag', "(FLAG='.*')"],
+                         ['side', "(\\@[AB])"],
+                         ['states', "(STATES='.*')"],
                          ['to', "(TO='.*')"],
         ])
         arg_list = self.get_script_argument(base[:, 1])
@@ -142,6 +143,7 @@ class MessageEngine:
         for s in pattern:
             if s == '(\\@[AB])':
                 self.text = '@([AB])'
+                # @[AB]だけは例外。
             else:
                 text = re.sub(r'\(', '', s)
                 text = re.sub(r'\)', '', text)
@@ -161,11 +163,6 @@ class MessageEngine:
             text1 = re.sub(r'\)', '', text0)
             goal_pattern.append(text1)
         return goal_pattern
-
-    # window.draw_effectで呼び出される各キーワードに割当られるミニメソッド ======
-
-    def minimethod_chara(self):
-        pass
 
     # xml内スクリプト===================
 

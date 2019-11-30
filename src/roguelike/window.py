@@ -172,3 +172,31 @@ class Window:
         self.first_flip = 0
         if len(self.next_show_text) == 0:
             self.cur_page = 0
+
+    # ミニメソッド ======
+    # window.draw_effectで呼び出される、各キーワードに割当られたメソッド群。
+
+    def minimethod_bg(self, bg):
+        bg_image = Utils.load_image(bg)
+        screen.blit(bg_image, (10, 10))
+
+    def minimethod_bgm(self, bgm):
+        pass
+
+    def minimethod_chara(self, chara):
+        pass
+
+    def minimethod_choice(self, choice):
+        pass
+
+    def minimethod_flag(self, flag):
+        pass
+
+    def minimethod_side(self, side):
+        pass
+
+    def minimethod_status(self, status):
+        pass
+
+    def minimethod_to(self, to):
+        pass
