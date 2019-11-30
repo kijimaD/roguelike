@@ -89,65 +89,23 @@ class Window:
     def draw_effect(self, screen, script_stack):
         """特殊効果を描画する
         """
+        # FIXME: @[AB]のスクリプトが呼ばれない
         self.root = self.msg_engine.file_input()
         # リストを逆にして、最初にマッチしたbgだけ実行する = リストの最後だけ実行
-        # FIXME: 書き方がひどい。同じことを書いている。
-        print(script_stack)
-        for x in script_stack[::-1]:
-            bg = re.search(r"bg='(.*)'", x)
-            if bg:
-                if bg.group(1) == '':
-                    screen.fill((0, 0, 0))  # 画面をリセット
-                    break
-                else:
-                    self.msg_engine.script_change_bg(bg.group(1), screen)
-                    break
 
-        for x in script_stack[::-1]:
-            bgm = re.search(r"bgm='(.*)'", x)
-            if bgm:
-                if bgm.group(1) == '':
-                    break
-                else:
-                    # self.cur_music はmainの変数にしたほうがいいかもしれない。
-                    self.cur_music = self.msg_engine.script_change_music(bgm.group(1), self.cur_music)
-                    break
-
-        for x in script_stack[::-1]:
-            left = re.search(r"A='(.*)'", x)
-            if left:
-                if left.group(1) == '':
-                    break
-                else:
-                    self.msg_engine.draw_left_character(left.group(1), screen)
-
-        for x in script_stack[::-1]:
-            right = re.search(r"B='(.*)'", x)
-            if right:
-                if right.group(1) == '':
-                    break
-                else:
-                    self.msg_engine.draw_right_character(right.group(1), screen)
-
-        for x in script_stack[::-1]:
-            bubble = re.search(r"@([AB])", x)
-            if bubble:
-                if bubble.group(1) == 'A':
-                    self.msg_engine.draw_left_bubble(screen)
-                    break
-                elif bubble.group(1) == 'B':
-                    self.msg_engine.draw_right_bubble(screen)
-                    break
-
-        for x in script_stack[::-1]:
-            to = re.search(r"TO='(.*)'", x)
-            if to:
-                if to.group(1) == '':
-                    break
-                else:
-                    break
-                # こちら側からrootにアクセスするにはどうする？
-                # xmlからtoを指定するということはmainから呼び出せないということだ。
+        for p in range(len(self.msg_engine.script_d[0])):
+            for x in script_stack[::-1]:
+                reg = re.search(self.msg_engine.script_d[p][2], x)
+                if reg:
+                    if reg.group(1) == '':
+                        break
+                    else:
+                        # f()の中身は動的に変化する。
+                        fname = 'minimethod_' + self.msg_engine.script_d[p][0]
+                        print(fname)
+                        f = getattr(self, fname)
+                        f(reg.group(1), screen)
+                        break
 
     def show(self):
         """ウィンドウ表示
@@ -175,13 +133,14 @@ class Window:
 
     # ミニメソッド ======
     # window.draw_effectで呼び出される、各キーワードに割当られたメソッド群。
+    # 必要な引数の種類が違うので、分けたい。
 
     def minimethod_bg(self, bg, screen):
         bg_image = Utils.load_image(bg)
         screen.blit(bg_image, (10, 10))
 
     def minimethod_bgm(self, bgm, screen):
-        self.cur_music = self.msg_engine.script_change_music(bgm.group(1), self.cur_music)
+        self.cur_music = self.msg_engine.script_change_music(bgm, self.cur_music)
 
     def minimethod_chara(self, chara, screen):
         self.msg_engine.draw_left_character(chara, screen)
@@ -193,10 +152,10 @@ class Window:
         pass
 
     def minimethod_side(self, side, screen):
-            if side == 'A':
-                self.msg_engine.draw_left_bubble(screen)
-            elif side == 'B':
-                self.msg_engine.draw_right_bubble(screen)
+        if side == 'A':
+            self.msg_engine.draw_left_bubble(screen)
+        elif side == 'B':
+            self.msg_engine.draw_right_bubble(screen)
 
     def minimethod_status(self, status, screen):
         pass

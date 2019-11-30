@@ -142,7 +142,7 @@ class MessageEngine:
         # TODO: 一発で加工したい。
         for s in pattern:
             if s == '(\\@[AB])':
-                self.text = '@([AB])'
+                self.text = '\\@([AB])'
                 # @[AB]だけは例外。
             else:
                 text = re.sub(r'\(', '', s)
