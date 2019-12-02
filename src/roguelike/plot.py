@@ -8,7 +8,8 @@ class Plot:
         self.plot_count = 0
 
     def opening(self, root):
-        """オープニング。"""
+        """オープニング。
+        """
         game_state = 0
         if self.plot_count == 0:
             game_state = FULLTEXT

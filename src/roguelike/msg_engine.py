@@ -120,7 +120,7 @@ class MessageEngine:
                          ['flag', "(flag='.*')"],
                          ['side', "(@[AB])"],
                          ['states', "(states='.*')"],
-                         ['to', "(to='.*')"],
+                         ['go', "(go='.*')"],
         ])
         arg_list = self.get_script_argument(base[:, 1])
         arr_args = np.array(arg_list)

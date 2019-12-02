@@ -135,35 +135,60 @@ class Window:
     # 必要な引数の種類が違うので、分けたい。
 
     def minimethod_bg(self, bg, screen):
+        """背景を変更する
+        """
         bg_image = Utils.load_image(bg)
         screen.blit(bg_image, (10, 10))
 
     def minimethod_bgm(self, bgm, screen):
+        """BGMを変更する
+        """
+        # TODO: 引数screenは必要ない
         self.cur_music = self.msg_engine.script_change_music(bgm, self.cur_music)
 
     def minimethod_charaA(self, chara, screen):
+        """左側のキャラを描画する
+        """
         self.msg_engine.draw_left_character(chara, screen)
 
     def minimethod_charaB(self, chara, screen):
+        """右側のキャラを描画する
+        """
         self.msg_engine.draw_right_character(chara, screen)
 
     def minimethod_choice(self, choice, screen):
+        """選択肢を表示
+        """
+        pass
+
+    def minimethod_go(self, to, screen):
+        """イベントを切り替える
+        """
         pass
 
     def minimethod_flag(self, flag, screen):
+        """フラグ
+        """
         pass
 
     def minimethod_side(self, side, screen):
+        """吹き出しを描画する
+        """
+        # 吹き出しを表示しない場合、
         if side == 'A':
             self.msg_engine.draw_left_bubble(screen)
         elif side == 'B':
             self.msg_engine.draw_right_bubble(screen)
+        elif side == 'AB':
+            self.msg_engine.draw_left_bubble(screen)
+            self.msg_engine.draw_right_bubble(screen)
+        elif side == 'NONE':
+            pass
         else:
             # 例外を送出する
             pass
 
     def minimethod_status(self, status, screen):
-        pass
-
-    def minimethod_to(self, to, screen):
+        """ステータスを変化させる
+        """
         pass
