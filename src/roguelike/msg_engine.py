@@ -55,6 +55,7 @@ class MessageEngine:
                     if s.start() < self.page_index[p]:
                         self.script_index = np.append(self.script_index, np.array([[s.group(), p]]), axis=0)
                         break
+
                 # 最後のページ。
                 if max(self.page_index) < s.start():
                     self.script_index = np.append(self.script_index, np.array(
@@ -113,12 +114,13 @@ class MessageEngine:
         base = np.array([
                          ['bg', "(bg='.*')"],
                          ['bgm', "(bgm='.*')"],
-                         ['chara', "([AB]='.*')"],
-                         ['choice', "(CHOICE='.*')"],
-                         ['flag', "(FLAG='.*')"],
-                         ['side', "(\\@[AB])"],
-                         ['states', "(STATES='.*')"],
-                         ['to', "(TO='.*')"],
+                         ['charaA', "(a='.*')"],
+                         ['charaB', "(b='.*')"],
+                         ['choice', "(choice='.*')"],
+                         ['flag', "(flag='.*')"],
+                         ['side', "(@[AB])"],
+                         ['states', "(states='.*')"],
+                         ['to', "(to='.*')"],
         ])
         arg_list = self.get_script_argument(base[:, 1])
         arr_args = np.array(arg_list)
@@ -141,9 +143,9 @@ class MessageEngine:
         goal_pattern = []
         # TODO: 一発で加工したい。
         for s in pattern:
-            if s == '(\\@[AB])':
-                self.text = '\\@([AB])'
-                # @[AB]だけは例外。
+            # @[AB]だけは例外。
+            if s == '(@[AB])':
+                self.text = '@([AB])'
             else:
                 text = re.sub(r'\(', '', s)
                 text = re.sub(r'\)', '', text)

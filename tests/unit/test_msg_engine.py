@@ -69,13 +69,13 @@ class TestMsgEngine(object):
         # @[AB]は例外的
         pattern = [
             "(bgm='.*')",
-            "(\\@[AB])",
+            "(@[AB])",
         ]
         test = self.msg_engine.get_script_argument(pattern)
 
         test_expect = [
             "bgm='(.*)'",
-            "\\@([AB])",
+            "@([AB])",
         ]
         assert test == test_expect
 
@@ -83,7 +83,15 @@ class TestMsgEngine(object):
         # テストではなく、実験用!!!!!
         """
         """
-        print(self.msg_engine.script_d)
+        # print(self.msg_engine.script_d)
+        text = ['@A', '@B']
+        self.goal = []
+        for p in text:
+            reg = re.search('@([AB])', p)
+            self.goal.append(reg.group(1))
+
+        assert self.goal == ['A', 'B']
+        # draw_effectでは同じことができない。
 
     def test_get_script_delete_list_output(self):
         """スクリプト削除の正規表現の出力チェック

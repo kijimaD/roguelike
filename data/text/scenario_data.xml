@@ -2,8 +2,8 @@
 <top>
     <evt id="test0">
         <!--@A, @B単はに吹き出しを切り替える。-->
-        A='Player'
-        B='Sirase'
+        a='Player'
+        b='Sirase'
         bgm="10.mp3"
         bg="03.jpg"
         @A こんにちは。\
@@ -49,32 +49,32 @@
     </evt>
     <evt id="intro0">
 	    bgm='title.mp3'
-        A='Player'
-        B='Mao'
+        a='Player'
+        b='Mao'
 		@A
         お、見えてきたな…^あれが、サクラジマだ。|
 		@B
 		なんか煙出てない？大丈夫か？|
 		@A
 		そういうものらしいよ。日常茶飯事なんだと。
-		TO='dog1-1'
-		CHOICE='犬を助ける,dog1-1,助けない,dog1-2'
+		to='dog1-1'
+		choice='犬を助ける,dog1-1,助けない,dog1-2'
     </evt>
 	<evt id="dog1-1">
 	  これは選択肢Aのあとのイベントです。
 	  犬を助けた。体力が50下がった。
-	  STATES='-50,0,0,0,0'
-	  FLAG='dog_help_ok'
-	  TO='top'
+	  status='-50,0,0,0,0'
+	  flag='dog_help_ok'
+	  to='top'
 	</evt>
 	<evt id="dog1-2">
 	  これは選択肢Bのあとのイベントです。
 	  まあいいか。急ごう。
-	  STATES='0,0.0,0.0'
-	  TO='top'
+	  status='0,0.0,0.0'
+	  to='top'
 	</evt>
 	<evt id="top">
 	  どこへ行こうかな。|
-	  CHOICE='うろつく,plot1-1,遺跡へ行く,plot1-2,仲間,plot1-3'
+	  choice='うろつく,plot1-1,遺跡へ行く,plot1-2,仲間,plot1-3'
 	 </evt>>
 </top>

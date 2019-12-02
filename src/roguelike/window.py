@@ -89,20 +89,19 @@ class Window:
     def draw_effect(self, screen, script_stack):
         """特殊効果を描画する
         """
-        # FIXME: @[AB]のスクリプトが呼ばれない
         self.root = self.msg_engine.file_input()
         # リストを逆にして、最初にマッチしたbgだけ実行する = リストの最後だけ実行
 
-        for p in range(len(self.msg_engine.script_d[0])):
+        for p in range(len(self.msg_engine.script_d[:, 0])):
             for x in script_stack[::-1]:
                 reg = re.search(self.msg_engine.script_d[p][2], x)
+
                 if reg:
                     if reg.group(1) == '':
                         break
                     else:
-                        # f()の中身は動的に変化する。
+                        # f()の定義を動的に変化させる
                         fname = 'minimethod_' + self.msg_engine.script_d[p][0]
-                        print(fname)
                         f = getattr(self, fname)
                         f(reg.group(1), screen)
                         break
@@ -142,8 +141,11 @@ class Window:
     def minimethod_bgm(self, bgm, screen):
         self.cur_music = self.msg_engine.script_change_music(bgm, self.cur_music)
 
-    def minimethod_chara(self, chara, screen):
+    def minimethod_charaA(self, chara, screen):
         self.msg_engine.draw_left_character(chara, screen)
+
+    def minimethod_charaB(self, chara, screen):
+        self.msg_engine.draw_right_character(chara, screen)
 
     def minimethod_choice(self, choice, screen):
         pass
@@ -156,6 +158,9 @@ class Window:
             self.msg_engine.draw_left_bubble(screen)
         elif side == 'B':
             self.msg_engine.draw_right_bubble(screen)
+        else:
+            # 例外を送出する
+            pass
 
     def minimethod_status(self, status, screen):
         pass
