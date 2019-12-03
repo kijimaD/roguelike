@@ -7,9 +7,11 @@ from roguelike.consts import *
 ツール類
 """
 
+
 class Utils:
     def __init__():
         pass
+
     def load_image(file):
         """例外処理を組み込んだload
         """
@@ -17,7 +19,7 @@ class Utils:
         try:
             surface = pygame.image.load(file)
         except pygame.error:
-            raise SystemExit('Could not load image "%s" %s' %(file, pygame.get_error()))
+            raise SystemExit('Could not load image "%s" %s' % (file, pygame.get_error()))
         return surface
 
     def load_images(*files):
@@ -37,7 +39,7 @@ class Utils:
             sound = pygame.mixer.Sound(file)
             return sound
         except pygame.error:
-            raise SystemExit('Cound not load sound "%s" %s' %(file, pygame.get_error()))
+            raise SystemExit('Cound not load sound "%s" %s' % (file, pygame.get_error()))
 
     def play_bgm(file):
         """ファイルから読み込み、BGMを再生する。soundとは異なり、逐次読み込んで使う。読み込み＋再生。
@@ -46,5 +48,5 @@ class Utils:
         try:
             pygame.mixer.music.load(file)
         except pygame.error:
-            raise SystemExit('Cound not load sound "%s" %s' %(file, pygame.get_error()))
+            raise SystemExit('Cound not load sound "%s" %s' % (file, pygame.get_error()))
         pygame.mixer.music.play(-1)

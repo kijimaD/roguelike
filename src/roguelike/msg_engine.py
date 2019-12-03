@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 from roguelike.consts import *
 from roguelike.utils import Utils
 
+
 class MessageEngine:
     """メッセージエンジンクラス
     """
@@ -38,6 +39,7 @@ class MessageEngine:
          ['@A','0']
          ['@B','1']]
         """
+        # TODO: 改ページ記号がないとエラーになる。
         self.page_index = []
         self.script_index = np.empty([0, 2])  # [script, cur_page]
 
@@ -112,15 +114,15 @@ class MessageEngine:
         3: 削除
         """
         base = np.array([
-                         ['bg', "(bg='.*')"],
-                         ['bgm', "(bgm='.*')"],
-                         ['charaA', "(a='.*')"],
-                         ['charaB', "(b='.*')"],
-                         ['choice', "(choice='.*')"],
-                         ['flag', "(flag='.*')"],
-                         ['side', "(@[AB])"],
-                         ['states', "(states='.*')"],
-                         ['go', "(go='.*')"],
+            ['bg', "(bg='.*')"],
+            ['bgm', "(bgm='.*')"],
+            ['charaA', "(a='.*')"],
+            ['charaB', "(b='.*')"],
+            ['choice', "(choice='.*')"],
+            ['flag', "(flag='.*')"],
+            ['side', "(@[AB])"],
+            ['states', "(states='.*')"],
+            ['go', "(go='.*')"],
         ])
         arg_list = self.get_script_argument(base[:, 1])
         arr_args = np.array(arg_list)
@@ -232,7 +234,6 @@ class MessageEngine:
     def stlips_text(self, input):
         """タブ文字改行文字を削除する
         """
-        # 削除しないと、setできない？
         goal_text = input.strip().replace(' ', '').replace('\n', '').replace('\t', '')  # タブ文字と改行文字と空白の削除。
         # TODO: strip()で一気にやってくれる？はずだが、replace以下がなければ削除されない。
         return goal_text
@@ -249,6 +250,6 @@ class MessageEngine:
     def create_text_data(self, raw_text):
         """テキストを生成する。スクリプト削除＋余計な文字削除
         """
-        remove_text = self.del_script(raw_text) # スクリプト削除
-        goal_text = self.stlips_text(remove_text) # 余計な文字削除
+        remove_text = self.del_script(raw_text)  # スクリプト削除
+        goal_text = self.stlips_text(remove_text)  # 余計な文字削除
         return goal_text

@@ -4,6 +4,7 @@ from roguelike.utils import Utils
 from roguelike.msg_engine import MessageEngine
 import re
 
+
 class Window:
     """ウィンドウの基本クラス
     """
@@ -81,7 +82,7 @@ class Window:
     def load_effect(self, set_script_data, cur_page):
         """ページごとにスクリプトを読み込む
         """
-        self.script_stack = [] # for内でも保持するためselfを使う
+        self.script_stack = []  # for内でも保持するためselfを使う
         for p in range(cur_page + 1):
             self.script_stack += [x[0] for x in set_script_data if x[1] == str(p)]
         return self.script_stack
@@ -161,10 +162,10 @@ class Window:
         """
         pass
 
-    def minimethod_go(self, to, screen):
-        """イベントを切り替える
+    def minimethod_go(self, go, screen):
+        """イベントを切り替える(選択肢用)
         """
-        pass
+        self.msg_engine.set(self.root, go)
 
     def minimethod_flag(self, flag, screen):
         """フラグ
@@ -185,7 +186,7 @@ class Window:
         elif side == 'NONE':
             pass
         else:
-            # 例外を送出する
+            # TODO: 例外を送出する
             pass
 
     def minimethod_status(self, status, screen):
