@@ -39,12 +39,14 @@ class Game:
         self.windowtext = WindowText(Rect(0, 0, 640, 480), self.msg_engine)
         self.root = self.msg_engine.file_input()
         self.cursor_y = 0
+        self.cursor_x = 0
         self.plot_count = 0
         self.game_count = 0
         self.game_state = TITLE
         self.msg_engine.cur_music = "title.mp3"
         Utils.play_bgm('title.mp3')  # TODO: 暫定の位置。
         self.next_sound = Utils.load_sound('next_short.wav')
+        self.choice_mode = 0
 
     def mainloop(self):
         """メインループ
@@ -144,7 +146,6 @@ class Game:
                 print("フルテキストモードでENTERを押しました")
                 self.next_sound.play()
                 self.fulltext.next()
-                # TODO: 操作と再生のタイムラグが酷い、操作と同時に鳴らしたい。ロードを最初にしておいて、再生だけする。
                 if len(self.fulltext.next_show_text) == 0:
                     self.plot.plot_count += 1
                     self.game_state = self.plot.opening(self.root)
@@ -154,12 +155,20 @@ class Game:
         """
         # TODO: 選択肢に入った場合を追加する。
         if event.type == KEYDOWN:
-            if event.key == K_RETURN:  # ページ送り
-                print('ウィンドウテキストモードでENTERを押しました')
-                self.windowtext.next()
-                if len(self.windowtext.next_show_text) == 0:
-                    self.plot.plot_count += 1
-                    self.game_state = self.plot.opening(self.root)
+            if self.choice_mode == 1:
+                if event.key == K_RETURN:
+                    pass
+                if event.key == K_RIGHT:
+                    self.cursor_x += 1
+                if event.key == K_LEFT:
+                    self.cursor_x += -1
+            elif self.choice_mode == 0:
+                if event.key == K_RETURN:  # ページ送り
+                    print('ウィンドウテキストモードでENTERを押しました')
+                    self.windowtext.next()
+                    if len(self.windowtext.next_show_text) == 0:
+                        self.plot.plot_count += 1
+                        self.game_state = self.plot.opening(self.root)
 
     def command_handler(self, event):
         """コマンドモードのイベントハンドラ
