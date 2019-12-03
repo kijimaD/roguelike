@@ -24,10 +24,12 @@ from roguelike import Character
 from roguelike import Enemy
 from roguelike import Utils
 
+
 class Game:
     def __init__(self):
+        # TODO: マジックナンバーを定数化する。
+        pygame.mixer.init(44100, -16, 1, 512)  # SEのタイムラグをなくす設定
         pygame.init()
-        pygame.mixer.init()
         # self.screen = pygame.display.set_mode((SCREEN.size))
         pygame.display.set_caption("ディッガーダンジョン")
         self.msg_engine = MessageEngine()
@@ -41,7 +43,8 @@ class Game:
         self.game_count = 0
         self.game_state = TITLE
         self.msg_engine.cur_music = "title.mp3"
-        Utils.play_bgm('title.mp3') # TODO: 暫定の位置。
+        Utils.play_bgm('title.mp3')  # TODO: 暫定の位置。
+        self.next_sound = Utils.load_sound('next_short.wav')
 
     def mainloop(self):
         """メインループ
@@ -139,10 +142,9 @@ class Game:
             if event.key == K_RETURN:
                 # ページ送り
                 print("フルテキストモードでENTERを押しました")
+                self.next_sound.play()
                 self.fulltext.next()
-                # TODO: 操作と再生のタイムラグが酷い、操作と同時に鳴らしたい。
-                next_sound = Utils.load_sound('next_short.wav')
-                next_sound.play()
+                # TODO: 操作と再生のタイムラグが酷い、操作と同時に鳴らしたい。ロードを最初にしておいて、再生だけする。
                 if len(self.fulltext.next_show_text) == 0:
                     self.plot.plot_count += 1
                     self.game_state = self.plot.opening(self.root)
@@ -150,9 +152,9 @@ class Game:
     def windowtext_handler(self, event):
         """ウィンドウテキストのイベントハンドラ
         """
+        # TODO: 選択肢に入った場合を追加する。
         if event.type == KEYDOWN:
-            if event.key == K_RETURN:
-                # ページ送り
+            if event.key == K_RETURN:  # ページ送り
                 print('ウィンドウテキストモードでENTERを押しました')
                 self.windowtext.next()
                 if len(self.windowtext.next_show_text) == 0:
@@ -174,7 +176,8 @@ class Game:
             game_count = 0
         return game_count
 
+
 if __name__ == "__main__":
     game = Game()
-    game.screen = pygame.display.set_mode((SCREEN.size)) # テストにウィンドウが出るのを避けるためここに書く
+    game.screen = pygame.display.set_mode((SCREEN.size))  # テストにウィンドウが出るのを避けるためここに書く
     game.mainloop()
