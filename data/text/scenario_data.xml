@@ -80,8 +80,8 @@
 	</evt>
 
 	<evt id="top">
-	   どこへ行こうかな。|
-	   choice='うろつく,plot1-1,遺跡へ行く,plot1-2,仲間,plot1-3'
+	   どこへ行こうかな。
+	   choice='うろつく,plot1-1,遺跡へ行く,plot1-2,仲間,plot1-3'|
 	   </evt>>
 
 </top>

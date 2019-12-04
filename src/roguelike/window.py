@@ -1,7 +1,8 @@
 import pygame
 from roguelike.consts import *
-from roguelike.utils import Utils
 from roguelike.msg_engine import MessageEngine
+from roguelike.plot import Plot
+from roguelike.utils import Utils
 import re
 
 
@@ -91,7 +92,7 @@ class Window:
         """特殊効果を描画する
         """
         self.root = self.msg_engine.file_input()
-        # リストを逆にして、最初にマッチしたbgだけ実行する = リストの最後だけ実行
+        # リストを逆にして、最初にマッチした各スクリプトだけ実行する = リストの最後だけ実行
 
         for p in range(len(self.msg_engine.script_d[:, 0])):
             for x in script_stack[::-1]:
@@ -158,9 +159,9 @@ class Window:
         self.msg_engine.draw_right_character(chara, screen)
 
     def minimethod_choice(self, choice, screen):
-        """選択肢を表示
+        """選択肢モードにする
         """
-        pass
+        Plot.choice_mode(self, screen, choice)
 
     def minimethod_go(self, go, screen):
         """イベントを切り替える(選択肢用)

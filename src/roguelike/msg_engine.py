@@ -210,6 +210,13 @@ class MessageEngine:
         pygame.draw.line(screen, (255, 255, 255), (380, 260), (420, 220), 3)
         pygame.draw.line(screen, (255, 255, 255), (420, 220), (460, 220), 3)
 
+    def draw_choice(self, screen, choice):
+        """選択肢を描画する
+        """
+        self.draw(screen, 120, 320, "選択肢")
+        self.draw(screen, 120, 320, choice)
+        pygame.draw.rect(screen,(255,255,255), Rect(100, 300, 30, 30))
+
     # raw_text生成=================
 
     def file_input(self):
