@@ -39,7 +39,7 @@ class MessageEngine:
          ['@A','0']
          ['@B','1']]
         """
-        # TODO: 改ページ記号がないとエラーになる。
+        # TODO: 改ページ記号が1つだとエラーになる。
         self.page_index = []
         self.script_index = np.empty([0, 2])  # [script, cur_page]
 
@@ -153,7 +153,6 @@ class MessageEngine:
                 text = re.sub(r'\)', '', text)
                 self.text = re.sub(r"'(.*)'", r"'(.*)'", text)
             goal_pattern.append(self.text)
-        # print("これは引数取得用", goal_pattern)
         return goal_pattern
 
     def get_script_delete_list(self, pattern):
@@ -214,8 +213,10 @@ class MessageEngine:
         """選択肢を描画する
         """
         self.draw(screen, 120, 320, "選択肢")
-        self.draw(screen, 120, 320, choice)
+        self.draw(screen, 80, 320, choice)
+        pygame.draw.rect(screen,(255,255,255), Rect(20, 300, 30, 30))
         pygame.draw.rect(screen,(255,255,255), Rect(100, 300, 30, 30))
+        pygame.draw.rect(screen,(255,255,255), Rect(180, 300, 30, 30))
 
     # raw_text生成=================
 

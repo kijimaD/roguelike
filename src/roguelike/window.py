@@ -159,9 +159,9 @@ class Window:
         self.msg_engine.draw_right_character(chara, screen)
 
     def minimethod_choice(self, choice, screen):
-        """選択肢モードにする
+        """選択肢
         """
-        Plot.choice_mode(self, screen, choice)
+        Plot.choice(self, screen, choice)
 
     def minimethod_go(self, go, screen):
         """イベントを切り替える(選択肢用)
