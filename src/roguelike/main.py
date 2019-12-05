@@ -101,7 +101,6 @@ class Game:
                 self.fulltext_handler(event)
             elif self.game_state == WINDOWTEXT:
                 self.windowtext_handler(event)
-                print('check_event,choice_mode:',self.plot.choice_mode)
             elif self.game_state == COMMAND:
                 self.command_handler(event)
             else:
@@ -153,14 +152,15 @@ class Game:
         """ウィンドウテキストのイベントハンドラ
         """
         if event.type == KEYDOWN:
-            if self.plot.choice_mode == 1:
+            if Plot.choice_mode == 1:
                 if event.key == K_RETURN:
                     print('choice_modeでENTERを押しました')
+                    Plot.choice_mode = 0
                 if event.key == K_RIGHT:
                     self.cursor_x += 1
                 if event.key == K_LEFT:
                     self.cursor_x += -1
-            elif self.plot.choice_mode == 0:
+            elif Plot.choice_mode == 0:
                 if event.key == K_RETURN:  # ページ送り
                     print('ウィンドウテキストモードでENTERを押しました')
                     self.windowtext.next()

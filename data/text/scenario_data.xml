@@ -10,7 +10,7 @@
         @B おお、こんにちは。\
         @A 元気？
         @B 元気です。\
-        bgm="kanashimi.mp3"
+        bgm='kanashimi.mp3'
         bg="home.jpg"
         @A
         （ちびっこなぞなぞ）生まれた頃は、裕福で、幸せな家庭でした。^
@@ -80,6 +80,7 @@
 	</evt>
 
 	<evt id="top">
+	   bgm='Black_Sacred_Storm.mp3'
 	   どこへ行こうかな。
 	   choice='うろつく,plot1-1,遺跡へ行く,plot1-2,仲間,plot1-3'|
 	   </evt>>

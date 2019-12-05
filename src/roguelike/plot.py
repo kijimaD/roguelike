@@ -5,6 +5,9 @@ from roguelike.utils import Utils
 
 
 class Plot:
+
+    choice_mode = 0
+
     def __init__(self, msg_engine):
         self.msg_engine = msg_engine
         self.plot_count = 0
@@ -13,6 +16,7 @@ class Plot:
     def opening(self, root):
         """オープニング。
         """
+        # TODO: sequenceの最初に戻ったときBGMが再生されないバグがある。
         scenario_sequence = np.array([[FULLTEXT, 'monologue0'],
                                       [WINDOWTEXT, 'intro0'],
                                       [WINDOWTEXT, 'top'],
@@ -38,7 +42,7 @@ class Plot:
 
         self.choice_mode = 1  # イベントハンドラを選択肢モードにする。(game_stateはwindowtextで、キーイベントだけ変える)
 
-        print('plot:', self.choice_mode)
+        Plot.choice_mode = 1
 
         self.msg_engine.draw_choice(screen, choice)  # 選択肢描画メソッド
 
