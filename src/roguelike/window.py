@@ -162,6 +162,7 @@ class Window:
         """選択肢
         """
         Plot.choice(self, screen, choice)
+        self.msg_engine.draw_choice(screen, choice)  # 選択肢描画メソッド
 
     def minimethod_go(self, go, screen):
         """イベントを切り替える(選択肢用)

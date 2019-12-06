@@ -6,7 +6,7 @@ from roguelike.utils import Utils
 
 class Plot:
 
-    choice_mode = 0
+    choice_mode = 0  # 変かもしれない
 
     def __init__(self, msg_engine):
         self.msg_engine = msg_engine
@@ -33,18 +33,13 @@ class Plot:
     def choice(self, screen, choice):
         """選択肢の使用予定文。直前のBGMや背景を保持したい
         """
-        # TODO: Plotにあるのはおかしいかもしれない。
 
         # choice = [['助ける', 'help'],
         #           ['助けない', 'no_help'],
         #           ]
         # 引数choiceをイベント名とアイコン名に分割して、各メソッドに渡す。
 
-        self.choice_mode = 1  # イベントハンドラを選択肢モードにする。(game_stateはwindowtextで、キーイベントだけ変える)
-
         Plot.choice_mode = 1
-
-        self.msg_engine.draw_choice(screen, choice)  # 選択肢描画メソッド
 
         # 選択したものを返す。
         # return(selected)

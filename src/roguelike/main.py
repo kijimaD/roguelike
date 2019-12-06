@@ -156,6 +156,9 @@ class Game:
                 if event.key == K_RETURN:
                     print('choice_modeでENTERを押しました')
                     Plot.choice_mode = 0
+                    self.plot.plot_count += 1
+                    # ここにappendする！
+                    self.game_state = self.plot.opening(self.root)
                 if event.key == K_RIGHT:
                     self.cursor_x += 1
                 if event.key == K_LEFT:
