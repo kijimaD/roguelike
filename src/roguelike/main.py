@@ -10,7 +10,7 @@ import re
 import xml.etree.ElementTree as ET
 from pygame.locals import *
 
-from roguelike.consts import *
+from consts import *  # パッケージではなく、相対パスで指定する！
 from roguelike import Title
 from roguelike import Window
 from roguelike import Fulltext
