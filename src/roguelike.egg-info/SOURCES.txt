@@ -1,8 +1,11 @@
 README.md
 setup.py
 src/roguelike/__init__.py
+src/roguelike/consts.py
 src/roguelike/roguelike.py
+src/roguelike/title.py
 src/roguelike.egg-info/PKG-INFO
 src/roguelike.egg-info/SOURCES.txt
 src/roguelike.egg-info/dependency_links.txt
+src/roguelike.egg-info/entry_points.txt
 src/roguelike.egg-info/top_level.txt
