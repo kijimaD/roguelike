@@ -10,10 +10,7 @@ import re
 import xml.etree.ElementTree as ET
 from pygame.locals import *
 
-if __name__ == "__main__":
-    from consts import *
-else:
-    from roguelike.consts import *
+from consts import *  # パッケージではなく、相対パスで指定する。ローカルのtestではエラーになる。
 from roguelike import Title
 from roguelike import Window
 from roguelike import Fulltext
