@@ -34,10 +34,6 @@ class TestGame:
     def test_var_access(self):
         """
         """
-        print("before: ", Plot.choice_mode)
         screen = Mock()
-        choice = Mock()
+        choice = "あああ"
         Plot.choice(self, screen, choice)
-        print("after: ", Plot.choice_mode)
-
-        print(self.game.plot.choice_mode)
