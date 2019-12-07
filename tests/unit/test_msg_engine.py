@@ -9,6 +9,7 @@ from roguelike.main import Game
 from roguelike.msg_engine import MessageEngine
 from roguelike.consts import *
 
+
 class TestMsgEngine(object):
     pygame.init()
     game = Game()
@@ -113,7 +114,6 @@ class TestMsgEngine(object):
         """
         no_change = self.msg_engine.script_change_music("title.mp3", "title.mp3")
         assert no_change == "title.mp3"
-        # なぜmorningはできる？
         change = self.msg_engine.script_change_music("title.mp3", "diffrent_bgm")
         assert change == "title.mp3"
 
@@ -130,7 +130,7 @@ class TestMsgEngine(object):
         # assert test == right
 
     def test_conv_choice(self):
-        """
+        """処理チェック
         """
         input = ['犬を助ける', 'dog1-1', '助けない', 'dog1-2']
         test = MessageEngine.conv_choice(self, input)
@@ -138,6 +138,13 @@ class TestMsgEngine(object):
                  ['助けない', 'dog1-2'],
                  ]
         assert (test == right).all()
+
+    def test_conv_choice_odd(self):
+        """引数が奇数のとき例外を送出することを確認する
+        """
+        input = ['犬を助ける', 'dog1-1', '助けない', 'dog1-2', '余計']
+        with pytest.raises(IndexError):
+            fail_test = MessageEngine.conv_choice(self, input)
 
     # raw_text関連=====================================
 

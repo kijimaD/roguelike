@@ -233,13 +233,12 @@ class MessageEngine:
         pygame.draw.rect(screen,(255,255,255), Rect(180, 300, 30, 30))
 
     def conv_choice(self, input_choice):
-        """リストの引数を2つずつ取って2次元配列にする。必ずリストの要素数は偶数にする。
+        """リストの引数を2つずつ取って2次元配列にする。リストの要素数は偶数にする。
         """
-        # TODO: リストが奇数のとき例外を送出する
         self.d_array = np.empty([0,2])
         for x in range(0, len(input_choice), 2):
             self.d_array = np.append(self.d_array, np.array(
-                        [[input_choice[x], input_choice[x+1]]]), axis=0)
+                [[input_choice[x], input_choice[x+1]]]), axis=0)
         return self.d_array
 
     # raw_text生成=================
