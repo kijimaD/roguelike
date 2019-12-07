@@ -10,7 +10,14 @@ import re
 import xml.etree.ElementTree as ET
 from pygame.locals import *
 
-from consts import *  # パッケージではなく、相対パスで指定する。ローカルのtestではエラーになる。
+# from consts import *  # パッケージではなく、相対パスで指定する。実行->可,tests->不可
+# from roguelike.consts import *  # パッケージ指定。実行->不可,tests->可
+# まずconstsで読み込んでみて、できなかったらパッケージから、とか。いや、importは一応できるんだ。ファイルを読み込もうとしたときにはじめてわかる。
+
+# run_dirは実行ディレクトリを読み取りたい。しかし、mainはテストなどパッケージから呼ばれることもあり、ファイル位置が変化する。
+# テストからはファイルを呼び出さないようにする！
+
+from roguelike.consts import *
 from roguelike import Title
 from roguelike import Window
 from roguelike import Fulltext
