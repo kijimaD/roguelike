@@ -34,6 +34,4 @@ class TestGame:
     def test_var_access(self):
         """
         """
-        screen = Mock()
-        choice = "あああ"
-        Plot.choice(self, screen, choice)
+        pass

@@ -117,6 +117,28 @@ class TestMsgEngine(object):
         change = self.msg_engine.script_change_music("title.mp3", "diffrent_bgm")
         assert change == "title.mp3"
 
+    def test_choice(self):
+        """
+        """
+        input_choice = [['助ける', 'help1'],
+                        ['助けない', 'no-help'],
+                        ]
+        # ?: 選んだものをどうやって取得する？
+        # test = choice(input_choice)
+
+        # right = np.array([WINDOWTEXT, 'help1'])
+        # assert test == right
+
+    def test_conv_choice(self):
+        """
+        """
+        input = ['犬を助ける', 'dog1-1', '助けない', 'dog1-2']
+        test = MessageEngine.conv_choice(self, input)
+        right = [['犬を助ける', 'dog1-1'],
+                 ['助けない', 'dog1-2'],
+                 ]
+        assert (test == right).all()
+
     # raw_text関連=====================================
 
     def test_file_input_char(self):

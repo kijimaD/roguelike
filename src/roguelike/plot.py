@@ -29,17 +29,3 @@ class Plot:
             self.plot_count = -1  # TODO: 先にインクリメントするので、-1で初期化。あとで修正する。
 
         return game_state
-
-    def choice(self, screen, choice):
-        """選択肢の使用予定文。直前のBGMや背景を保持したい
-        """
-
-        # choice = [['助ける', 'help'],
-        #           ['助けない', 'no_help'],
-        #           ]
-        # 引数choiceをイベント名とアイコン名に分割して、各メソッドに渡す。
-
-        Plot.choice_mode = 1
-
-        # 選択したものを返す。
-        # return(selected)

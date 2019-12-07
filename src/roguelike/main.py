@@ -12,12 +12,10 @@ from pygame.locals import *
 
 # from consts import *  # パッケージではなく、相対パスで指定する。実行->可,tests->不可
 # from roguelike.consts import *  # パッケージ指定。実行->不可,tests->可
-# まずconstsで読み込んでみて、できなかったらパッケージから、とか。いや、importは一応できるんだ。ファイルを読み込もうとしたときにはじめてわかる。
-
-# run_dirは実行ディレクトリを読み取りたい。しかし、mainはテストなどパッケージから呼ばれることもあり、ファイル位置が変化する。
-# テストからはファイルを呼び出さないようにする！
 
 from roguelike.consts import *
+# とりあえずプロジェクトの場所を直に埋め込んでしのいでいる。
+
 from roguelike import Title
 from roguelike import Window
 from roguelike import Fulltext
@@ -34,23 +32,22 @@ from roguelike import Utils
 
 class Game:
     def __init__(self):
-        # TODO: マジックナンバーを定数化する。
         pygame.mixer.init(44100, -16, 1, 512)  # SEのタイムラグをなくす設定
         pygame.init()
         # self.screen = pygame.display.set_mode((SCREEN.size))
-        pygame.display.set_caption("ディッガーダンジョン")
+        pygame.display.set_caption(GAME_TITLE)
         self.msg_engine = MessageEngine()
         self.plot = Plot(self.msg_engine)
         self.title = Title(self.msg_engine)
-        self.fulltext = Fulltext(Rect(0, 0, 640, 480), self.msg_engine)
-        self.windowtext = WindowText(Rect(0, 0, 640, 480), self.msg_engine)
+        self.fulltext = Fulltext(SCREEN, self.msg_engine)
+        self.windowtext = WindowText(SCREEN, self.msg_engine)
         self.root = self.msg_engine.file_input()
         self.cursor_y = 0
         self.cursor_x = 0
         self.game_count = 0
         self.game_state = TITLE
         self.msg_engine.cur_music = "title.mp3"
-        Utils.play_bgm('title.mp3')  # TODO: 暫定の位置。
+        Utils.play_bgm('title.mp3')
         self.next_sound = Utils.load_sound('next_short.wav')
 
     def mainloop(self):

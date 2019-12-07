@@ -209,6 +209,20 @@ class MessageEngine:
         pygame.draw.line(screen, (255, 255, 255), (380, 260), (420, 220), 3)
         pygame.draw.line(screen, (255, 255, 255), (420, 220), (460, 220), 3)
 
+    def choice_mode_enable(self, screen, choice):
+        """選択肢の使用予定文。直前のBGMや背景を保持したい
+        """
+
+        # choice = [['助ける', 'help'],
+        #           ['助けない', 'no_help'],
+        #           ]
+        # 引数choiceをイベント名とアイコン名に分割して、各メソッドに渡す。
+
+        Plot.choice_mode = 1
+
+        # 選択したものを返す。
+        # return(selected)
+
     def draw_choice(self, screen, choice):
         """選択肢を描画する
         """
@@ -217,6 +231,16 @@ class MessageEngine:
         pygame.draw.rect(screen,(255,255,255), Rect(20, 300, 30, 30))
         pygame.draw.rect(screen,(255,255,255), Rect(100, 300, 30, 30))
         pygame.draw.rect(screen,(255,255,255), Rect(180, 300, 30, 30))
+
+    def conv_choice(self, input_choice):
+        """リストの引数を2つずつ取って2次元配列にする。必ずリストの要素数は偶数にする。
+        """
+        # TODO: リストが奇数のとき例外を送出する
+        self.d_array = np.empty([0,2])
+        for x in range(0, len(input_choice), 2):
+            self.d_array = np.append(self.d_array, np.array(
+                        [[input_choice[x], input_choice[x+1]]]), axis=0)
+        return self.d_array
 
     # raw_text生成=================
 
