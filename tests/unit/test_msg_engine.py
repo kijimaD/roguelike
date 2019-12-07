@@ -132,7 +132,7 @@ class TestMsgEngine(object):
     def test_conv_choice(self):
         """処理チェック
         """
-        input = ['犬を助ける', 'dog1-1', '助けない', 'dog1-2']
+        input = '犬を助ける,dog1-1,助けない,dog1-2'
         test = MessageEngine.conv_choice(self, input)
         right = [['犬を助ける', 'dog1-1'],
                  ['助けない', 'dog1-2'],
@@ -142,7 +142,7 @@ class TestMsgEngine(object):
     def test_conv_choice_odd(self):
         """引数が奇数のとき例外を送出することを確認する
         """
-        input = ['犬を助ける', 'dog1-1', '助けない', 'dog1-2', '余計']
+        input = '犬を助ける,dog1-1,助けない,dog1-2,余計'
         with pytest.raises(IndexError):
             fail_test = MessageEngine.conv_choice(self, input)
 

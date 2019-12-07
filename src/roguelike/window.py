@@ -162,7 +162,8 @@ class Window:
         """選択肢
         """
         # 引数choiceの加工,
-        MessageEngine.draw_choice(screen, choice)
+        d_choice = MessageEngine.conv_choice(self, choice)
+        MessageEngine.draw_choice(self, screen, d_choice)
         MessageEngine.choice_mode_enable(self, screen, choice)
 
     def minimethod_go(self, go, screen):
