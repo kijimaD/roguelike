@@ -4,6 +4,7 @@ import re
 import xml.etree.ElementTree as ET
 from roguelike.consts import *
 from roguelike.utils import Utils
+from roguelike.plot import Plot
 
 
 class MessageEngine:
@@ -13,6 +14,7 @@ class MessageEngine:
     def __init__(self):
         self.font = pygame.font.SysFont(DEFAULT_FONT, 20)
         self.script_d = self.get_script_d()
+        self.choice_mode = 0
 
     def draw(self, screen, x, y, text):
         """メッセージの描画
@@ -218,7 +220,7 @@ class MessageEngine:
         #           ]
         # 引数choiceをイベント名とアイコン名に分割して、各メソッドに渡す。
 
-        # Plot.choice_mode = 1
+        Plot.choice_mode = 1
 
         # 選択したものを返す。
         # return(selected)
@@ -226,19 +228,21 @@ class MessageEngine:
     def draw_choice(self, screen, choice):
         """選択肢を描画する
         """
-        MessageEngine.draw(self, screen, 120, 320, "選択肢")
+        # MessageEngine.draw(self, screen, 120, 320, "選択肢")
         # self.draw(screen, 80, 320, choice)
         for p in range(len(choice[:, 0])):
             MessageEngine.draw(self, screen, 100 + 100 * int(p), 340, choice[p][0])
-        # pygame.draw.rect(screen,(255,255,255), Rect(20, 300, 30, 30))
-        # pygame.draw.rect(screen,(255,255,255), Rect(100, 300, 30, 30))
-        # pygame.draw.rect(screen,(255,255,255), Rect(180, 300, 30, 30))
+
+    def draw_choice_cursor(self, screen, cursor_x):
+        """cursorの位置を受取り、表示する
+        """
+        pygame.draw.rect(screen, (255, 255, 255), Rect(100 + 100 * cursor_x, 300, 30, 30))
 
     def conv_choice(self, input_choice):
         """引数を2つずつ取って2次元配列にする。リストの要素数は偶数にする。
         """
         list_choice = input_choice.split(',')
-        d_array = np.empty([0,2])
+        d_array = np.empty([0, 2])
         for x in range(0, len(list_choice), 2):
             d_array = np.append(d_array, np.array(
                 [[list_choice[x], list_choice[x+1]]]), axis=0)

@@ -1,5 +1,15 @@
 #!/usr/bin/python3
 
+
+"""
+===================================
+setup.pyのディレクトリで
+pip install -e .
+をしてから、
+python src/roguelike/main.py
+===================================
+"""
+
 import os
 import pygame
 import pygame.mixer
@@ -41,9 +51,9 @@ class Game:
         self.title = Title(self.msg_engine)
         self.fulltext = Fulltext(SCREEN, self.msg_engine)
         self.windowtext = WindowText(SCREEN, self.msg_engine)
+        self.window = Window(SCREEN)
         self.root = self.msg_engine.file_input()
         self.cursor_y = 0
-        self.cursor_x = 0
         self.game_count = 0
         self.game_state = TITLE
         self.msg_engine.cur_music = "title.mp3"
@@ -162,11 +172,14 @@ class Game:
                     Plot.choice_mode = 0
                     self.plot.plot_count += 1
                     # ここにappendする！
-                    self.game_state = self.plot.opening(self.root)
+                    # self.game_state = self.plot.opening(self.root)
                 if event.key == K_RIGHT:
-                    self.cursor_x += 1
+                    Window.CURSOR_X += 1
+                    print('x:', Window.CURSOR_X)
+                    # ここからカーソル描画を呼び出す
                 if event.key == K_LEFT:
-                    self.cursor_x += -1
+                    Window.CURSOR_X += -1
+                    print('x:', Window.CURSOR_X)
             elif Plot.choice_mode == 0:
                 if event.key == K_RETURN:  # ページ送り
                     print('ウィンドウテキストモードでENTERを押しました')

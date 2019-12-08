@@ -7,6 +7,7 @@ setup(
 
     author="Kijima Daigo",
 
+
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
 
@@ -15,7 +16,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'roguelike = roguelike.main:Game',
+            'roguelike = roguelike.roguelike:Game',
         ]
     },
 )

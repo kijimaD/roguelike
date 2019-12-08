@@ -10,7 +10,7 @@ class Window:
     """ウィンドウの基本クラス
     """
     EDGE_WIDTH = 4
-
+    CURSOR_X = 0
     def __init__(self, rect):
         self.font = pygame.font.SysFont(DEFAULT_FONT, 20)
         self.rect = rect
@@ -20,6 +20,7 @@ class Window:
         self.text = []
         self.is_visible = False  # ウィンドウを表示中か？
         self.cur_music = ""
+        self.cursor_x = 0
 
     def draw(self, screen):
         """ウィンドウを描画
@@ -161,9 +162,10 @@ class Window:
     def minimethod_choice(self, choice, screen):
         """選択肢
         """
-        # 引数choiceの加工,
         d_choice = MessageEngine.conv_choice(self, choice)
         MessageEngine.draw_choice(self, screen, d_choice)
+        MessageEngine.draw_choice_cursor(self, screen, self.CURSOR_X)
+        # print('receive:', self.CURSOR_X)
         MessageEngine.choice_mode_enable(self, screen, choice)
 
     def minimethod_go(self, go, screen):

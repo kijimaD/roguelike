@@ -11,7 +11,7 @@ class Plot:
     def __init__(self, msg_engine):
         self.msg_engine = msg_engine
         self.plot_count = 0
-        self.choice_mode = 0
+        # self.choice_mode = 0
 
     def opening(self, root):
         """オープニング。
@@ -27,5 +27,4 @@ class Plot:
 
         if self.plot_count >= len(scenario_sequence[:, 0])-1:  # countは0始まり、lenは1始まりなので調整している
             self.plot_count = -1  # TODO: 先にインクリメントするので、-1で初期化。あとで修正する。
-
         return game_state
