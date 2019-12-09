@@ -6,7 +6,7 @@ from roguelike.utils import Utils
 
 class Plot:
 
-    choice_mode = 0  # 変かもしれない
+    CHOICE_MODE = 0
 
     def __init__(self, msg_engine):
         self.msg_engine = msg_engine

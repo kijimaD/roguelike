@@ -166,21 +166,24 @@ class Game:
         """ウィンドウテキストのイベントハンドラ
         """
         if event.type == KEYDOWN:
-            if Plot.choice_mode == 1:
+            if Plot.CHOICE_MODE == 1:
                 if event.key == K_RETURN:
                     print('choice_modeでENTERを押しました')
-                    Plot.choice_mode = 0
-                    self.plot.plot_count += 1
-                    # ここにappendする！
-                    # self.game_state = self.plot.opening(self.root)
+                    Plot.CHOICE_MODE = 0
+                    # ここでplot.senario_sequenceにgame_stateとイベント名をappendする！
+                    self.windowtext.next()
+                    if len(self.windowtext.next_show_text) == 0:
+                        self.plot.plot_count += 1
+                        self.game_state = self.plot.opening(self.root)
                 if event.key == K_RIGHT:
+                    # TODO: クラス変数を使ったのはself...をwindow.minimethod_choice()で受け取れなかったため。オブジェクト指向をよくわかっていない…。とんでもなく間違ったことを書いているような。
                     Window.CURSOR_X += 1
                     print('x:', Window.CURSOR_X)
                     # ここからカーソル描画を呼び出す
                 if event.key == K_LEFT:
                     Window.CURSOR_X += -1
                     print('x:', Window.CURSOR_X)
-            elif Plot.choice_mode == 0:
+            elif Plot.CHOICE_MODE == 0:
                 if event.key == K_RETURN:  # ページ送り
                     print('ウィンドウテキストモードでENTERを押しました')
                     self.windowtext.next()

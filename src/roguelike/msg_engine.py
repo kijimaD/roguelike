@@ -220,7 +220,7 @@ class MessageEngine:
         #           ]
         # 引数choiceをイベント名とアイコン名に分割して、各メソッドに渡す。
 
-        Plot.choice_mode = 1
+        Plot.CHOICE_MODE = 1
 
         # 選択したものを返す。
         # return(selected)
